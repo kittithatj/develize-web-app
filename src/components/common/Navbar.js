@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import { IconContext } from "react-icons";
 import logo from "../image/develize_logo.png";
+import { Button } from "@mui/material";
 
 function Navbar() {
   const [sidebar, setSidebar] = useState(false);
@@ -18,7 +19,8 @@ function Navbar() {
           <Link to="#" className="menu-bars left">
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
-          <img src={logo} className="logo text-center" />
+          <img src={logo} alt="logo" className="logo text-center" />
+          <Button sx={{ mr: 2 }} color="primary" variant="contained" className="login-btn"> Log In</Button>
         </div>
 
         <nav className={sidebar ? "nav-menu active" : "nav-menu"}>
