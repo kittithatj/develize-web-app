@@ -15,13 +15,24 @@ import InputBase from '@mui/material/InputBase';
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import SearchIcon from '@mui/icons-material/Search';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import { red } from '@mui/material/colors';
+import SkillFormDialog from '../components/SkillFormDialog';
+import { skillTypeList } from '../config/skill-type-list';
+import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+import SnackbarComponent from '../components/SnackbarComponent';
 function Skill() {
 
     const [skill, setSkill] = useState([])
     const [confirmTrigger, setConfirmTrigger] = useState(false);
+    const [createSkillTrigger, setCreateSkillTrigger] = useState(false);
     const [selectedId, setSelectedId] = useState(0);
     const [selectedType, setSelectedType] = useState('');
     const [searchValue, setSearchValue] = useState('');
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarStatus, setSnackbarStatus] = useState('');
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const fetchSkillData = () => {
         fetch(Api.url + Api.skill_get)
@@ -33,22 +44,48 @@ function Skill() {
             })
     }
 
-
     useEffect(() => {
         fetchSkillData()
     }, [])
+
+    const createSkillData = (data) => {
+        fetch(Api.url + Api.skill_create, {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(res => console.log(res.json()))
+            .then(() => {
+                fetchSkillData();
+                setSnackbarStatus('success');
+                setSnackbarMessage('Skill created successfully');
+                setOpenSnackbar(true);
+            })
+            .catch(error => {
+                console.error(error);
+                setSnackbarStatus('error');
+                setSnackbarMessage('Error creating skill');
+                setOpenSnackbar(true);
+            });
+    }
 
     const deleteSkill = (id) => {
         fetch(Api.url + Api.skill_delete + id, {
             method: 'DELETE'
         })
             .then(res => console.log(res.text()))
-            .then(() => fetchSkillData())
-            .catch(error => console.error(error));
-    }
-
-    const setTrigger = (t) => {
-        setConfirmTrigger(t)
+            .then(() => {
+                fetchSkillData();
+                setSnackbarStatus('success');
+                setSnackbarMessage('Skill deleted successfully');
+                setOpenSnackbar(true);
+            })
+            .catch(error => {
+                console.error(error);
+                setSnackbarStatus('error');
+                setSnackbarMessage('Error deleting skill');
+                setOpenSnackbar(true);
+            });
     }
 
     const handleSkillTypeChange = (event) => {
@@ -61,38 +98,30 @@ function Skill() {
         setSearchValue(event.target.value);
     }
 
-    const skillTypeList = [{
-        value: '',
-        label: 'All',
-    },
-    {
-        value: 'Programming Language',
-        label: 'Programming Language',
-    },
-    {
-        value: 'Library',
-        label: 'Library',
-    },
-    {
-        value: 'Framework',
-        label: 'Framework',
-    },
-    {
-        value: 'Database',
-        label: 'Database',
-    },
-    {
-        value: 'Markup Language',
-        label: 'Markup Language',
-    },
-    {
-        value: 'Cloud',
-        label: 'Cloud',
-    },
-    {
-        value: 'Others',
-        label: 'Others',
-    }];
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackbar(false);
+    };
+
+
+    const SkillNotFound = () => {
+        return (
+
+            <ListItem key={0}>
+                <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: red[400] }}>
+                        <HighlightOffIcon />
+                    </Avatar>
+                </ListItemAvatar>
+                <ListItemText>
+                    No Skill Found
+                </ListItemText>
+            </ListItem>
+        )
+    }
 
     return (
         <div className='main-content'>
@@ -133,7 +162,7 @@ function Skill() {
                     </TextField>
                 </div>
                 {skill.length > 0 && (
-                    <List sx={{ width: '100%', minWidth: 600, bgcolor: 'background.paper', zIndex: 200 }}>
+                    <List sx={{ width: '90vw', maxWidth: 615, minWidth: 300, bgcolor: 'background.paper', zIndex: 200 }}>
                         {skill
                             .filter((skill) => {
                                 return skill.skillType.includes(selectedType)
@@ -141,23 +170,53 @@ function Skill() {
                             .filter((skill) => {
                                 return skill.skillName.toLowerCase().includes(searchValue.toLowerCase())
                             })
-                            .map((skill, i, array) => (
-                                <ListItem key={skill.skill_id} divider={i + 1 === array.length ? false : true}>
+                            .map((skill, i, array) => {
+                                return <ListItem key={skill.skill_id} divider={i + 1 === array.length ? false : true}>
                                     <ListItemAvatar>
                                         <Avatar>
                                             <CodeIcon />
+                                            {/* {TODO: Add icon for each skill type} */}
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText primary={skill.skillName} secondary={skill.skillType} />
-                                    <IconButton edge="end" aria-label="delete" onClick={() => { setTrigger(true); setSelectedId(skill.skill_id) }}>
+                                    <IconButton edge="end" aria-label="delete" onClick={() => { setConfirmTrigger(true); setSelectedId(skill.skill_id) }}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </ListItem>
-                            ))}
+                            })
+                        }
+                        {skill.filter((skill) => {
+                            return skill.skillType.includes(selectedType)
+                        })
+                            .filter((skill) => {
+                                return skill.skillName.toLowerCase().includes(searchValue.toLowerCase())
+                            }).length === 0 && (<SkillNotFound></SkillNotFound>)}
                     </List>
                 )}
-                <ConfirmDialog trigger={confirmTrigger} setTrigger={setTrigger} confirm={deleteSkill} id={selectedId} />
+                {skill.length === 0 && (
+                    <List sx={{ width: '100%', minWidth: 600, bgcolor: 'background.paper', zIndex: 200 }}>
+                        <SkillNotFound></SkillNotFound>
+                    </List>
+                )}
+                <ConfirmDialog
+                    trigger={confirmTrigger}
+                    setTrigger={setConfirmTrigger}
+                    confirm={deleteSkill}
+                    id={selectedId}
+                    title="Delete Skill"
+                    description="Do you want to delete this skill?"
+                    comfirmText="Delete" />
+                <SkillFormDialog
+                    trigger={createSkillTrigger}
+                    setTrigger={setCreateSkillTrigger}
+                    create={createSkillData}
+                />
             </div>
+            <Button onClick={() => (setCreateSkillTrigger(true))} sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }} variant="contained" startIcon={<AddIcon />}>
+                Create skill
+            </Button>
+
+            <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
         </div >
     )
 }

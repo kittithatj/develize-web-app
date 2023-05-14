@@ -3,4 +3,5 @@ export const Api = {
     //url: '*Online URL*',
     skill_get: '/skill/get',
     skill_delete: '/skill/delete/',
+    skill_create: '/skill/create'
 }

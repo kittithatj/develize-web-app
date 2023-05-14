@@ -40,11 +40,11 @@ function ConfirmDialog(props) {
                 aria-describedby="alert-dialog-description"
             >
                 <DialogTitle id="alert-dialog-title">
-                    Delete Skill
+                    {props.title}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        Do you want to delete this skill?
+                        {props.description}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -52,7 +52,7 @@ function ConfirmDialog(props) {
                         Cancel
                     </Button>
                     <Button color='error' onClick={handleDelete} autoFocus>
-                        Delete
+                        {props.comfirmText}
                     </Button>
                 </DialogActions>
             </Dialog>
