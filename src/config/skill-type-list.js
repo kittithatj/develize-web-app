@@ -19,8 +19,8 @@ export const skillTypeList = [{
     label: 'Database',
 },
 {
-    value: 'Markup Language',
-    label: 'Markup Language',
+    value: 'Tool',
+    label: 'Tool',
 },
 {
     value: 'Others',

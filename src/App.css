@@ -29,6 +29,27 @@
   z-index: 2100;
 }
 
+.upper {
+  width: 33vw;
+  vertical-align: middle;
+}
+
+.left {
+  text-align: left;
+}
+
+.right {
+  text-align: right;
+}
+
+.flex {
+  display: flex;
+}
+
+.center {
+  text-align: center;
+}
+
 .menu-bars {
   margin-left: 2rem;
   margin-right: 2rem;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
@@ -11,13 +11,18 @@ import Skill from "./pages/Skill";
 import Project from "./pages/Project";
 import Navbar from "./components/common/Navbar";
 import "./App.css";
+import Login from "./pages/Login";
+import PersonnelEdit from "./pages/PersonnelEdit";
 
-const AppLayout = () => (
-  <>
-    <Navbar />
-    <Outlet />
+const AppLayout = () => {
+
+  const [user, setUser] = useState({});
+
+  return <>
+    <Navbar user={user} setUser={setUser} />
+    <Outlet context={[user, setUser]} />
   </>
-);
+};
 
 const router = createBrowserRouter([
   {
@@ -32,6 +37,10 @@ const router = createBrowserRouter([
         element: <Personnel />,
       },
       {
+        path: "personnel/edit/:id",
+        element: <PersonnelEdit />,
+      },
+      {
         path: "skill",
         element: <Skill />,
       },
@@ -39,6 +48,14 @@ const router = createBrowserRouter([
         path: "project",
         element: <Project />,
       },
+      {
+        path: "*",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      }
     ],
   },
 ]);

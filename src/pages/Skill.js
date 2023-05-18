@@ -73,7 +73,7 @@ function Skill() {
         fetch(Api.url + Api.skill_delete + id, {
             method: 'DELETE'
         })
-            .then(res => console.log(res.text()))
+            .then(res => console.log(res.json()))
             .then(() => {
                 fetchSkillData();
                 setSnackbarStatus('success');
@@ -126,7 +126,7 @@ function Skill() {
     return (
         <div className='main-content'>
             <div>
-                <Typography sx={{ mt: 2, mb: 2 }} variant="h5" component="div">
+                <Typography sx={{ mt: 1, mb: 1, fontWeight: 'bold' }} variant="h5" component="div">
                     Skill Management
                 </Typography>
                 <div>
