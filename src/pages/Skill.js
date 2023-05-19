@@ -22,6 +22,12 @@ import { skillTypeList } from '../config/skill-type-list';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import SnackbarComponent from '../components/SnackbarComponent';
+import StorageIcon from '@mui/icons-material/Storage';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import HandymaIconn from '@mui/icons-material/Handyman';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import TerminalIcon from '@mui/icons-material/Terminal';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 function Skill() {
 
     const [skill, setSkill] = useState([])
@@ -123,6 +129,26 @@ function Skill() {
         )
     }
 
+    const skillTypeIcon = (skill) => {
+        if(skill.skillType === 'Database'){
+            return <StorageIcon/>
+        } 
+        else if(skill.skillType === 'Others'){
+            return <MoreHorizIcon/>
+        }
+        else if(skill.skillType === 'Tool'){
+            return <HandymaIconn/>
+        }
+        else if(skill.skillType === 'Library'){
+            return <MenuBookIcon/>
+        }
+        else if(skill.skillType === 'Programming Language'){
+            return <TerminalIcon/>
+        }
+        else if(skill.skillType === 'Framework'){
+            return <IntegrationInstructionsIcon/>
+        }
+    }
     return (
         <div className='main-content'>
             <div>
@@ -174,8 +200,7 @@ function Skill() {
                                 return <ListItem key={skill.skill_id} divider={i + 1 === array.length ? false : true}>
                                     <ListItemAvatar>
                                         <Avatar>
-                                            <CodeIcon />
-                                            {/* {TODO: Add icon for each skill type} */}
+                                            {skillTypeIcon(skill)}
                                         </Avatar>
                                     </ListItemAvatar>
                                     <ListItemText primary={skill.skillName} secondary={skill.skillType} />
