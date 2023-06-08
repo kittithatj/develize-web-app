@@ -130,24 +130,24 @@ function Skill() {
     }
 
     const skillTypeIcon = (skill) => {
-        if(skill.skillType === 'Database'){
-            return <StorageIcon/>
-        } 
-        else if(skill.skillType === 'Others'){
-            return <MoreHorizIcon/>
+        if (skill.skillType === 'Database') {
+            return <StorageIcon />
         }
-        else if(skill.skillType === 'Tool'){
-            return <HandymaIconn/>
+        else if (skill.skillType === 'Others') {
+            return <MoreHorizIcon />
         }
-        else if(skill.skillType === 'Library'){
-            return <MenuBookIcon/>
+        else if (skill.skillType === 'Tool') {
+            return <HandymaIconn />
         }
-        else if(skill.skillType === 'Programming Language'){
-            return <TerminalIcon/>
+        else if (skill.skillType === 'Library') {
+            return <MenuBookIcon />
         }
-        else if(skill.skillType === 'Framework'){
-            return <IntegrationInstructionsIcon/>
+        else if (skill.skillType === 'Programming Language') {
+            return <TerminalIcon />
         }
+        else if (skill.skillType === 'Framework') {
+            return <IntegrationInstructionsIcon />
+        } else return <MoreHorizIcon />
     }
     return (
         <div className='main-content'>

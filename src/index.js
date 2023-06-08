@@ -13,6 +13,7 @@ import Navbar from "./components/common/Navbar";
 import "./App.css";
 import Login from "./pages/Login";
 import PersonnelEdit from "./pages/PersonnelEdit";
+import PersonnelInfo from "./pages/PersonnelInfo";
 
 const AppLayout = () => {
 
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "personnel/edit/:id",
         element: <PersonnelEdit />,
+      },
+      {
+        path: "personnel/:id",
+        element: <PersonnelInfo />,
       },
       {
         path: "skill",
