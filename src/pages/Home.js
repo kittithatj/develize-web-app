@@ -4,10 +4,10 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import { Icon } from '@mui/material';
 import Button from '@mui/material/Button';
-import { BsFillPersonFill } from "react-icons/bs";
-import { FaLightbulb } from 'react-icons/fa';
-import { BsFillCalendar2WeekFill } from "react-icons/bs";
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import { Link } from 'react-router-dom';
+import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 
 
 function Home() {
@@ -29,18 +29,16 @@ function Home() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '23px',
+              padding: '15px',
             }}
           >
-            <IconButton sx={{ p: 0, marginBottom: '-110px' }}>
-             <Icon as={BsFillPersonFill} style={{ fontSize: '100px' }} />
-            </IconButton>
+            <PersonOutlineOutlinedIcon style={{ fontSize: '90px' ,marginBottom:'-100px'}} />
             <div style={{ textAlign: 'center' }}>
-                <h1 style={{ fontSize: '25px' }}>Personnel</h1>
-                <h2 style={{ fontSize: '12px', marginTop: '10px' }}>Management of employee</h2>
+                <h1 style={{ fontSize: '25px' ,margin: '0px'}}>Personnel</h1>
+                <h2 style={{ fontSize: '14px', marginTop: '11px' ,color:'gray'}}>Management of employee</h2>
                 </div>
             <Link to="/Personnel">
-              <Button variant="contained" style={{ backgroundColor: '#25BD71', color: 'white', borderRadius: 90 }}>Manage</Button>
+              <Button variant="contained" style={{ backgroundColor: '#3DDA89', color: 'white', borderRadius: 90 }}>Manage</Button>
             </Link>
           </Box>
         </Grid>
@@ -54,18 +52,16 @@ function Home() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '23px',
+              padding: '15px',
             }}
           >
-            <IconButton sx={{ p: 0, marginBottom: '-95px' }}>
-              <Icon as={FaLightbulb} style={{ fontSize: '80px' }} />
-              </IconButton>
+            <LightbulbOutlinedIcon style={{ fontSize: '80px' ,marginBottom:'-90px'}} />
               <div style={{ textAlign: 'center' }}>
-                <h1 style={{ fontSize: '25px' }}>Skill</h1>
-                <h2 style={{ fontSize: '12px', marginTop: '10px' }}>Skill Management and type of skill</h2>
+                <h1 style={{ fontSize: '25px' ,margin: '0px'}}>Skill</h1>
+                <h2 style={{ fontSize: '14px', marginTop: '10px' ,color:'gray'}}>Skill Management and type of skill</h2>
                 </div>
             <Link to="/Skill">
-              <Button variant="contained" style={{ backgroundColor: '#25BD71', color: 'white', borderRadius: 90 }}>Manage</Button>
+              <Button variant="contained" style={{ backgroundColor: '#3DDA89', color: 'white', borderRadius: 90 }}>Manage</Button>
             </Link>
           </Box>
         </Grid>
@@ -79,20 +75,18 @@ function Home() {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '23px',
+              padding: '15px',
             }}
           >
-            <IconButton sx={{ p: 0, marginBottom: '-90px' }}>
-              <Icon as={BsFillCalendar2WeekFill} style={{ fontSize: '80px' }} />
-              </IconButton>
-
-
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <LanOutlinedIcon style={{ fontSize: '80px' ,marginBottom:'-90px'}} />
+              </div>
               <div style={{ textAlign: 'center' }}>
-                <h1 style={{ fontSize: '25px' }}>Project</h1>
-                <h2 style={{ fontSize: '12px', marginTop: '10px' }}>Project management and Project details</h2>
+                <h1 style={{ fontSize: '25px' ,margin: '0px'}}>Project</h1>
+                <h2 style={{ fontSize: '14px', marginTop: '12px' ,color:'gray'}}>Project management and Project details</h2>
                 </div>
             <Link to="/Project">
-              <Button variant="contained" style={{ backgroundColor: '#25BD71', color: 'white', borderRadius: 90 }}>Manage</Button>
+              <Button variant="contained" style={{ backgroundColor: '#3DDA89', color: 'white', borderRadius: 90 }}>Manage</Button>
             </Link>
           </Box>
         </Grid>
