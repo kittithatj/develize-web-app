@@ -11,6 +11,7 @@ import { Api } from '../config/api-config';
 import { useState } from 'react';
 import SnackbarComponent from '../components/SnackbarComponent';
 import { useOutletContext } from 'react-router-dom';
+import { userApi } from '../api/user-api';
 
 export default function Login() {
 
@@ -36,22 +37,14 @@ export default function Login() {
             password: data.get('password'),
         };
 
-        fetch(Api.url + Api.user_login, {
-            method: 'POST',
-            body: JSON.stringify(userForm),
-            headers: { 'Content-Type': 'application/json' }
-        }).then(res => {
-            if (res.status === 200) {
+        userApi.login(userForm)
+            .then(data => {
                 setSnackbarStatus('success');
                 setSnackbarMessage('Login Success');
                 setOpenSnackbar(true);
-            } else {
-                throw new Error(res.statusText);
-            }
-            return res.json()
-        })
-            .then(data => {
-                setUser(data);
+                console.log(data)
+                console.log(localStorage.getItem('token'));
+                // setUser(data);
                 console.log(user);
             })
             .catch(err => {

@@ -8,6 +8,7 @@ export const Api = {
     user_get:'user/get',
     user_login: '/user/login',
     user_register: '/user/register',
+    user_refresh_token: '/user/refresh-token',
 
     personnel_get: '/personnel/get',
     personnel_create: '/personnel/create',
