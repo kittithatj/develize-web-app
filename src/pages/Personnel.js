@@ -8,6 +8,7 @@ import SkillFroupAvatar from '../components/SkillGroupAvatar';
 
 function Personnel() {
 
+
     const [personnel, setPersonnel] = useState([])
 
     const fetchPersonnelData = () => {
@@ -19,6 +20,7 @@ function Personnel() {
                 setPersonnel(data)
             })
     }
+    
 
     useEffect(() => {
         fetchPersonnelData()
@@ -67,7 +69,7 @@ function Personnel() {
 
     return (
         <div className='main-content'>
-            <div>
+            <div className='top-content'>
                 <ThemeProvider theme={theme}>
                     <Typography sx={{ mt: 1, mb: 1, fontWeight: 'bold' }} variant="h5" component="div">
                         Personnel Management
@@ -76,7 +78,7 @@ function Personnel() {
                         {personnel.length > 0 && (
                             <List sx={{ width: '60vw', minWidth: 500, bgcolor: 'background.paper', zIndex: 200, padding: 0 }}>
                                 {personnel.map((personnel, i, array) => {
-                                    return <ListItemButton component="div" key={personnel.personnel_id} divider={i + 1 === array.length ? false : true} href='personnel/view'>
+                                    return <ListItemButton component="div" key={personnel.personnel_id} divider={i + 1 === array.length ? false : true} href={'personnel/view'}>
                                         <ListItemAvatar>
                                             <ProfileAvatar variant='circular' name={fullname(personnel)} />
                                         </ListItemAvatar>
@@ -107,7 +109,7 @@ function Personnel() {
                                         <IconButton sx={{ margin: 1, bgcolor: 'white' }} edge="end" aria-label="edit" size="large" href={'personnel/edit/' + personnel.personnel_id}>
                                             <DriveFileRenameOutlineIcon />
                                         </IconButton>
-                                        <IconButton sx={{ bgcolor: 'white' }} edge="end" aria-label="assess" size="large" href='personnel/assess'>
+                                        <IconButton sx={{ bgcolor: 'white' }} edge="end" aria-label="assess" size="large" href={'personnel/assess' + personnel.personnel_id}>
                                             <AssignmentIcon />
                                         </IconButton>
                                     </ListItemButton>

@@ -14,6 +14,7 @@ import "./App.css";
 import Login from "./pages/Login";
 import PersonnelEdit from "./pages/PersonnelEdit";
 import PersonnelInfo from "./pages/PersonnelInfo";
+import Register from "./pages/Register"
 
 const AppLayout = () => {
 
@@ -60,7 +61,11 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
-      }
+      },
+      {
+        path: "Register",
+        element: <Register />,
+      },
     ],
   },
 ]);

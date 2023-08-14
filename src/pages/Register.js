@@ -12,7 +12,7 @@ import { useState } from 'react';
 import SnackbarComponent from '../components/SnackbarComponent';
 import { useOutletContext } from 'react-router-dom';
 
-export default function Login() {
+export default function Register() {
 
     const [user, setUser] = useOutletContext({});
 
@@ -81,7 +81,7 @@ export default function Login() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Register
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                         <TextField
@@ -92,6 +92,24 @@ export default function Login() {
                             label="Username"
                             name="username"
                             autoFocus
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="firstname"
+                            label="Firstname"
+                            type="firstname"
+                            id="firstname"
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="lastname"
+                            label="Lastname"
+                            type="lastname"
+                            id="lastname"
                         />
                         <TextField
                             margin="normal"
@@ -108,14 +126,9 @@ export default function Login() {
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Submit
                         </Button>
                     </Box>
-                        <Box style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                            <p style={{ color: 'gray', textDecoration: 'underline', cursor: 'pointer', fontSize: '16px', margin: '0' }}>
-                                <a href="/register">Register account</a>
-                            </p>
-                        </Box>
                 </Box>
             </Container>
             <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
