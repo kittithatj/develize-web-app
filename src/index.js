@@ -14,8 +14,10 @@ import "./App.css";
 import Login from "./pages/Login";
 import PersonnelEdit from "./pages/PersonnelEdit";
 import PersonnelInfo from "./pages/PersonnelInfo";
+import { interceptor } from "./interceptor";
 
 const AppLayout = () => {
+  interceptor();
 
   const [user, setUser] = useState({});
 

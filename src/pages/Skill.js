@@ -5,7 +5,6 @@ import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
-import CodeIcon from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -28,6 +27,7 @@ import HandymaIconn from '@mui/icons-material/Handyman';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import { skillApi } from '../api/skill-api';
 function Skill() {
 
     const [skill, setSkill] = useState([])
@@ -41,25 +41,17 @@ function Skill() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const fetchSkillData = () => {
-        fetch(Api.url + Api.skill_get)
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                setSkill(data)
-            })
+        skillApi.getAllSKills().then(data => {
+            setSkill(data)
+        })
     }
 
     useEffect(() => {
         fetchSkillData()
     }, [])
 
-    const createSkillData = (data) => {
-        fetch(Api.url + Api.skill_create, {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: { 'Content-Type': 'application/json' }
-        })
+    const createSkillData = (skillForm) => {
+        skillApi.createSkill(skillForm)
             .then(res => console.log(res.json()))
             .then(() => {
                 fetchSkillData();
@@ -76,15 +68,12 @@ function Skill() {
     }
 
     const deleteSkill = (id) => {
-        fetch(Api.url + Api.skill_delete + id, {
-            method: 'DELETE'
-        })
-            .then(res => console.log(res.json()))
+        skillApi.deleteSkill(id)
             .then(() => {
-                fetchSkillData();
                 setSnackbarStatus('success');
                 setSnackbarMessage('Skill deleted successfully');
                 setOpenSnackbar(true);
+                fetchSkillData();
             })
             .catch(error => {
                 console.error(error);
