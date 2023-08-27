@@ -1,6 +1,5 @@
 import { AvatarGroup, Box, Chip, IconButton, List, ListItemAvatar, ListItemButton, ListItemText, ThemeProvider, Tooltip, Typography, createTheme } from '@mui/material'
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Api } from '../config/api-config';
 import ProfileAvatar from '../components/ProfileAvatar'

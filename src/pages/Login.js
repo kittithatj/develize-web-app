@@ -7,13 +7,15 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Api } from '../config/api-config';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import SnackbarComponent from '../components/SnackbarComponent';
 import { useOutletContext } from 'react-router-dom';
 import { userApi } from '../api/user-api';
 
 export default function Login() {
+
+    const navigate = useNavigate();
 
     const [user, setUser] = useOutletContext({});
 
@@ -39,13 +41,12 @@ export default function Login() {
 
         userApi.login(userForm)
             .then(data => {
+                localStorage.setItem('token', data.token);
                 setSnackbarStatus('success');
                 setSnackbarMessage('Login Success');
                 setOpenSnackbar(true);
-                console.log(data)
-                console.log(localStorage.getItem('token'));
-                // setUser(data);
-                console.log(user);
+                setUser(data)
+                navigate('/Home');
             })
             .catch(err => {
                 console.error(err);

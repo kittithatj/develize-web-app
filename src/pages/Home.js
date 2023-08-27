@@ -2,7 +2,7 @@ import React from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
-import { Icon } from '@mui/material';
+import { Container, Icon, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
@@ -12,6 +12,25 @@ import LanOutlinedIcon from '@mui/icons-material/LanOutlined';
 
 
 function Home() {
+  if(localStorage.getItem('token') == null){
+    return (
+      <div className='main-content'>
+        <Container sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}>
+          <Typography variant="h3" component="div" gutterBottom>
+            Welcome to DEVELIZE
+          </Typography>
+          <Typography variant="h4" component="div" gutterBottom>
+            Please <Link to="/login">Login</Link> to Continue.
+          </Typography>
+        </Container>
+      </div>
+    )
+  }
   return (
     <div className='main-content'>
       <Grid
