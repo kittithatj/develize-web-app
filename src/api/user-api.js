@@ -8,9 +8,7 @@ export const userApi = {
             headers: { 'Content-Type': 'application/json' }
         }).then((res) => {
             if (res.status === 200) {
-                return res.json().then((data) => {
-                    localStorage.setItem('token', data.token);
-                })
+                return res.json()
             }else{
                 throw new Error(res.statusText);
             }

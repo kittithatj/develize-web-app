@@ -3,7 +3,7 @@ import fetchIntercept from "fetch-intercept";
 export const interceptor = ()=> {
   fetchIntercept.register({
   request: function(url, config) {
-    if(config.headers){
+    if(config?.headers){
         config.headers.Authorization ="Bearer "+localStorage.getItem('token')
     }else{
         config  = {
@@ -22,7 +22,10 @@ export const interceptor = ()=> {
   },
 
   response: function(response) {
-    // Modify the reponse object
+    if(response.status === 403){
+        localStorage.removeItem('token')
+        window.location.href = '/login'
+    }
     return response;
   },
 

@@ -51,7 +51,15 @@ function Navbar(props) {
                 <IoIcons.IoMdArrowBack />
               </Link>
             </li>
-            {SidebarData.map((item, index) => {
+            {SidebarData
+            .filter((item)=>{
+              if(localStorage.getItem('token') === null){
+                return item.title === 'Home'
+              }else{
+                return true
+              }
+            })
+            .map((item, index) => {
               return (
                 <li key={index} className={item.cName}>
                   <Link to={item.path}>

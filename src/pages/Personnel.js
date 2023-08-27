@@ -96,7 +96,7 @@ function Personnel() {
                                                 <AvatarGroup max={5}>
                                                     {personnel.skills
                                                         .map((skill) => {
-                                                            return <Tooltip title={skill.skillName}>
+                                                            return <Tooltip key={skill?.skill_id} title={skill.skillName}>
                                                                 <div >
                                                                     <SkillFroupAvatar variant='circular' name={skill.skillName} />
                                                                 </div>
