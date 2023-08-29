@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Api } from "../config/api-config";
-import Grid from "@mui/material/Grid";
 import { Avatar, Badge, Box, Typography } from "@mui/material";
-import { AvatarGroup, Box, Chip, IconButton, List, ListItemAvatar, ListItemButton, ListItemText, ThemeProvider, Tooltip, Typography, createTheme } from '@mui/material'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Api } from '../config/api-config';
 import Grid from '@mui/material/Grid';
+import { PersonnelAPI } from "../api/personnel-api";
 
 function PersonnelInfo() {
   const [personnel, setPersonnel] = useState([]);
 
   const fetchPersonnelData = () => {
-    fetch(Api.url + Api.personnel_get)
-      .then((res) => res.json())
-      .then((data) => {
-        setPersonnel(data);
-      });
+    PersonnelAPI.getAllPersonnel().then((data)=>{
+      setPersonnel(data);
+    })
   };
 
   useEffect(() => {

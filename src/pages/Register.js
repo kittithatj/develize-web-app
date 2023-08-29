@@ -8,18 +8,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Api } from '../config/api-config';
+import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import SnackbarComponent from '../components/SnackbarComponent';
 import { useOutletContext } from 'react-router-dom';
+import Select from '@mui/material/Select';
+import { Grid } from '@mui/material';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import MenuItem from '@mui/material/MenuItem';
+import {InputLabel} from '@mui/material';
 
 export default function Register() {
 
+    const { register, handleSubmit } = useForm();
     const [user, setUser] = useOutletContext({});
+    const [role, setRole] = React.useState('');
 
     //snackbar state
     const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarStatus, setSnackbarStatus] = useState('error');
-    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const handleCloseSnackbar = (event, reason) => {
         if (reason === 'clickaway') {
@@ -28,38 +34,42 @@ export default function Register() {
         setOpenSnackbar(false);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        const userForm = {
-            username: data.get('username'),
-            password: data.get('password'),
-        };
+    const handleRoleChange = (event) => {
+        setRole(event.target.value);
+      };
 
-        fetch(Api.url + Api.user_login, {
-            method: 'POST',
-            body: JSON.stringify(userForm),
-            headers: { 'Content-Type': 'application/json' }
-        }).then(res => {
-            if (res.status === 200) {
-                setSnackbarStatus('success');
-                setSnackbarMessage('Login Success');
-                setOpenSnackbar(true);
-            } else {
-                throw new Error(res.statusText);
-            }
-            return res.json()
-        })
-            .then(data => {
-                setUser(data);
-                console.log(user);
-            })
-            .catch(err => {
-                console.error(err);
-                setSnackbarStatus('error');
-                setSnackbarMessage('Login Failed, Please Try Again');
-                setOpenSnackbar(true);
-            })
+    const registerSubmit = (form) => {
+        console.log(form)
+        // const data = new FormData(event.currentTarget);
+        // const userForm = {
+        //     username: data.get('username'),
+        //     password: data.get('password'),
+        // };
+
+        // fetch(Api.url + Api.user_login, {
+        //     method: 'POST',
+        //     body: JSON.stringify(userForm),
+        //     headers: { 'Content-Type': 'application/json' }
+        // }).then(res => {
+        //     if (res.status === 200) {
+        //         setSnackbarStatus('success');
+        //         setSnackbarMessage('Login Success');
+        //         setOpenSnackbar(true);
+        //     } else {
+        //         throw new Error(res.statusText);
+        //     }
+        //     return res.json()
+        // })
+        //     .then(data => {
+        //         setUser(data);
+        //         console.log(user);
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //         setSnackbarStatus('error');
+        //         setSnackbarMessage('Login Failed, Please Try Again');
+        //         setOpenSnackbar(true);
+        //     })
     };
 
     return (
@@ -68,6 +78,7 @@ export default function Register() {
                 <CssBaseline />
                 <Box
                     sx={{
+                        width:'600px',
                         marginTop: 5,
                         padding: "50px",
                         display: 'flex',
@@ -78,48 +89,85 @@ export default function Register() {
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                        <LockOutlinedIcon />
+                        <VpnKeyIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Register
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="firstname"
-                            label="Firstname"
-                            type="firstname"
-                            id="firstname"
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="lastname"
-                            label="Lastname"
-                            type="lastname"
-                            id="lastname"
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                        />
+                    <Box component="form" onSubmit={handleSubmit(registerSubmit)} sx={{ mt: 1 }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    id="username"
+                                    label="Username"
+                                    name="username"
+                                    autoFocus
+                                    {...register('username')}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    name="firstname"
+                                    label="Firstname"
+                                    type="firstname"
+                                    id="firstname"
+                                    {...register('firstName')}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    name="lastname"
+                                    label="Lastname"
+                                    type="lastname"
+                                    id="lastname"
+                                    {...register('lastname')}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    {...register('password')}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    required
+                                    name="confirmPassword"
+                                    label="Confirm Password"
+                                    type="password"
+                                    id="confirmPassword"
+                                    {...register('confirmPassword')}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <InputLabel id="demo-simple-select-label"></InputLabel>
+                                <Select
+                                    fullWidth
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    label="Role"
+                                    value={role}
+                                    onChange={handleRoleChange}
+                                    
+                                >
+                                    <MenuItem value={10}>Ten</MenuItem>
+                                    <MenuItem value={20}>Twenty</MenuItem>
+                                    <MenuItem value={30}>Thirty</MenuItem>
+                                </Select>
+                            </Grid>
+                        </Grid>
                         <Button
                             type="submit"
                             fullWidth
@@ -131,7 +179,7 @@ export default function Register() {
                     </Box>
                 </Box>
             </Container>
-            <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
+            {/* <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} /> */}
         </div>
     );
 }
