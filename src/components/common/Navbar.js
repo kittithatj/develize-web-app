@@ -4,7 +4,8 @@ import * as IoIcons from "react-icons/io";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import { IconContext } from "react-icons";
-import { Button, Container, Typography } from "@mui/material";
+import LogoutIcon from '@mui/icons-material/Logout';
+import { Button, Container, IconButton, Tooltip, Typography } from "@mui/material";
 import logo from "../image/develize_logo.png";
 import ProfileAvatar from "../ProfileAvatar";
 
@@ -12,6 +13,12 @@ function Navbar(props) {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+  }
 
   return (
     <>
@@ -36,9 +43,14 @@ function Navbar(props) {
             <div className="upper right">
               <Container sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', justifyContent: 'right' }}>
                 <ProfileAvatar variant='rounded' name={props.user.firstName + ' ' + props.user.lastName} />
-                <Typography variant="button" sx={{ fontWeight: 'bold', ml: 1 }}>
+                <Typography variant="button" sx={{ fontWeight: 'bold', ml: 1, mr: 2 }}>
                   {props.user.firstName + ' ' + props.user.lastName}
                 </Typography>
+                <Tooltip title="Sign Out">
+                  <IconButton onClick={handleLogout}>
+                    <LogoutIcon/>
+                  </IconButton>
+                </Tooltip>
               </Container>
             </div>
           )}
@@ -52,23 +64,23 @@ function Navbar(props) {
               </Link>
             </li>
             {SidebarData
-            .filter((item)=>{
-              if(localStorage.getItem('token') === null){
-                return item.title === 'Home'
-              }else{
-                return true
-              }
-            })
-            .map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path}>
-                    {item.icon}
-                    <span>{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
+              .filter((item) => {
+                if (localStorage.getItem('token') === null) {
+                  return item.title === 'Home'
+                } else {
+                  return true
+                }
+              })
+              .map((item, index) => {
+                return (
+                  <li key={index} className={item.cName}>
+                    <Link to={item.path}>
+                      {item.icon}
+                      <span>{item.title}</span>
+                    </Link>
+                  </li>
+                );
+              })}
           </ul>
         </nav>
       </IconContext.Provider>

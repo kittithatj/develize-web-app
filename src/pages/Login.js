@@ -46,6 +46,7 @@ export default function Login() {
                 setSnackbarMessage('Login Success');
                 setOpenSnackbar(true);
                 setUser(data)
+                localStorage.setItem('user', JSON.stringify(data));
                 navigate('/Home');
             })
             .catch(err => {

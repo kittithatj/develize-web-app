@@ -5,6 +5,7 @@ import ProfileAvatar from '../components/ProfileAvatar'
 import { Api } from '../config/api-config';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import SkillFroupAvatar from '../components/SkillGroupAvatar';
+import { Link } from 'react-router-dom';
 
 function Personnel() {
 
@@ -106,10 +107,13 @@ function Personnel() {
                                                 </AvatarGroup>
                                             )}
                                         </Box>
-                                        <IconButton sx={{ margin: 1, bgcolor: 'white' }} edge="end" aria-label="edit" size="large" href={'personnel/edit/' + personnel.personnel_id}>
-                                            <DriveFileRenameOutlineIcon />
-                                        </IconButton>
-                                        <IconButton sx={{ bgcolor: 'white' }} edge="end" aria-label="assess" size="large" href={'personnel/assess' + personnel.personnel_id}>
+                                        <Link to={'edit/' + personnel.personnel_id}>
+                                            <IconButton sx={{ margin: 1, bgcolor: 'white' }} edge="end" aria-label="edit" size="large">
+                                                <DriveFileRenameOutlineIcon />
+                                            </IconButton>
+                                        </Link>
+                                        
+                                        <IconButton sx={{ bgcolor: 'white' }} edge="end" aria-label="assess" size="large" href={'personnel/assess/' + personnel.personnel_id}>
                                             <AssignmentIcon />
                                         </IconButton>
                                     </ListItemButton>

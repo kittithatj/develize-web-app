@@ -25,7 +25,7 @@ function Home() {
             Welcome to DEVELIZE
           </Typography>
           <Typography variant="h4" component="div" gutterBottom>
-            Please <Link to="/login">Login</Link> to Continue.
+            Please <Link to="/login" underline="hover">Login</Link> to Continue.
           </Typography>
         </Container>
       </div>
