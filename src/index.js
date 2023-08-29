@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   createBrowserRouter,
@@ -16,11 +16,18 @@ import PersonnelEdit from "./pages/PersonnelEdit";
 import PersonnelInfo from "./pages/PersonnelInfo";
 import Register from "./pages/Register"
 import { interceptor } from "./interceptor";
+import PersonnelAssessment from "./pages/PersonnelAssessment";
 
 const AppLayout = () => {
+  
+
   interceptor();
 
   const [user, setUser] = useState({});
+
+  useEffect(() => {
+    localStorage?.getItem('user') && setUser(JSON.parse(localStorage.getItem('user')));
+  },[])
 
   return <>
     <Navbar user={user} setUser={setUser} />
@@ -47,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "personnel/:id",
         element: <PersonnelInfo />,
+      },
+      {
+        path: "personnel/assess/:id",
+        element: <PersonnelAssessment />,
       },
       {
         path: "skill",
