@@ -40,6 +40,13 @@ export default function Register() {
 
     const registerSubmit = (form) => {
         console.log(form)
+
+        const hh = {
+            ...form,
+            role: role
+        }
+        delete hh['confirmPassword']
+        console.log(hh)
         // const data = new FormData(event.currentTarget);
         // const userForm = {
         //     username: data.get('username'),

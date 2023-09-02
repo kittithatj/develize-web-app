@@ -12,4 +12,25 @@ export const PersonnelAPI = {
             }
         })
     },
+
+    createPersonnel: async (personnelForm) => {
+        return fetch(Api.url + Api.personnel_create, {
+            method: 'POST',
+            body: JSON.stringify(personnelForm),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+    },
+
+    assessPersonnel: async (personnelForm) => {
+        return fetch(Api.url + Api.personnel_assess, {
+            method: 'POST',
+            body: JSON.stringify(personnelForm),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+    },
+
 }

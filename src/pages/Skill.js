@@ -28,6 +28,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import { skillApi } from '../api/skill-api';
+import { Box, CircularProgress } from '@mui/material';
 function Skill() {
 
     const [skill, setSkill] = useState([])
@@ -39,10 +40,13 @@ function Skill() {
     const [openSnackbar, setOpenSnackbar] = useState(false);
     const [snackbarStatus, setSnackbarStatus] = useState('');
     const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const fetchSkillData = () => {
+        setLoading(true)
         skillApi.getAllSKills().then(data => {
             setSkill(data)
+            setLoading(false)
         })
     }
 
@@ -51,19 +55,29 @@ function Skill() {
     }, [])
 
     const createSkillData = (skillForm) => {
+        setLoading(true)
         skillApi.createSkill(skillForm)
             .then(res => console.log(res.json()))
             .then(() => {
-                fetchSkillData();
-                setSnackbarStatus('success');
-                setSnackbarMessage('Skill created successfully');
-                setOpenSnackbar(true);
+                setTimeout(() => {
+                    fetchSkillData();
+                    setSnackbarStatus('success');
+                    setSnackbarMessage('Skill created successfully');
+                    setOpenSnackbar(true);
+                    setLoading(false)
+                }, 1000)
+                // fetchSkillData();
+                // setSnackbarStatus('success');
+                // setSnackbarMessage('Skill created successfully');
+                // setOpenSnackbar(true);
+                // setLoading(false)
             })
             .catch(error => {
                 console.error(error);
                 setSnackbarStatus('error');
                 setSnackbarMessage('Error creating skill');
                 setOpenSnackbar(true);
+                setLoading(false)
             });
     }
 
@@ -140,43 +154,52 @@ function Skill() {
     }
     return (
         <div className='main-content'>
-            <div>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Typography sx={{ mt: 1, mb: 1, fontWeight: 'bold' }} variant="h5" component="div">
                     Skill Management
                 </Typography>
-                <div>
-                    <Paper
-                        elevation={0}
-                        sx={{ mt: 2, mb: 2, display: 'inline-flex', alignItems: 'center', width: 400 }}
-                    >
-                        <InputBase
-                            sx={{ ml: 1, flex: 1 }}
-                            placeholder="Search Skill"
-                            inputProps={{ 'aria-label': 'search skill' }}
-                            value={searchValue}
-                            onChange={handleSearchValueChange}>
-                        </InputBase>
-                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search" disabled>
-                            <SearchIcon />
-                        </IconButton>
-                    </Paper>
-                    <TextField
-                        sx={{ mb: 2, mt: 2, ml: 2, width: 200, height: 40 }}
-                        size='small'
-                        id="select-skill-type"
-                        select
-                        label="Select Skill Type"
-                        variant="filled"
-                        value={selectedType}
-                        onChange={handleSkillTypeChange}>
-                        {skillTypeList.map((type) => (
-                            <MenuItem key={type.label} value={type.value}>
-                                {type.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </div>
-                {skill.length > 0 && (
+                {
+                    loading && <CircularProgress sx={{ my: 5 }} size={100} />
+                }
+                {
+                    !loading && (
+                        <Box>
+                            <Paper
+                                elevation={0}
+                                sx={{ mt: 2, mb: 2, display: 'inline-flex', alignItems: 'center', width: 400 }}
+                            >
+                                <InputBase
+                                    sx={{ ml: 1, flex: 1 }}
+                                    placeholder="Search Skill"
+                                    inputProps={{ 'aria-label': 'search skill' }}
+                                    value={searchValue}
+                                    onChange={handleSearchValueChange}>
+                                </InputBase>
+                                <IconButton type="button" sx={{ p: '10px' }} aria-label="search" disabled>
+                                    <SearchIcon />
+                                </IconButton>
+                            </Paper>
+                            <TextField
+                                sx={{ mb: 2, mt: 2, ml: 2, width: 200, height: 40 }}
+                                size='small'
+                                id="select-skill-type"
+                                select
+                                label="Select Skill Type"
+                                variant="filled"
+                                value={selectedType}
+                                onChange={handleSkillTypeChange}>
+                                {skillTypeList.map((type) => (
+                                    <MenuItem key={type.label} value={type.value}>
+                                        {type.label}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Box>
+                    )
+                }
+
+
+                {skill.length > 0 && !loading && (
                     <List sx={{ width: '90vw', maxWidth: 615, minWidth: 300, bgcolor: 'background.paper', zIndex: 200 }}>
                         {skill
                             .filter((skill) => {
@@ -225,7 +248,7 @@ function Skill() {
                     setTrigger={setCreateSkillTrigger}
                     create={createSkillData}
                 />
-            </div>
+            </Box>
             <Button onClick={() => (setCreateSkillTrigger(true))} sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }} variant="contained" startIcon={<AddIcon />}>
                 Create skill
             </Button>

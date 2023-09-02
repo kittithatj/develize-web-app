@@ -17,6 +17,7 @@ import PersonnelInfo from "./pages/PersonnelInfo";
 import Register from "./pages/Register"
 import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
+import AddPersonnel from "./pages/AddPersonnel";
 
 const AppLayout = () => {
   
@@ -78,6 +79,11 @@ const router = createBrowserRouter([
       {
         path: "Register",
         element: <Register />,
+      },
+      ,
+      {
+        path: "AddPersonnel",
+        element: <AddPersonnel />,
       },
     ],
   },
