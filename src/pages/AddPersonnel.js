@@ -11,14 +11,14 @@ import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { PersonnelAPI } from '../api/personnel-api';
-import SnackbarComponent from '../components/SnackbarComponent';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 // นำเข้าไอคอนอื่นๆ ตามความต้องการ
 
 
 export default function AddPersonnel() {
     const navigate = useNavigate();
+    const [user, setUser, openSnackbar] = useOutletContext({});
 
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState({
@@ -28,30 +28,10 @@ export default function AddPersonnel() {
         division: '',
         phoneNumber: '',
         email: '',
-        employmentStatus:'',
-        skillsId:[112]
+        employmentStatus: '',
+        skillsId: []
     });
 
-
-    //--------SnackBar---------
-    const [openSnackbar, setOpenSnackbar] = React.useState(false);
-    const [snackbarStatus, setSnackbarStatus] = useState('');
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-
-    const handleSnackbar = () => {
-        setOpenSnackbar(true);
-    };
-
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenSnackbar(false);
-    };
-
-    const htmlSnackBar = <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
-
-    //--------SnackBar---------
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -84,21 +64,26 @@ export default function AddPersonnel() {
     //ยิง API
     const createPersonnelData = () => {
         PersonnelAPI.createPersonnel(formData)
-        .then(res => {return res.json()})
-        .catch(error => {
-            console.error(error);
-            setSnackbarStatus('error');
-            setSnackbarMessage('Error creating Personnel');
-            setOpenSnackbar(true);
-        })
-        .then((res) => {
-            console.log(res); //ข้อมูลที่ได้จาก API
-            setSnackbarStatus('success');
-            setSnackbarMessage('Personnel created successfully');
-            setOpenSnackbar(true);
-            navigate('../personnel') //Link ไปหน้าอื่นๆ
-        });
-        
+            .then(res => { 
+                if(res.status === 200) {
+                    return res.json()
+                } else {
+                    throw new Error(res.status)
+                }
+            })
+            .then(() => {
+                openSnackbar({
+                    status: 'success',
+                    message: 'Create Personnel Successfully'
+                })
+                navigate('../personnel') //Link ไปหน้าอื่นๆ
+            })
+            .catch(() => {
+                openSnackbar({
+                    status: 'error',
+                    message: 'Create Personnel Failed'
+                })
+            });
     }
 
     const steps = ['Personnel Infomation', 'Skills', 'Assessment'];
@@ -289,9 +274,6 @@ export default function AddPersonnel() {
                     </Box>
                 </Grid>
             </Grid>
-
-           {htmlSnackBar}
-
         </div>
     );
 }

@@ -6,7 +6,9 @@ function PersonnelAssessment() {
     const { id } = useParams();
     
     return (
-        <div>PersonnelAssessment</div>
+        <div>PersonnelAssessment
+            
+        </div>
     )
 }
 

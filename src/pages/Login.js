@@ -8,8 +8,6 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import SnackbarComponent from '../components/SnackbarComponent';
 import { useOutletContext } from 'react-router-dom';
 import { userApi } from '../api/user-api';
 
@@ -17,19 +15,7 @@ export default function Login() {
 
     const navigate = useNavigate();
 
-    const [user, setUser] = useOutletContext({});
-
-    //snackbar state
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarStatus, setSnackbarStatus] = useState('error');
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenSnackbar(false);
-    };
+    const [user, setUser, openSnackbar] = useOutletContext({});
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -42,18 +28,19 @@ export default function Login() {
         userApi.login(userForm)
             .then(data => {
                 localStorage.setItem('token', data.token);
-                setSnackbarStatus('success');
-                setSnackbarMessage('Login Success');
-                setOpenSnackbar(true);
+                openSnackbar({
+                    status: 'success',
+                    message: 'Login Success'
+                })
                 setUser(data)
                 localStorage.setItem('user', JSON.stringify(data));
                 navigate('/Home');
             })
             .catch(err => {
-                console.error(err);
-                setSnackbarStatus('error');
-                setSnackbarMessage('Login Failed, Please Try Again');
-                setOpenSnackbar(true);
+                openSnackbar({
+                    status: 'error',
+                    message: 'Login Failed'
+                })
             })
     };
 
@@ -113,7 +100,6 @@ export default function Login() {
                         </Box>
                 </Box>
             </Container>
-            <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
         </div>
     );
 }
