@@ -237,8 +237,23 @@ export default function AddPersonnel() {
                                         }}
                                     />
                                 </form>
-
                             )}
+
+                            {activeStep === 1 && (
+                                <form>
+                                    <Typography variant="h6">Skills Information</Typography>
+                                    <TextField
+                                        name="employmentStatus"
+                                        label="สถานะการจ้างงาน"
+                                        value={formData.employmentStatus}
+                                        onChange={handleChange}
+                                        fullWidth
+                                        margin="normal"
+                                    />
+                                    {/* เพิ่มฟิลด์อื่นๆ ที่เกี่ยวข้องกับความสามารถหรือทักษะของพนักงาน */}
+                                </form>
+                            )}
+
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Button
                                     variant="contained"
@@ -252,34 +267,16 @@ export default function AddPersonnel() {
                                 <Button
                                     variant="contained"
                                     color="success"
-                                    disabled={
-                                        activeStep === 0 && (
-                                            formData.firstName === '' ||
-                                            formData.lastName === '' ||
-                                            formData.position === '' ||
-                                            formData.division === '' ||
-                                            formData.phoneNumber === '' ||
-                                            formData.email === ''
-                                        )
-                                    }
+                                    disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '')}
                                     onClick={handleCreate}
                                 >
-                                    TEST ยิงงงงงง API
+                                    สร้างพนักงาน
                                 </Button>
 
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    disabled={
-                                        activeStep === 0 && (
-                                            formData.firstName === '' ||
-                                            formData.lastName === '' ||
-                                            formData.position === '' ||
-                                            formData.division === '' ||
-                                            formData.phoneNumber === '' ||
-                                            formData.email === ''
-                                        )
-                                    }
+                                    disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '')}
                                     onClick={handleNextStep}
                                 >
                                     {activeStep === steps.length - 1 ? 'บันทึก' : 'ถัดไป'}
@@ -290,8 +287,7 @@ export default function AddPersonnel() {
                 </Grid>
             </Grid>
 
-           {htmlSnackBar}
-
+            {htmlSnackBar}
         </div>
     );
 }
