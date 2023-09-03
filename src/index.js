@@ -1,3 +1,4 @@
+/* eslint-disable no-sparse-arrays */
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -18,9 +19,41 @@ import Register from "./pages/Register"
 import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
 import AddPersonnel from "./pages/AddPersonnel";
+import SnackbarComponent from "./components/SnackbarComponent";
 
 const AppLayout = () => {
   
+  //--------SnackBar---------
+  const [isOpenSnackbar, setIsOpenSnackbar] = React.useState(false);
+  const [snackbar, setSnackbar] = useState({
+    status: '',
+    message: ''
+  });
+
+  const openSnackbar = (snackbar) => {
+      setSnackbar({
+        status: snackbar.status,
+        message: snackbar.message
+      })
+      setIsOpenSnackbar(true);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+      if (reason === 'clickaway') {
+          return;
+      }
+      setIsOpenSnackbar(false);
+  };
+
+  const htmlSnackBar = <SnackbarComponent 
+  autoHideDuration={5000}
+  open={isOpenSnackbar} 
+  handleClose={handleCloseSnackbar} 
+  severity={snackbar.status} 
+  message={snackbar.message}
+  />
+
+  //--------SnackBar---------
 
   interceptor();
 
@@ -32,7 +65,9 @@ const AppLayout = () => {
 
   return <>
     <Navbar user={user} setUser={setUser} />
-    <Outlet context={[user, setUser]} />
+    <Outlet context={[user, setUser, openSnackbar]} >
+    </Outlet>
+    {htmlSnackBar}
   </>
 };
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { Api } from '../config/api-config'
 import Avatar from '@mui/material/Avatar';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
@@ -20,7 +19,6 @@ import SkillFormDialog from '../components/SkillFormDialog';
 import { skillTypeList } from '../config/skill-type-list';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
-import SnackbarComponent from '../components/SnackbarComponent';
 import StorageIcon from '@mui/icons-material/Storage';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HandymaIconn from '@mui/icons-material/Handyman';
@@ -29,7 +27,10 @@ import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import { skillApi } from '../api/skill-api';
 import { Box, CircularProgress } from '@mui/material';
+import { useOutletContext } from 'react-router-dom';
 function Skill() {
+
+    const [user, setUser, openSnackbar] = useOutletContext({});
 
     const [skill, setSkill] = useState([])
     const [confirmTrigger, setConfirmTrigger] = useState(false);
@@ -37,9 +38,6 @@ function Skill() {
     const [selectedId, setSelectedId] = useState(0);
     const [selectedType, setSelectedType] = useState('');
     const [searchValue, setSearchValue] = useState('');
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarStatus, setSnackbarStatus] = useState('');
-    const [snackbarMessage, setSnackbarMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
     const fetchSkillData = () => {
@@ -57,26 +55,31 @@ function Skill() {
     const createSkillData = (skillForm) => {
         setLoading(true)
         skillApi.createSkill(skillForm)
-            .then(res => console.log(res.json()))
+            .then(res => {
+                if (res.status === 201) {
+                    return res.json()
+                }else{
+                    throw new Error('Create Skill Failed')
+                }
+            })
             .then(() => {
                 setTimeout(() => {
                     fetchSkillData();
-                    setSnackbarStatus('success');
-                    setSnackbarMessage('Skill created successfully');
-                    setOpenSnackbar(true);
+                    setSearchValue('');
+                    setSelectedType('');
+                    openSnackbar({
+                        status: 'success',
+                        message: 'Create Skill Successfully'
+                    })
                     setLoading(false)
                 }, 1000)
-                // fetchSkillData();
-                // setSnackbarStatus('success');
-                // setSnackbarMessage('Skill created successfully');
-                // setOpenSnackbar(true);
-                // setLoading(false)
             })
             .catch(error => {
                 console.error(error);
-                setSnackbarStatus('error');
-                setSnackbarMessage('Error creating skill');
-                setOpenSnackbar(true);
+                openSnackbar({
+                    status: 'error',
+                    message: 'Create Skill Failed'
+                })
                 setLoading(false)
             });
     }
@@ -84,16 +87,20 @@ function Skill() {
     const deleteSkill = (id) => {
         skillApi.deleteSkill(id)
             .then(() => {
-                setSnackbarStatus('success');
-                setSnackbarMessage('Skill deleted successfully');
-                setOpenSnackbar(true);
+                openSnackbar({
+                    status: 'success',
+                    message: 'Delete Skill Successfully'
+                })
                 fetchSkillData();
+                setSearchValue('');
+                setSelectedType('');
             })
             .catch(error => {
                 console.error(error);
-                setSnackbarStatus('error');
-                setSnackbarMessage('Error deleting skill');
-                setOpenSnackbar(true);
+                openSnackbar({
+                    status: 'error',
+                    message: 'Delete Skill Failed'
+                })
             });
     }
 
@@ -106,14 +113,6 @@ function Skill() {
         // console.log(event.target.value);
         setSearchValue(event.target.value);
     }
-
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        setOpenSnackbar(false);
-    };
 
 
     const SkillNotFound = () => {
@@ -252,8 +251,6 @@ function Skill() {
             <Button onClick={() => (setCreateSkillTrigger(true))} sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }} variant="contained" startIcon={<AddIcon />}>
                 Create skill
             </Button>
-
-            <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} />
         </div >
     )
 }

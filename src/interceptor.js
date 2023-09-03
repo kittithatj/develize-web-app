@@ -22,7 +22,7 @@ export const interceptor = ()=> {
   },
 
   response: function(response) {
-    if(response.status === 403){
+    if(response.status === 403 && !response.url.includes('login')){
         localStorage.removeItem('token')
         window.location.href = '/login'
     }
