@@ -1,24 +1,40 @@
-import React, { useState } from 'react';
-import { Box, Typography, Grid, Button, TextField } from '@mui/material';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-
+import React, { useEffect, useState } from 'react'
+import { Box, Typography, Grid, Button, TextField, Step, StepLabel, Stepper, Select, MenuItem, InputAdornment, IconButton, Chip, Avatar, } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import InputAdornment from '@mui/material/InputAdornment';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
 import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { PersonnelAPI } from '../api/personnel-api';
 import { useNavigate, useOutletContext } from 'react-router-dom';
+import Autocomplete from '@mui/material/Autocomplete';
+import AddIcon from '@mui/icons-material/Add';
+import { skillApi } from '../api/skill-api';
 
-// นำเข้าไอคอนอื่นๆ ตามความต้องการ
 
 
-export default function AddPersonnel() {
+export default function CreatePersonnel() {
     const navigate = useNavigate();
     const [user, setUser, openSnackbar] = useOutletContext({});
+
+    const [skill, setSkill] = useState([])
+    const [skillList, setSkillList] = useState([])
+    const [skillSelect, setSkillSelect] = useState([])
+    const [loading, setLoading] = useState(false);
+
+    const fetchSkillData = () => {
+        setLoading(true)
+        skillApi.getAllSKills().then(data => {
+            setSkill(data)
+            setSkillList(data)
+            setLoading(false)
+            console.log('Skill SP', data)
+        })
+    }
+
+    useEffect(() => {
+        fetchSkillData()
+    }, [])
 
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState({
@@ -32,7 +48,6 @@ export default function AddPersonnel() {
         skillsId: []
     });
 
-
     const handleChange = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({
@@ -41,9 +56,13 @@ export default function AddPersonnel() {
         }));
     };
 
+    const handleDeleteSkill = (item) => {
+        setSkillSelect(skillSelect.filter((s)=>s.skill_id !== item.skill_id))
+        setSkillList(prevArray => [...prevArray, item])
+    }
+
     const handleNextStep = () => {
         if (activeStep === 0) {
-            // บันทึกข้อมูลที่ป้อนใน TextField ใน formData
             console.log('ข้อมูลที่บันทึก:', formData);
         }
         handleNext();
@@ -61,11 +80,18 @@ export default function AddPersonnel() {
         createPersonnelData(formData);
     }
 
+    const addSkill = (item) => {
+        setSkillSelect(prevArray => [...prevArray, item])
+        setSkillList(skillList.filter((s)=>s.skill_id !== item.skill_id))
+
+        setTimeout(()=>console.log(skillSelect),200)
+    }
+
     //ยิง API
     const createPersonnelData = () => {
         PersonnelAPI.createPersonnel(formData)
-            .then(res => { 
-                if(res.status === 200) {
+            .then(res => {
+                if (res.status === 200) {
                     return res.json()
                 } else {
                     throw new Error(res.status)
@@ -225,20 +251,37 @@ export default function AddPersonnel() {
                             )}
 
                             {activeStep === 1 && (
-                                <form>
-                                    <Typography variant="h6">Skills Information</Typography>
-                                    <TextField
-                                        name="employmentStatus"
-                                        label="สถานะการจ้างงาน"
-                                        value={formData.employmentStatus}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                    />
-                                    {/* เพิ่มฟิลด์อื่นๆ ที่เกี่ยวข้องกับความสามารถหรือทักษะของพนักงาน */}
+                                <form style={{ marginBottom: '16px' }}>
+                                    {
+                                    skillSelect.map((item)=>(
+                                        <Chip sx={{m : 1}} 
+                                        variant="filled" 
+                                        color="info" 
+                                        size="medium" 
+                                        label={item.skillName}
+                                        onDelete={()=>(handleDeleteSkill(item))} 
+                                        avatar={<Avatar>S</Avatar>} />
+                                    ))
+                                    }
+                                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                                        {skillList
+                                        .map((item, index) => (
+                                            <Button
+                                                key={index}
+                                                variant="contained"
+                                                disableElevation
+                                                endIcon={<AddIcon />}
+                                                style={{ backgroundColor: '#90caf9', color: 'black' }}
+                                                onClick={() => (addSkill(item))}
+                                            >
+                                                {item.skillName}
+                                            </Button>
+
+
+                                        ))}
+                                    </div>
                                 </form>
                             )}
-
                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                 <Button
                                     variant="contained"
@@ -261,7 +304,7 @@ export default function AddPersonnel() {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '')}
+                                    // disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '')}
                                     onClick={handleNextStep}
                                 >
                                     {activeStep === steps.length - 1 ? 'บันทึก' : 'ถัดไป'}
@@ -272,5 +315,6 @@ export default function AddPersonnel() {
                 </Grid>
             </Grid>
         </div>
+
     );
 }

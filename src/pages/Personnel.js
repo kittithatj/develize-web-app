@@ -6,6 +6,7 @@ import { Api } from '../config/api-config';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import SkillFroupAvatar from '../components/SkillGroupAvatar';
 import { Link } from 'react-router-dom';
+import AddIcon from '@mui/icons-material/Add';
 
 function Personnel() {
 
@@ -120,7 +121,9 @@ function Personnel() {
                                 })
                                 }
                             </List>)}
-
+                            <IconButton sx={{ bgcolor: 'white' }} edge="end" aria-label="assess" size="large" href={'personnel/create/'}>
+                                    <AddIcon />
+                            </IconButton>
                     </div>
                 </ThemeProvider>
             </div>

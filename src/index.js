@@ -18,7 +18,7 @@ import PersonnelInfo from "./pages/PersonnelInfo";
 import Register from "./pages/Register"
 import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
-import AddPersonnel from "./pages/AddPersonnel";
+import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
 
 const AppLayout = () => {
@@ -108,17 +108,17 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/login",
+        path: "login",
         element: <Login />,
       },
       {
-        path: "Register",
+        path: "register",
         element: <Register />,
       },
       ,
       {
-        path: "AddPersonnel",
-        element: <AddPersonnel />,
+        path: "personnel/create",
+        element: <CreatePersonnel />,
       },
     ],
   },
