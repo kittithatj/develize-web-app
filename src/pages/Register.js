@@ -7,186 +7,179 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Api } from '../config/api-config';
-import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import SnackbarComponent from '../components/SnackbarComponent';
-import { useOutletContext } from 'react-router-dom';
 import Select from '@mui/material/Select';
 import { Grid } from '@mui/material';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import MenuItem from '@mui/material/MenuItem';
-import {InputLabel} from '@mui/material';
+import { InputLabel } from '@mui/material';
+import { userApi } from '../api/user-api';
 
 export default function Register() {
+  const [user, setUser] = useState({});
+  const [role, setRole] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [formData, setFormData] = useState({
+    username: '',
+    firstName: '',
+    lastName: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-    const { register, handleSubmit } = useForm();
-    const [user, setUser] = useOutletContext({});
-    const [role, setRole] = React.useState('');
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpenSnackbar(false);
+  };
 
-    //snackbar state
-    const [openSnackbar, setOpenSnackbar] = useState(false);
+  const handleRoleChange = (event) => {
+    setRole(event.target.value);
+  };
 
-    const handleCloseSnackbar = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenSnackbar(false);
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const registerSubmit = () => {
+    setLoading(true);
+
+    const userToRegister = {
+      ...formData,
+      role: role,
     };
 
-    const handleRoleChange = (event) => {
-        setRole(event.target.value);
-      };
+    userApi
+      .register(userToRegister)
+      .then((response) => {
+        setLoading(false);
+        setOpenSnackbar(true);
 
-    const registerSubmit = (form) => {
-        console.log(form)
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
 
-        const hh = {
-            ...form,
-            role: role
-        }
-        delete hh['confirmPassword']
-        console.log(hh)
-        // const data = new FormData(event.currentTarget);
-        // const userForm = {
-        //     username: data.get('username'),
-        //     password: data.get('password'),
-        // };
-
-        // fetch(Api.url + Api.user_login, {
-        //     method: 'POST',
-        //     body: JSON.stringify(userForm),
-        //     headers: { 'Content-Type': 'application/json' }
-        // }).then(res => {
-        //     if (res.status === 200) {
-        //         setSnackbarStatus('success');
-        //         setSnackbarMessage('Login Success');
-        //         setOpenSnackbar(true);
-        //     } else {
-        //         throw new Error(res.statusText);
-        //     }
-        //     return res.json()
-        // })
-        //     .then(data => {
-        //         setUser(data);
-        //         console.log(user);
-        //     })
-        //     .catch(err => {
-        //         console.error(err);
-        //         setSnackbarStatus('error');
-        //         setSnackbarMessage('Login Failed, Please Try Again');
-        //         setOpenSnackbar(true);
-        //     })
-    };
-
-    return (
-        <div className='main-content'>
-            <Container component="main" maxWidth="xs" >
-                <CssBaseline />
-                <Box
-                    sx={{
-                        width:'600px',
-                        marginTop: 5,
-                        padding: "50px",
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        bgcolor: 'background.paper',
-                        borderRadius: "15px",
-                    }}
+  return (
+    <div className='main-content'>
+      <Container component='main' maxWidth='xs'>
+        <CssBaseline />
+        <Box
+          sx={{
+            width: '600px',
+            marginTop: 5,
+            padding: '50px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            bgcolor: 'background.paper',
+            borderRadius: '15px',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <VpnKeyIcon />
+          </Avatar>
+          <Typography component='h1' variant='h5'>
+            Register
+          </Typography>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              registerSubmit();
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  required
+                  id='username'
+                  label='Username'
+                  name='username'
+                  autoFocus
+                  value={formData.username}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  required
+                  name='firstName'
+                  label='Firstname'
+                  type='text'
+                  value={formData.firstName}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  fullWidth
+                  required
+                  name='lastName'
+                  label='Lastname'
+                  type='text'
+                  value={formData.lastName}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  required
+                  name='password'
+                  label='Password'
+                  type='password'
+                  value={formData.password}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  required
+                  name='confirmPassword'
+                  label='Confirm Password'
+                  type='password'
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel id='demo-simple-select-label'>Role</InputLabel>
+                <Select
+                  fullWidth
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={role}
+                  onChange={handleRoleChange}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                        <VpnKeyIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Register
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit(registerSubmit)} sx={{ mt: 1 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    id="username"
-                                    label="Username"
-                                    name="username"
-                                    autoFocus
-                                    {...register('username')}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    name="firstname"
-                                    label="Firstname"
-                                    type="firstname"
-                                    id="firstname"
-                                    {...register('firstName')}
-                                />
-                            </Grid>
-                            <Grid item xs={6}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    name="lastname"
-                                    label="Lastname"
-                                    type="lastname"
-                                    id="lastname"
-                                    {...register('lastname')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    name="password"
-                                    label="Password"
-                                    type="password"
-                                    id="password"
-                                    {...register('password')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    required
-                                    name="confirmPassword"
-                                    label="Confirm Password"
-                                    type="password"
-                                    id="confirmPassword"
-                                    {...register('confirmPassword')}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <InputLabel id="demo-simple-select-label"></InputLabel>
-                                <Select
-                                    fullWidth
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    label="Role"
-                                    value={role}
-                                    onChange={handleRoleChange}
-                                    
-                                >
-                                    <MenuItem value={10}>Ten</MenuItem>
-                                    <MenuItem value={20}>Twenty</MenuItem>
-                                    <MenuItem value={30}>Thirty</MenuItem>
-                                </Select>
-                            </Grid>
-                        </Grid>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Submit
-                        </Button>
-                    </Box>
-                </Box>
-            </Container>
-            {/* <SnackbarComponent open={openSnackbar} handleClose={handleCloseSnackbar} severity={snackbarStatus} message={snackbarMessage} /> */}
-        </div>
-    );
+                  <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
+                  <MenuItem value={'PM'}>PM</MenuItem>
+                  <MenuItem value={'CEO'}>CEO</MenuItem>
+                </Select>
+              </Grid>
+            </Grid>
+            <Button
+              type='submit'
+              fullWidth
+              variant='contained'
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Submit
+            </Button>
+          </form>
+        </Box>
+      </Container>
+    </div>
+  );
 }

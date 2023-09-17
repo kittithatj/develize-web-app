@@ -40,6 +40,6 @@ function stringAvatar(name) {
 
 export default function SkillFroupAvatar(props) {
     return (
-        <Avatar {...stringAvatar(props.name, props.group)} variant={props.variant} />
+        <Avatar {...stringAvatar(props.name, props.group)} variant={props.variant}/>
     );
 }
