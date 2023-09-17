@@ -298,7 +298,7 @@ function PersonnelEdit() {
                             padding: "15px",
                         }}
                     >
-                        <div className="header">
+                        <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Typography
                                 sx={{ mt: 1, mb: 2, color: "black" }}
                                 variant="h5"
@@ -306,6 +306,9 @@ function PersonnelEdit() {
                             >
                                 Personnel Editing
                             </Typography>
+                            <Button variant="outlined" color="error" sx={{ borderRadius: '30px', width: '80px' }} href={'/Personnel/' + dataPersonnel.personnel_id}>
+                                Back
+                            </Button>
                         </div>
                         <div className="content">
                             <div style={{ display: "flex", flexDirection: "row" }}>
