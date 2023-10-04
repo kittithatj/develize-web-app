@@ -4,23 +4,24 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useState } from 'react';
-import SnackbarComponent from '../components/SnackbarComponent';
 import Select from '@mui/material/Select';
 import { Grid } from '@mui/material';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import MenuItem from '@mui/material/MenuItem';
 import { InputLabel } from '@mui/material';
 import { userApi } from '../api/user-api';
+import { useOutletContext } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
-  const [user, setUser] = useState({});
+  const navigate = useNavigate();
+
+  const [user, setUser, openSnackbar] = useOutletContext({});
   const [role, setRole] = useState('');
   const [loading, setLoading] = useState(false);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
     firstName: '',
@@ -28,13 +29,6 @@ export default function Register() {
     password: '',
     confirmPassword: '',
   });
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpenSnackbar(false);
-  };
 
   const handleRoleChange = (event) => {
     setRole(event.target.value);
@@ -58,10 +52,13 @@ export default function Register() {
 
     userApi
       .register(userToRegister)
-      .then((response) => {
+      .then(() => {
         setLoading(false);
-        setOpenSnackbar(true);
-
+        navigate('/login');
+        openSnackbar({
+          status: 'success',
+          message: 'Register success',
+        })
       })
       .catch((error) => {
         console.error(error);

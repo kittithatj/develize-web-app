@@ -24,6 +24,7 @@ export const userApi = {
             if (res.status === 200) {
                 return res.json().then((data) => {
                     localStorage.setItem('token', data.token);
+                    return data;
                 })
             }else{
                 throw new Error(res.statusText);
