@@ -48,8 +48,17 @@ export default function Register() {
     });
   };
 
+  const [errorText, setErrorText] = useState('');
+
   const registerSubmit = () => {
     setLoading(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrorText('Password not match');
+      setOpenSnackbar(true);
+      setLoading(false);
+      return;
+    }
 
     const userToRegister = {
       ...formData,
@@ -61,7 +70,6 @@ export default function Register() {
       .then((response) => {
         setLoading(false);
         setOpenSnackbar(true);
-
       })
       .catch((error) => {
         console.error(error);
@@ -180,6 +188,12 @@ export default function Register() {
           </form>
         </Box>
       </Container>
+      <SnackbarComponent
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        message={errorText || 'Registration successful'}
+        severity={errorText ? 'error' : 'success'}
+      />
     </div>
   );
 }

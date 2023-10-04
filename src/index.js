@@ -20,6 +20,7 @@ import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
 import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
+import Createproject from "./pages/Createproject";
 
 const AppLayout = () => {
   
@@ -119,6 +120,11 @@ const router = createBrowserRouter([
       {
         path: "personnel/create",
         element: <CreatePersonnel />,
+      },
+      ,
+      {
+        path: "project/createproject",
+        element: <Createproject/>,
       },
     ],
   },

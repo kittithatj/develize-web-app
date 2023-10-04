@@ -1,11 +1,206 @@
-import React from 'react'
+//SYSTEM
+import React, { useEffect, useState } from 'react'
+import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Link, Select } from "@mui/material";
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+
+//API
+import { ProjectAPI } from "../api/project-api";
+import { PersonnelAPI } from '../api/personnel-api'
+
+//ICON
+import AddIcon from '@mui/icons-material/Add';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+
 
 function Project() {
+
+    const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    const [projectData, setProjectData] = useState([])
+    const [projectLoading, setProjectLoading] = useState([])
+
+    const fetchProjectData = () => {
+        setProjectLoading(true)
+        ProjectAPI.getProject().then(data => {
+            setProjectData(data)
+            setProjectLoading(false)
+            console.log('Project SP', data)
+        })
+    }
+
+    const [createProject, setCreateProject] = useState([])
+    const [createProjectLoading, setCreateProjectLoading] = useState([])
+
+    const createProjectData = () => {
+        setCreateProjectLoading(true)
+        ProjectAPI.createProject().then(data => {
+            setCreateProject(data)
+            setCreateProjectLoading(false)
+        })
+    }
+
+    const [dataPersonnel, setDataPersonnel] = useState([])
+    const [DataPersonnelLoading, setDataPersonnelLoading] = useState([])
+
+    const fetchPersonnelData = () => {
+        setDataPersonnelLoading(true);
+        PersonnelAPI.getAllPersonnel().then(data => {
+            setDataPersonnel(data)
+            console.log("Person", data);
+        });
+    }
+
+    const status = (projectData) => {
+        if (projectData.projectStatus === "On-Going") {
+            return { status: 'On-Going', color: 'warning' };
+        }
+        else if (projectData.projectStatus === "On-Success") {
+            return { status: 'On-Success', color: 'success' };
+        }
+        else if (projectData.projectStatus === "On-Holding") {
+            return { status: 'On-Holding', color: 'error' };
+        }
+    };
+
+    const [openDialog, setOpenDialog] = useState(false);
+
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+        setProjectName('');
+        setProjectType('');
+        setProjectDescription('');
+        setStartDate('');
+        setEndDate('');
+        setBudget();
+        setProjectStatus();
+    };
+
+    const projectTypeOptions = [
+        'WebService',
+        'DigitalMarketing',
+        'CyberSecuerity',
+    ];
+
+    const ststusProject = [
+        'On-Holding',
+        'On-Going',
+        'On-Success',
+    ];
+
+    const [projectName, setProjectName] = useState('');
+    const [projectType, setProjectType] = useState('');
+    const [projectDescription, setProjectDescription] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [skillRequireIdList, setSkillRequireIdList] = useState([]);
+    const [budget, setBudget] = useState();
+    const [projectStatus, setProjectStatus] = useState('');
+
+    useEffect(() => {
+        fetchProjectData()
+        fetchPersonnelData()
+    }, [])
+
     return (
-        <div className='main-content'>
-            Project
+        <div className="main-content">
+            <Box
+                sx={{
+                    width: "100%",
+                    backgroundColor: "transparent",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    justifyContent: "flex-start",
+                    padding: "15px",
+                    margin: "10px",
+                }}
+            >
+                <Grid
+                    container
+                    justifyContent="flex-start"
+                    alignItems="stretch"
+                    spacing={2}
+                    sx={{ display: 'flex', flexDirection: 'row' }}
+                >
+
+                    <Button
+                        sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }}
+                        variant="contained"
+                        startIcon={<AddIcon />}
+                        href={'/project/createproject'}
+                    >
+                        Create Project
+                    </Button>
+                    {projectData
+                        .sort((a, b) => a.projectName.localeCompare(b.projectName))
+                        .map((item) => (
+                            <Grid>
+                                <div>
+                                    <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px' , marginTop:'15px'}}>
+                                        <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                                            <div>
+                                                {item.projectType === 'Security System' && <img src="https://i.ibb.co/SwPWB9h/security.png" width="100%" height="60%" />}
+                                                {item.projectType === 'Digital Markerting' && <img src="https://i.ibb.co/mv0tX9b/buissines.jpg" width="100%" height="60%" />}
+                                                {item.projectType === 'AppService' && <img src="https://i.ibb.co/ygSHmW2/buissines-1.png" width="100%" height="60%" />}
+                                                <Typography variant="h5" component="div" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
+                                                    <div>
+                                                        {item.projectName}
+                                                        <p style={{ fontSize: "small", color: 'green' }}>
+                                                            {new Date(item.startDate).getDate()} {months[new Date(item.startDate).getMonth()]} {new Date(item.startDate).getFullYear()} - {new Date(item.endDate).getDate()} {months[new Date(item.endDate).getMonth()]} {new Date(item.endDate).getFullYear()}
+                                                        </p>
+                                                    </div>
+                                                    <Chip
+                                                        label={status(item)?.status || 'On-going'}
+                                                        color={status(item)?.color || 'warning'}
+                                                        sx={{
+                                                            "& .MuiChip-label": {
+                                                                margin: 0,
+                                                            }
+                                                        }}
+                                                    />
+                                                </Typography>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    <p style={{ fontSize: "small", color: 'black', fontWeight: "bold", display: 'inline-flex', alignItems: 'center' }}>
+                                                        {item.projectType === 'Security System' && <SettingsSuggestIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                        {item.projectType === 'Digital Markerting' && <AttachMoneyIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                        {item.projectType === 'AppService' && <SupportAgentIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                        {item.projectType}
+                                                    </p>
+                                                </Typography>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    {item.projectDescription}
+                                                </Typography>
+                                            </div>
+                                            <Button color="primary" style={{ alignSelf: 'flex-end', margin: '8px 0', borderRadius: 0, }}>
+                                                View Detail
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+
+                                </div>
+                            </Grid>
+                        ))}
+                </Grid>
+            </Box>
         </div>
-    )
+    );
 }
 
-export default Project
+
+
+export default Project;
