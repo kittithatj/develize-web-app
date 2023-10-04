@@ -15,4 +15,8 @@ export const Api = {
     personnel_set_skill: '/personnel/skill/set',
     personnel_division_list:'/personnel/division/list',
     personnel_assess:'/personnel/assess',
+    personnel_edit:'/personnel/edit',
+
+    project_get: '/project/get-list',
+    project_create:'/project/create'
 }

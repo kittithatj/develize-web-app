@@ -45,6 +45,16 @@ export default function Register() {
   const registerSubmit = () => {
     setLoading(true);
 
+    if (formData.password !== formData.confirmPassword) {
+      openSnackbar({
+        status: 'error',
+        message: 'Password not match. Please try again',
+      });
+
+      setLoading(false);
+      return;
+    }
+
     const userToRegister = {
       ...formData,
       role: role,

@@ -357,49 +357,48 @@ export default function CreatePersonnel() {
 
                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px', maxWidth: '100%' }}>
                                         {skillList
-                                            .filter((s) => !skillSelect.includes(s))
                                             .filter((s) => s.skillName.toLowerCase().includes(searchValue.toLowerCase()))
                                             .filter((s) => selectedType === '' || s.skillType === selectedType)
                                             .map((item, index) => (
                                                 <Card
-                                                sx={{
-                                                    backgroundColor: '#EEEEEE',
-                                                    flexBasis: 'calc(25% - 8px)',
-                                                    border: 'none',
-                                                    height: '145px'
-                                                }}
-                                            >
-                                                <CardContent>
-                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                        <span style={{ fontSize: '24px', marginRight: '8px' }}>{getSkillTypeIcon(item.skillType)}</span>
-                                                        <Typography variant="h6" gutterBottom>
-                                                            {item.skillName}
-                                                        </Typography>
-                                                    </div>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {item.skillType}
-                                                    </Typography>
-                                                </CardContent>
-                                                <Button
-                                                    variant="contained"
-                                                    disableElevation
-                                                    endIcon={<AddIcon />}
                                                     sx={{
-                                                        backgroundColor: '#E2E2E2',
-                                                        color: 'black',
+                                                        backgroundColor: '#EEEEEE',
+                                                        flexBasis: 'calc(25% - 8px)',
                                                         border: 'none',
-                                                        width: '100%',
-                                                        '&:hover': {
-                                                            backgroundColor: '#7F7F7F',
-                                                            color: 'white',
-                                                        },
+                                                        height: '145px'
                                                     }}
-                                                    onClick={() => addSkill(item)}
                                                 >
-                                                    Add
-                                                </Button>
-                                            </Card>
-
+                                                    <CardContent>
+                                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <span style={{ fontSize: '24px', marginRight: '8px' }}>{getSkillTypeIcon(item.skillType)}</span>
+                                                            <Typography variant="h6" gutterBottom>
+                                                                {item.skillName}
+                                                            </Typography>
+                                                        </div>
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            {item.skillType}
+                                                        </Typography>
+                                                    </CardContent>
+                                                    <Button
+                                                        variant="contained"
+                                                        disableElevation
+                                                        endIcon={<AddIcon />}
+                                                        sx={{
+                                                            backgroundColor: '#E2E2E2',
+                                                            color: 'black',
+                                                            border: 'none',
+                                                            width: '100%',
+                                                            '&:hover': {
+                                                                backgroundColor: '#7F7F7F',
+                                                                color: 'white',
+                                                            },
+                                                        }}
+                                                        onClick={() => addSkill(item)}
+                                                        disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                                                    >
+                                                        Add
+                                                    </Button>
+                                                </Card>
                                             ))}
                                         {skillList
                                             .filter((s) => !skillSelect.includes(s))

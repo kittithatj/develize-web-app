@@ -1,15 +1,12 @@
 // SYSTEM
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem,Link, } from "@mui/material";
+import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, } from "@mui/material";
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Grid from '@mui/material/Grid';
-import InputBase from '@mui/material/InputBase';
-import { skillTypeList } from '../config/skill-type-list';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
 
@@ -30,10 +27,6 @@ import HandymaIconn from '@mui/icons-material/Handyman';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import CancelIcon from '@mui/icons-material/Cancel';
-
 
 function PersonnelEdit() {
 
@@ -113,10 +106,20 @@ function PersonnelEdit() {
         }
     };
 
-    const getRandomColor = () => {
-        const colors = ['#3f51b5', '#f44336', '#4caf50', '#ff9800', '#9c27b0', '#2196f3', '#ff5722'];
-        const randomIndex = Math.floor(Math.random() * colors.length);
-        return colors[randomIndex];
+    const status = (p) => {
+        if (!p || !p.projectHistories || p.projectHistories.length === 0) {
+            return { status: 'Not Assigned', color: 'success' };
+        } else {
+            let count = 0;
+            p.projectHistories.forEach((project) => {
+                if (project.project.projectStatus === 'In Progress') count++;
+            });
+            if (count > 0) {
+                return { status: count + ' Project Working', color: 'warning' };
+            } else {
+                return { status: 'Not Assigned', color: 'success' };
+            }
+        }
     };
 
 
@@ -188,10 +191,26 @@ function PersonnelEdit() {
                                 Project History
                             </Typography>
                         </div>
-                        <Card sx={{ width: '100%', border: '1px solid #ccc', marginTop: '10px' }}>
+                        <Card sx={{ width: '100%', height: '100% ', border: '1px solid #ccc', marginTop: '10px' }}>
                             <CardContent>
-                                <Typography variant="h5" component="div">
-                                    SALTY-1
+                                <Typography variant="h5" component="div" sx={{ display: "flex", justifyContent: "space-between", marginBottom: '20px' }}>
+                                    <div>
+                                        <span>Develize-Appication</span>
+                                        <p style={{ fontSize: "small", color: 'green' }}>12/9/2023 - 24/12/2023</p>
+                                    </div>
+                                    <Box>
+                                        <Chip
+                                            label={status(dataPersonnel)?.status || 'Not Assigned'}
+                                            color={status(dataPersonnel)?.color || 'success'}
+                                            sx={{
+                                                justifyContent: 'center',
+                                                "& .MuiChip-label": {
+                                                    margin: 0,
+                                                }
+                                            }}
+                                        />
+
+                                    </Box>
                                 </Typography>
                                 <Typography variant="body2" color="textSecondary">
                                     Project to use your money exchange to Salt!
@@ -207,15 +226,86 @@ function PersonnelEdit() {
                 </Grid>
 
                 <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Project Details</DialogTitle>
                     <DialogContent>
-                        <Typography variant="h5" component="div">
-                            SALTY-1
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <Typography variant="h5" component="div" style={{ fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
+                                    Develize-Appication
+                                </Typography>
+                            </div>
+                            <div>
+                                <Chip
+                                    label={status(dataPersonnel)?.status || 'Not Assigned'}
+                                    color={status(dataPersonnel)?.color || 'success'}
+                                    sx={{
+                                        "& .MuiChip-label": {
+                                            margin: 0,
+                                        }
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <Typography variant="body2" color="textSecondary" style={{ marginBottom: '10px', fontWeight: 'bold', }}>
+                            Project Type :
+                            <span style={{ fontWeight: 'bold', marginLeft: '4px' }}>E-commerce Webservice</span>
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            Project to use your money exchange to Salt!
+                        <Typography variant="body2" color="textSecondary" style={{ marginBottom: '20px' }}>
+                            <span style={{ fontWeight: 'bold' }}>Description : </span>Websites used for marketing are used to buy, sell, and send products that can help buyers and sellers be more convenient. This will ensure safety and prevent fraud through online shopping.
+                        </Typography>
+                        <Typography>
+                            Skill Requirement
+                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto' }}>
+                                <div style={{
+                                    display: 'flex',
+                                    flexWrap: 'wrap',
+                                    gap: '16px',
+                                }}>
+                                    {skillPersonnel
+                                        .sort((a, b) => a.skillName.localeCompare(b.skillName))
+                                        .map((item) => (
+                                            <Chip
+                                                key={item.skill_id}
+                                                sx={{
+                                                    backgroundColor: "transparent",
+                                                    color: 'black',
+                                                    borderRadius: '16px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    borderColor: 'gray',
+                                                    borderWidth: '1px',
+                                                    borderStyle: 'solid',
+                                                    margin: '3px',
+                                                    padding: '10px'
+                                                }}
+                                                icon={getSkillTypeIcon(item.skillType)}
+                                                label={item.skillName}
+                                            />
+                                        ))}
+                                </div>
+                            </div>
+                        </Typography>
+                        <TextField
+                            sx={{ mt: 1, mb: 2, width: "30%", marginTop:'20px'}}
+                            variant="outlined"
+                            label="Budget"
+                            value='5,000,000'
+                            disabled
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <PermContactCalendarIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Typography variant="body2" color="textSecondary" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
+                            <span>Duration: 12/9/2023 - 24/12/2023</span>
+                            <Button size="small" color="primary" sx={{ borderRadius: '30px', width: '80px' }}>
+                                Edit
+                            </Button>
                         </Typography>
                     </DialogContent>
+
                 </Dialog>
 
 
@@ -232,17 +322,22 @@ function PersonnelEdit() {
                             padding: "15px",
                         }}
                     >
-                        <div className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div className="header" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Typography
-                                sx={{ mt: 1, mb: 2, color: "black" }}
+                                sx={{ mt: 1, mb: 2, color: "black", flexGrow: 1 }}
                                 variant="h5"
                                 color="textSecondary"
                             >
-                                Personnel Infomation
+                                Personnel Information
                             </Typography>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <Button variant="outlined" color="error" sx={{ borderRadius: '30px', width: '80px', mr: '10px' }} href={'/Personnel'}>
+                                    Back
+                                </Button>
                                 <Button variant="contained" color="primary" sx={{ borderRadius: '30px', width: '80px' }} href={'/Personnel/edit/' + dataPersonnel.personnel_id}>
                                     Edit
                                 </Button>
+                            </div>
                         </div>
                         <div className="content">
                             <div style={{ display: "flex", flexDirection: "row" }}>
@@ -382,7 +477,7 @@ function PersonnelEdit() {
                                     gap: '16px',
                                 }}>
                                     {skillPersonnel
-                                        .sort((a, b) => a.skillName.localeCompare(b.skillName)) // เรียงลำดับตามตัวอักษร
+                                        .sort((a, b) => a.skillName.localeCompare(b.skillName))
                                         .map((item) => (
                                             <Chip
                                                 key={item.skill_id}
