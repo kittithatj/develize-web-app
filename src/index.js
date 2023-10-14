@@ -21,6 +21,7 @@ import PersonnelAssessment from "./pages/PersonnelAssessment";
 import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
 import Createproject from "./pages/Createproject";
+import ProjectDetail from "./pages/ProjectDetail";
 
 const AppLayout = () => {
   
@@ -125,6 +126,11 @@ const router = createBrowserRouter([
       {
         path: "project/createproject",
         element: <Createproject/>,
+      },
+      ,
+      {
+        path: "project/projectdetail/:id",
+        element: <ProjectDetail/>,
       },
     ],
   },

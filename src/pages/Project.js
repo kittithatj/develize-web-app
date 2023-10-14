@@ -1,6 +1,6 @@
-//SYSTEM
-import React, { useEffect, useState } from 'react'
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Link, Select } from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom'; // Import Link from React Router
+import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Select } from "@mui/material";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
@@ -8,55 +8,38 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-
-//API
 import { ProjectAPI } from "../api/project-api";
-import { PersonnelAPI } from '../api/personnel-api'
-
-//ICON
+import { PersonnelAPI } from '../api/personnel-api';
 import AddIcon from '@mui/icons-material/Add';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
-
 function Project() {
-
     const months = [
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
     ];
 
-    const [projectData, setProjectData] = useState([])
-    const [projectLoading, setProjectLoading] = useState([])
+    const [projectData, setProjectData] = useState([]);
+    const [projectLoading, setProjectLoading] = useState(false);
 
     const fetchProjectData = () => {
-        setProjectLoading(true)
+        setProjectLoading(true);
         ProjectAPI.getProject().then(data => {
-            setProjectData(data)
-            setProjectLoading(false)
-            console.log('Project SP', data)
-        })
+            setProjectData(data);
+            setProjectLoading(false);
+            console.log('Project SP', data);
+        });
     }
 
-    const [createProject, setCreateProject] = useState([])
-    const [createProjectLoading, setCreateProjectLoading] = useState([])
-
-    const createProjectData = () => {
-        setCreateProjectLoading(true)
-        ProjectAPI.createProject().then(data => {
-            setCreateProject(data)
-            setCreateProjectLoading(false)
-        })
-    }
-
-    const [dataPersonnel, setDataPersonnel] = useState([])
-    const [DataPersonnelLoading, setDataPersonnelLoading] = useState([])
+    const [dataPersonnel, setDataPersonnel] = useState([]);
+    const [DataPersonnelLoading, setDataPersonnelLoading] = useState(false);
 
     const fetchPersonnelData = () => {
         setDataPersonnelLoading(true);
         PersonnelAPI.getAllPersonnel().then(data => {
-            setDataPersonnel(data)
+            setDataPersonnel(data);
             console.log("Person", data);
         });
     }
@@ -73,48 +56,10 @@ function Project() {
         }
     };
 
-    const [openDialog, setOpenDialog] = useState(false);
-
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-        setProjectName('');
-        setProjectType('');
-        setProjectDescription('');
-        setStartDate('');
-        setEndDate('');
-        setBudget();
-        setProjectStatus();
-    };
-
-    const projectTypeOptions = [
-        'WebService',
-        'DigitalMarketing',
-        'CyberSecuerity',
-    ];
-
-    const ststusProject = [
-        'On-Holding',
-        'On-Going',
-        'On-Success',
-    ];
-
-    const [projectName, setProjectName] = useState('');
-    const [projectType, setProjectType] = useState('');
-    const [projectDescription, setProjectDescription] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [skillRequireIdList, setSkillRequireIdList] = useState([]);
-    const [budget, setBudget] = useState();
-    const [projectStatus, setProjectStatus] = useState('');
-
     useEffect(() => {
-        fetchProjectData()
-        fetchPersonnelData()
-    }, [])
+        fetchProjectData();
+        fetchPersonnelData();
+    }, []);
 
     return (
         <div className="main-content">
@@ -149,9 +94,9 @@ function Project() {
                     {projectData
                         .sort((a, b) => a.projectName.localeCompare(b.projectName))
                         .map((item) => (
-                            <Grid>
+                            <Grid key={item.project_id}>
                                 <div>
-                                    <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px' , marginTop:'15px'}}>
+                                    <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px', marginTop: '15px' }}>
                                         <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                                             <div>
                                                 {item.projectType === 'Security System' && <img src="https://i.ibb.co/SwPWB9h/security.png" width="100%" height="60%" />}
@@ -186,12 +131,13 @@ function Project() {
                                                     {item.projectDescription}
                                                 </Typography>
                                             </div>
-                                            <Button color="primary" style={{ alignSelf: 'flex-end', margin: '8px 0', borderRadius: 0, }}>
-                                                View Detail
-                                            </Button>
+                                            <Link to={`/project/projectdetail/${item.project_id}`}>
+                                                <Button color="primary" style={{ alignSelf: 'flex-end', margin: '8px 0', borderRadius: 0 }}>
+                                                    View Detail
+                                                </Button>
+                                            </Link>
                                         </CardContent>
                                     </Card>
-
                                 </div>
                             </Grid>
                         ))}
@@ -200,7 +146,5 @@ function Project() {
         </div>
     );
 }
-
-
 
 export default Project;
