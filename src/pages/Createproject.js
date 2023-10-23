@@ -392,7 +392,7 @@ function Createproject() {
                         <Button
                             variant="contained"
                             color="success"
-                            style={{ marginTop: '10px' }}
+                            style={{ marginTop: '10px', marginLeft: 'auto' }}
                             disabled={
                                 activeStep === 0 &&
                                 (formData.projectName === '' ||
@@ -405,8 +405,9 @@ function Createproject() {
                             }
                             onClick={createProjectData}
                         >
-                            Create Personnel
+                            Create Project
                         </Button>
+
                     </Box>
                 </Grid>
             </Grid>
