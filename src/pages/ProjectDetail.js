@@ -75,43 +75,44 @@ function ProjectDetail() {
 
 
     const [skillsRequired, setSkillsRequired] = useState([]);
-    const fetchProjectData = () => {
-        setProjectLoading(true);
-        ProjectAPI.getProject(id).then(data => {
-            console.log("All Project Data:", data);
 
-            const matchingProjects = data.filter(project => project.project_id === 2);
-            if (matchingProjects.length > 0) {
-                const project = matchingProjects[0];
-                setProjectData(project);
-                setProjectName(project.projectName);
-                setProjectDes(project.projectDescription);
-                setProjectType(project.projectType);
-                setProjectStart(project.startDate);
-                setProjectEnd(project.endDate);
-                setProjectBudget(project.budget);
+const fetchProjectData = () => {
+    setProjectLoading(true);
+    const projectId = parseInt(id);
+    ProjectAPI.getProject(projectId).then(data => {
+        console.log("All Project Data:", data);
 
-                setSkillsRequired(project.skillsRequired.reduce((skillReq, skill) => {
-                    skillReq[skill.skill_id] = skill;
-                    return skillReq;
-                }, {}));
+        const matchingProjects = data.filter(project => project.project_id === projectId);
+        if (matchingProjects.length > 0) {
+            const project = matchingProjects[0];
+            setProjectData(project);
+            setProjectName(project.projectName);
+            setProjectDes(project.projectDescription);
+            setProjectType(project.projectType);
+            setProjectStart(project.startDate);
+            setProjectEnd(project.endDate);
+            setProjectBudget(project.budget);
 
+            setSkillsRequired(project.skillsRequired.reduce((skillReq, skill) => {
+                skillReq[skill.skill_id] = skill;
+                return skillReq;
+            }, {}));
 
-                if (project.projectMember) {
-                    const membersFullNames = {};
-                    project.projectMember.forEach((member, index) => {
-                        if (member.firstName && member.lastName) {
-                            membersFullNames[index] = `${member.firstName} ${member.lastName}`;
-                        } else {
-                            membersFullNames[index] = 'null';
-                        }
-                    });
-                    setMemberFullName(membersFullNames);
-                    console.log(membersFullNames, 'fullname');
-                }
+            if (project.projectMember) {
+                const membersFullNames = {};
+                project.projectMember.forEach((member, index) => {
+                    if (member.firstName && member.lastName) {
+                        membersFullNames[index] = `${member.firstName} ${member.lastName}`;
+                    } else {
+                        membersFullNames[index] = 'null';
+                    }
+                });
+                setMemberFullName(membersFullNames);
+                console.log(membersFullNames, 'fullname');
             }
-        });
-    };
+        }
+    });
+};
 
     useEffect(() => {
         fetchSkillData();

@@ -1,6 +1,8 @@
-//SYSTEM
 import React, { useEffect, useState } from 'react';
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Link, Select } from "@mui/material";
+import {
+    Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip,
+    Button, IconButton, MenuItem, Select
+} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import DatePicker from "@mui/lab/DatePicker";
 import Card from '@mui/material/Card';
@@ -12,7 +14,7 @@ import { skillApi } from '../api/skill-api';
 import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from '../api/personnel-api'
 
-//ICON
+// ICON
 import StorageIcon from '@mui/icons-material/Storage';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HandymaIconn from '@mui/icons-material/Handyman';
@@ -27,12 +29,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 function Createproject() {
-
     const [activeStep, setActiveStep] = useState(0);
     const navigate = useNavigate();
     const [user, setUser, openSnackbar] = useOutletContext({});
-    const [skillList, setSkillList] = useState([])
-    const [skillSelect, setSkillSelect] = useState([])
+    const [skillList, setSkillList] = useState([]);
+    const [skillSelect, setSkillSelect] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedType, setSelectedType] = useState('');
@@ -44,11 +45,11 @@ function Createproject() {
     const fetchSkillData = () => {
         setLoading(true)
         skillApi.getAllSKills().then(data => {
-            setSkillList(data)
-            setDisplayedSkills(data)
-            setLoading(false)
-            console.log('Skill SP', data)
-        })
+            setSkillList(data);
+            setDisplayedSkills(data);
+            setLoading(false);
+            console.log('Skill SP', data);
+        });
     }
 
     const [loadingPerson, setLoadingPerson] = useState(false);
@@ -61,7 +62,6 @@ function Createproject() {
             setDataPersonnel(data);
         });
     }
-
 
     const [projectName, setProjectName] = useState('');
     const [projectDes, setProjectDes] = useState('');
@@ -83,14 +83,12 @@ function Createproject() {
         memberIdList: [],
     });
 
-
     useEffect(() => {
         fetchSkillData();
         fetchPersonnelData();
     }, [currentType]);
 
-
-    const handleCreate = () => {
+    const createProjectData = () => {
         if (
             formData.projectName === '' ||
             formData.projectType === '' ||
@@ -116,7 +114,7 @@ function Createproject() {
             projectDescription: formData.projectDescription,
             startDate: formData.startDate,
             endDate: formData.endDate,
-            skillRequireIdList: skillIds,
+            skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
             budget: formData.budget,
             projectStatus: formData.projectStatus,
             memberIdList: formData.memberIdList,
@@ -145,8 +143,6 @@ function Createproject() {
             });
     }
 
-
-
     const addSkill = (item) => {
         if (!skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)) {
             setSkillSelect(prevSkills => [...prevSkills, item]);
@@ -164,10 +160,7 @@ function Createproject() {
             const skillIds = updatedSkills.map((skill) => skill.skill_id);
             return { ...prevData, skillRequireIdList: skillIds };
         });
-    };
-
-
-
+    }
 
     const getSkillTypeIcon = (skillType) => {
         switch (skillType) {
@@ -268,7 +261,6 @@ function Createproject() {
                                         </InputAdornment>
                                     ),
                                 }}
-
                             />
                             <TextField
                                 sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
@@ -348,7 +340,6 @@ function Createproject() {
                                     onDelete={() => (handleDeleteSkill(item))}
                                     avatar={getSkillTypeIcon(item.skillType)}
                                 />
-
                             ))}
                         </div>
 
@@ -412,7 +403,7 @@ function Createproject() {
                                     formData.budget === '' ||
                                     skillSelect.length === 0)
                             }
-                            onClick={handleCreate}
+                            onClick={createProjectData}
                         >
                             Create Personnel
                         </Button>
@@ -423,4 +414,4 @@ function Createproject() {
     );
 }
 
-export default Createproject
+export default Createproject;
