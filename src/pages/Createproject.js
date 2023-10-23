@@ -40,7 +40,7 @@ function Createproject() {
     const [displayedSkills, setDisplayedSkills] = useState([]);
     const [currentType, setCurrentType] = useState('');
     const [selectedSkillIds, setSelectedSkillIds] = useState([]);
-    
+
     const fetchSkillData = () => {
         setLoading(true)
         skillApi.getAllSKills().then(data => {
@@ -109,7 +109,7 @@ function Createproject() {
         }
         console.log('formData:', formData);
         const skillIds = skillSelect.map((skill) => skill.skill_id);
-    
+
         const dataToSend = {
             projectName: formData.projectName,
             projectType: formData.projectType,
@@ -121,7 +121,7 @@ function Createproject() {
             projectStatus: formData.projectStatus,
             memberIdList: formData.memberIdList,
         };
-    
+
         ProjectAPI.createProject(dataToSend)
             .then(res => {
                 if (res.status === 200) {
@@ -144,30 +144,30 @@ function Createproject() {
                 });
             });
     }
-    
+
 
 
     const addSkill = (item) => {
         if (!skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)) {
-            setSkillSelect(prevSkills => [...prevSkills, item]); 
+            setSkillSelect(prevSkills => [...prevSkills, item]);
             setFormData(prevData => {
                 const skillIds = [...prevData.skillRequireIdList, item.skill_id];
                 return { ...prevData, skillRequireIdList: skillIds };
             });
         }
     };
-    
+
     const handleDeleteSkill = (item) => {
         const updatedSkills = skillSelect.filter((selectedSkill) => selectedSkill.skill_id !== item.skill_id);
-        setSkillSelect(updatedSkills); 
+        setSkillSelect(updatedSkills);
         setFormData(prevData => {
             const skillIds = updatedSkills.map((skill) => skill.skill_id);
             return { ...prevData, skillRequireIdList: skillIds };
         });
     };
-    
-    
-      
+
+
+
 
     const getSkillTypeIcon = (skillType) => {
         switch (skillType) {
@@ -334,6 +334,7 @@ function Createproject() {
                         <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto', width: '100%' }}>
                             {skillSelect.map((item) => (
                                 <Chip
+                                    key={item.skill_id}
                                     sx={{
                                         m: 1,
                                         height: '35px',
@@ -347,6 +348,7 @@ function Createproject() {
                                     onDelete={() => (handleDeleteSkill(item))}
                                     avatar={getSkillTypeIcon(item.skillType)}
                                 />
+
                             ))}
                         </div>
 
