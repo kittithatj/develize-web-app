@@ -1,16 +1,20 @@
-//SYSTEM
 import React, { useEffect, useState } from 'react';
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Link, Select } from "@mui/material";
+import {
+    Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip,
+    Button, IconButton, MenuItem, Select
+} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import DatePicker from "@mui/lab/DatePicker";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 // API
 import { skillApi } from '../api/skill-api';
+import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from '../api/personnel-api'
 
-//ICON
+// ICON
 import StorageIcon from '@mui/icons-material/Storage';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HandymaIconn from '@mui/icons-material/Handyman';
@@ -25,48 +29,137 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 function Createproject() {
-
-    const [skillList, setSkillList] = useState([])
-    const [skillSelect, setSkillSelect] = useState([])
+    const [activeStep, setActiveStep] = useState(0);
+    const navigate = useNavigate();
+    const [user, setUser, openSnackbar] = useOutletContext({});
+    const [skillList, setSkillList] = useState([]);
+    const [skillSelect, setSkillSelect] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [chipCount, setChipCount] = useState(0);
     const [displayedSkills, setDisplayedSkills] = useState([]);
     const [currentType, setCurrentType] = useState('');
-
+    const [selectedSkillIds, setSelectedSkillIds] = useState([]);
 
     const fetchSkillData = () => {
         setLoading(true)
         skillApi.getAllSKills().then(data => {
-            setSkillList(data)
-            setDisplayedSkills(data)
-            setLoading(false)
-            console.log('Skill SP', data)
-        })
+            setSkillList(data);
+            setDisplayedSkills(data);
+            setLoading(false);
+            console.log('Skill SP', data);
+        });
+    }
+
+    const [loadingPerson, setLoadingPerson] = useState(false);
+    const [dataPersonnel, setDataPersonnel] = useState('');
+    const [skillPersonnel, setSkillPersonnel] = useState('');
+
+    const fetchPersonnelData = () => {
+        setLoadingPerson(true);
+        PersonnelAPI.getAllPersonnel().then(data => {
+            setDataPersonnel(data);
+        });
     }
 
     const [projectName, setProjectName] = useState('');
     const [projectDes, setProjectDes] = useState('');
-    const [projectType, setProjectType] = useState('');
+    const typeOptions = ["Digital Marketing", "AppService", "Security System"];
+    const statusOptions = ["On Success", "On Holding", "On Going"];
     const [projectStart, setProjectStart] = useState('');
     const [projectEnd, setProjectEnd] = useState('');
     const [projectBudget, setProjectBudget] = useState('');
 
+    const [formData, setFormData] = useState({
+        projectName: '',
+        projectType: '',
+        projectDescription: '',
+        startDate: '',
+        endDate: '',
+        skillRequireIdList: [],
+        budget: '',
+        projectStatus: '',
+        memberIdList: [],
+    });
 
     useEffect(() => {
-        fetchSkillData()
+        fetchSkillData();
+        fetchPersonnelData();
     }, [currentType]);
 
+    const createProjectData = () => {
+        if (
+            formData.projectName === '' ||
+            formData.projectType === '' ||
+            formData.projectDescription === '' ||
+            formData.startDate === '' ||
+            formData.endDate === '' ||
+            formData.budget === '' ||
+            skillSelect.length === 0 ||
+            formData.memberIdList.length === 0
+        ) {
+            openSnackbar({
+                status: 'error',
+                message: 'Field is empty',
+            });
+            return;
+        }
+        console.log('formData:', formData);
+        const skillIds = skillSelect.map((skill) => skill.skill_id);
 
+        const dataToSend = {
+            projectName: formData.projectName,
+            projectType: formData.projectType,
+            projectDescription: formData.projectDescription,
+            startDate: formData.startDate,
+            endDate: formData.endDate,
+            skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+            budget: formData.budget,
+            projectStatus: formData.projectStatus,
+            memberIdList: formData.memberIdList,
+        };
 
-    const handleDeleteSkill = (item) => {
-        setSkillSelect(skillSelect.filter((s) => s.skill_id !== item.skill_id))
+        ProjectAPI.createProject(dataToSend)
+            .then(res => {
+                if (res.status === 200) {
+                    return res.json();
+                } else {
+                    throw new Error(res.status);
+                }
+            })
+            .then(() => {
+                openSnackbar({
+                    status: 'success',
+                    message: 'Create Project Successfully',
+                });
+                navigate('../Project');
+            })
+            .catch(() => {
+                openSnackbar({
+                    status: 'error',
+                    message: 'Create Project Failed',
+                });
+            });
     }
 
     const addSkill = (item) => {
-        setSkillSelect(prevArray => [...prevArray, item])
-        setTimeout(() => console.log(skillSelect), 200)
+        if (!skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)) {
+            setSkillSelect(prevSkills => [...prevSkills, item]);
+            setFormData(prevData => {
+                const skillIds = [...prevData.skillRequireIdList, item.skill_id];
+                return { ...prevData, skillRequireIdList: skillIds };
+            });
+        }
+    };
+
+    const handleDeleteSkill = (item) => {
+        const updatedSkills = skillSelect.filter((selectedSkill) => selectedSkill.skill_id !== item.skill_id);
+        setSkillSelect(updatedSkills);
+        setFormData(prevData => {
+            const skillIds = updatedSkills.map((skill) => skill.skill_id);
+            return { ...prevData, skillRequireIdList: skillIds };
+        });
     }
 
     const getSkillTypeIcon = (skillType) => {
@@ -88,122 +181,9 @@ function Createproject() {
         }
     };
 
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedPictureType, setSelectedPictureType] = useState('');
-    const [imageURL, setImageURL] = useState('https://i.ibb.co/rxmfKsL/buissines-3.png');
-
     return (
         <div className="main-content">
             <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
-                <Grid item xs={12} md={4} className="sticky-grid-item">
-                    <Box
-                        sx={{
-                            width: "100%",
-                            backgroundColor: "white",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: '10px'
-                        }}
-                    >
-                        <div style={{ borderRadius: '10px', height: '320px', alignItems: 'center', backgroundColor: 'white' }}>
-                            <img src={imageURL} width="100%" height="100%" />
-                        </div>
-                        <div>
-                            <div style={{ display: "flex", flexDirection: "row", marginTop: '10px' }}>
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "100%" }}
-                                    variant="outlined"
-                                    label="Project Name"
-                                    value={projectName}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <DnsIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                    disabled
-                                />
-
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "50%", marginLeft: '10px' }}
-                                    variant="outlined"
-                                    label="Type"
-                                    value={projectType}
-                                    disabled
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <TypeSpecimenIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </div>
-                            <div>
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "100%", }}
-                                    variant="outlined"
-                                    label="Description"
-                                    value={projectDes}
-                                    disabled
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <DescriptionIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </div>
-                            <div style={{ display: "flex", flexDirection: "row", marginTop: '10px', width: '100%' }}>
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
-                                    variant="outlined"
-                                    label="Start"
-                                    value={projectStart}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <AccessTimeIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-
-                                />
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
-                                    variant="outlined"
-                                    label="End"
-                                    value={projectEnd}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <AccessTimeIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                                <TextField
-                                    sx={{ mt: 1, mb: 2, width: "100%" }}
-                                    variant="outlined"
-                                    label="Budget"
-                                    value={projectBudget}
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <AttachMoneyIcon />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
-                            </div>
-                        </div>
-                    </Box>
-                </Grid>
-
                 <Grid item xs={12} md={6}>
                     <Box
                         sx={{
@@ -224,8 +204,8 @@ function Createproject() {
                                 sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
                                 variant="outlined"
                                 label="Project Name"
-                                value={projectName}
-                                onChange={(event) => setProjectName(event.target.value)}
+                                value={formData.projectName}
+                                onChange={(event) => setFormData({ ...formData, projectName: event.target.value })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -234,34 +214,21 @@ function Createproject() {
                                     ),
                                 }}
                             />
-
                             <Select
                                 sx={{ mt: 1, mb: 2, width: "50%", marginLeft: '10px' }}
-                                value={selectedPictureType}
-                                onChange={(event) => {
-                                    setSelectedType(event.target.value);
-                                    setCurrentType(event.target.value);
-                                    if (event.target.value === 'Security System') {
-                                        setImageURL('https://i.ibb.co/SwPWB9h/security.png');
-                                    } else if (event.target.value === 'Digital Marketing') {
-                                        setImageURL('https://i.ibb.co/mv0tX9b/buissines.jpg');
-                                    } else if (event.target.value === 'AppService') {
-                                        setImageURL('https://i.ibb.co/ygSHmW2/buissines-1.png');
-                                    }
-                                    setDisplayedSkills(
-                                        skillList.filter((s) => currentType === '' || s.skillType === currentType)
-                                    );
-                                    setProjectType(event.target.value);
-                                }}
+                                value={formData.projectType}
                                 startAdornment={(
                                     <InputAdornment position="start">
                                         <TypeSpecimenIcon />
                                     </InputAdornment>
                                 )}
+                                onChange={(event) => setFormData({ ...formData, projectType: event.target.value })}
                             >
-                                <MenuItem value="Security System">Security System</MenuItem>
-                                <MenuItem value="Digital Marketing">Digital Marketing</MenuItem>
-                                <MenuItem value="AppService">Application Service</MenuItem>
+                                {typeOptions.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
+                                    </MenuItem>
+                                ))}
                             </Select>
                         </div>
                         <div style={{ display: "flex", flexDirection: "row", width: '100%' }}>
@@ -269,8 +236,8 @@ function Createproject() {
                                 sx={{ mt: 1, mb: 2, width: "100%", }}
                                 variant="outlined"
                                 label="Description"
-                                value={projectDes}
-                                onChange={(event) => setProjectDes(event.target.value)}
+                                value={formData.projectDescription}
+                                onChange={(event) => setFormData({ ...formData, projectDescription: event.target.value })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -285,8 +252,8 @@ function Createproject() {
                                 sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
                                 variant="outlined"
                                 label="Start"
-                                value={projectStart}
-                                onChange={(event) => setProjectStart(event.target.value)}
+                                value={formData.startDate}
+                                onChange={(event) => setFormData({ ...formData, startDate: event.target.value })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -294,14 +261,13 @@ function Createproject() {
                                         </InputAdornment>
                                     ),
                                 }}
-
                             />
                             <TextField
                                 sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
                                 variant="outlined"
                                 label="End"
-                                value={projectEnd}
-                                onChange={(event) => setProjectEnd(event.target.value)}
+                                value={formData.endDate}
+                                onChange={(event) => setFormData({ ...formData, endDate: event.target.value })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -314,8 +280,8 @@ function Createproject() {
                                 sx={{ mt: 1, mb: 2, width: "100%" }}
                                 variant="outlined"
                                 label="Budget"
-                                value={projectBudget}
-                                onChange={(event) => setProjectBudget(event.target.value)}
+                                value={formData.budget}
+                                onChange={(event) => setFormData({ ...formData, budget: event.target.value })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -325,12 +291,42 @@ function Createproject() {
                                 }}
                             />
                         </div>
-
+                        <div style={{ display: "flex", flexDirection: "row", marginTop: '10px', width: '100%' }}>
+                            {dataPersonnel.length > 0 ? (
+                                <Select
+                                    sx={{ mt: 1, mb: 2, width: "50%" }}
+                                    multiple
+                                    value={formData.memberIdList}
+                                    onChange={(event) => setFormData({ ...formData, memberIdList: event.target.value })}
+                                >
+                                    <MenuItem value="">Select Member</MenuItem>
+                                    {dataPersonnel.map((person) => (
+                                        <MenuItem key={person.personnel_id} value={person.personnel_id}>
+                                            {person.firstName} {person.lastName}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            ) : (
+                                <p>Loading data...</p>
+                            )}
+                            <Select
+                                sx={{ mt: 1, mb: 2, width: "50%", marginLeft: '15px' }}
+                                value={formData.projectStatus}
+                                onChange={(event) => setFormData({ ...formData, projectStatus: event.target.value })}
+                            >
+                                {statusOptions.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </div>
 
                         <span style={{ fontSize: '15px', marginLeft: '10px' }}>Skill Required</span>
                         <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto', width: '100%' }}>
                             {skillSelect.map((item) => (
                                 <Chip
+                                    key={item.skill_id}
                                     sx={{
                                         m: 1,
                                         height: '35px',
@@ -393,11 +389,30 @@ function Createproject() {
                                     </Card>
                                 ))}
                         </div>
+                        <Button
+                            variant="contained"
+                            color="success"
+                            style={{ marginTop: '10px', marginLeft: 'auto' }}
+                            disabled={
+                                activeStep === 0 &&
+                                (formData.projectName === '' ||
+                                    formData.projectType === '' ||
+                                    formData.projectDescription === '' ||
+                                    formData.startDate === '' ||
+                                    formData.endDate === '' ||
+                                    formData.budget === '' ||
+                                    skillSelect.length === 0)
+                            }
+                            onClick={createProjectData}
+                        >
+                            Create Project
+                        </Button>
+
                     </Box>
                 </Grid>
             </Grid>
-        </div >
+        </div>
     );
 }
 
-export default Createproject
+export default Createproject;

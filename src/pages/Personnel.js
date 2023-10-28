@@ -80,7 +80,7 @@ function Personnel() {
       }
     }
   };
-  
+
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
@@ -118,8 +118,17 @@ function Personnel() {
     <div className='main-content'>
       <div className='top-content'>
         <ThemeProvider theme={theme}>
-          <Typography sx={{ mt: 1, mb: 1, fontWeight: 'bold' }} variant='h5' component='div'>
+          <Typography sx={{ mt: 1, mb: 1, fontWeight: 'bold', display: 'flex', alignItems: 'center' }} variant='h5' component='div'>
             Personnel Management
+            <IconButton
+              sx={{ bgcolor: 'white', marginLeft: 'auto' }}
+              edge='end'
+              aria-label='assess'
+              size='large'
+              href={'personnel/create/'}
+            >
+              <AddIcon />
+            </IconButton>
           </Typography>
           <div>
             {personnel.length > 0 && (
@@ -208,15 +217,6 @@ function Personnel() {
                 </Box>
 
                 {/* เพิ่มบุคคล */}
-                <IconButton
-                  sx={{ bgcolor: 'white' }}
-                  edge='end'
-                  aria-label='assess'
-                  size='large'
-                  href={'personnel/create/'}
-                >
-                  <AddIcon />
-                </IconButton>
               </div>
             )}
           </div>
@@ -293,7 +293,7 @@ function Personnel() {
                 />
               </div>
               <span>Personnel Skill</span>
-              <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto',}}>
+              <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto', }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                   {selectedPersonnel.skills
                     .sort((a, b) => a.skillName.localeCompare(b.skillName))
