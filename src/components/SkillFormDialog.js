@@ -48,7 +48,7 @@ function SkillFormDialog(props) {
                 onSubmit={handleSubmit(onSkillSubmit)}
             >
                 <DialogTitle id="alert-dialog-title">
-                    Create Skill
+                    Add Skill
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">

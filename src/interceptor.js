@@ -1,6 +1,8 @@
 import fetchIntercept from "fetch-intercept";
 
 export const interceptor = ()=> {
+
+  
   fetchIntercept.register({
   request: function(url, config) {
     if(config?.headers){
@@ -24,6 +26,7 @@ export const interceptor = ()=> {
   response: function(response) {
     if(response.status === 403 && !response.url.includes('login')){
         localStorage.removeItem('token')
+        localStorage.removeItem('user')
         window.location.href = '/login'
     }
     return response;

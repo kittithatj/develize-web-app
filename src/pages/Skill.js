@@ -61,7 +61,7 @@ function Skill() {
                 if (res.status === 201) {
                     return res.json();
                 } else {
-                    throw new Error('Create Skill Failed');
+                    throw new Error('Add Skill Failed');
                 }
             })
             .then(() => {
@@ -71,7 +71,7 @@ function Skill() {
                     setSelectedType('');
                     openSnackbar({
                         status: 'success',
-                        message: 'Create Skill Successfully'
+                        message: 'Add Skill Successfully'
                     });
                     setLoading(false);
                 }, 1000);
@@ -80,7 +80,7 @@ function Skill() {
                 console.error(error);
                 openSnackbar({
                     status: 'error',
-                    message: 'Create Skill Failed'
+                    message: 'Add Skill Failed'
                 });
                 setLoading(false);
             });
@@ -249,7 +249,7 @@ function Skill() {
                 />
             </Box>
             <Button onClick={() => (setCreateSkillTrigger(true))} sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }} variant="contained" startIcon={<AddIcon />}>
-                Create skill
+                Add skill
             </Button>
 
         </div>

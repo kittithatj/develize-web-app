@@ -60,12 +60,21 @@ const AppLayout = () => {
 
   const [user, setUser] = useState({});
 
+  const getUserIfTokenExist = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      return user
+    }else{
+      return []
+    }
+  }
+
   useEffect(() => {
     localStorage?.getItem('user') && setUser(JSON.parse(localStorage.getItem('user')));
   },[])
 
   return <>
-    <Navbar user={user} setUser={setUser} />
+    <Navbar user={getUserIfTokenExist()} setUser={setUser} />
     <Outlet context={[user, setUser, openSnackbar]} >
     </Outlet>
     {htmlSnackBar}

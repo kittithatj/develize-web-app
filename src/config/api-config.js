@@ -16,6 +16,7 @@ export const Api = {
     personnel_division_list:'/personnel/division/list',
     personnel_assess:'/personnel/assess',
     personnel_edit:'/personnel/edit',
+    personnel_get_access_score:'/personnel/get-access/',// + id
 
     project_get: '/project/get-list',
     project_create:'/project/create'
