@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip,
-    Button, IconButton, MenuItem, Select
+    Box, Typography, TextField, InputAdornment, Chip,
+    Button, MenuItem, Select
 } from "@mui/material";
 import Grid from '@mui/material/Grid';
-import DatePicker from "@mui/lab/DatePicker";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { useNavigate, useOutletContext } from 'react-router-dom';
@@ -40,7 +39,7 @@ function Createproject() {
     const [chipCount, setChipCount] = useState(0);
     const [displayedSkills, setDisplayedSkills] = useState([]);
     const [currentType, setCurrentType] = useState('');
-    const [selectedSkillIds, setSelectedSkillIds] = useState([]);
+
 
     const fetchSkillData = () => {
         setLoading(true)
@@ -54,7 +53,6 @@ function Createproject() {
 
     const [loadingPerson, setLoadingPerson] = useState(false);
     const [dataPersonnel, setDataPersonnel] = useState('');
-    const [skillPersonnel, setSkillPersonnel] = useState('');
 
     const fetchPersonnelData = () => {
         setLoadingPerson(true);
@@ -233,6 +231,10 @@ function Createproject() {
                         </div>
                         <div style={{ display: "flex", flexDirection: "row", width: '100%' }}>
                             <TextField
+                            type='date'>
+
+                            </TextField>
+                            <TextField
                                 sx={{ mt: 1, mb: 2, width: "100%", }}
                                 variant="outlined"
                                 label="Description"
@@ -281,7 +283,7 @@ function Createproject() {
                                 variant="outlined"
                                 label="Budget"
                                 value={formData.budget}
-                                onChange={(event) => setFormData({ ...formData, budget: event.target.value })}
+                                onChange={(event) => setFormData({ ...formData, budget:  parseFloat(event.target.value) })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">

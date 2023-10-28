@@ -14,9 +14,13 @@ export const ProjectAPI = {
         })
     },
 
-    createProject:async() => {
+    createProject:async(form) => {
         return fetch(Api.url + Api.project_create, {
             method: 'POST',
+            body: JSON.stringify(form),
+            headers: {
+                'Content-Type': 'application/json',
+            }
         }).then((res) => {
             if (res.status === 200) {
                 return res.json()
