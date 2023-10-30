@@ -112,6 +112,7 @@ function Skill() {
 
     const handleSearchValueChange = (event) => {
         setSearchValue(event.target.value);
+        setPage(1);
     }
 
     const SkillNotFound = () => {

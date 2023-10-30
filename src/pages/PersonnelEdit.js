@@ -565,13 +565,15 @@ function PersonnelEdit() {
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '10px' }}>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: '#F7F7F7', width: '60%' }}>
-                                        <InputBase
+                                    <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
+                                        <TextField
+                                            id="standard-basic"
+                                            label="Search Skill"
+                                            variant="standard"
                                             sx={{ ml: 1, flex: 1 }}
-                                            placeholder="Search Skill"
-                                            inputProps={{ 'aria-label': 'search skill' }}
                                             value={searchValue}
                                             onChange={handleSearchValueChange}
+                                            inputProps={{ 'aria-label': 'search skill' }}
                                         />
                                         <IconButton type="button" sx={{ p: '10px' }} aria-label="search" disabled>
                                             <SearchIcon />

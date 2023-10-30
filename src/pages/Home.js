@@ -34,7 +34,7 @@ function Home() {
           >
             <WavingHandIcon
             sx={{
-              'font-size': "8rem",
+              'font-size': "7rem",
               margin: "30px",
             }}
             >
@@ -71,7 +71,7 @@ function Home() {
             }}
           >
             <PersonOutlineOutlinedIcon
-              style={{ fontSize: "90px", marginBottom: "-100px" }}
+              style={{ fontSize: "100px", marginBottom: "-100px" }}
             />
             <div style={{ textAlign: "center" }}>
               <h1 style={{ fontSize: "25px", margin: "0px" }}>Personnel</h1>

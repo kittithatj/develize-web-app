@@ -160,6 +160,16 @@ function Createproject() {
         });
     }
 
+    const formatDate = (inputDate) => {
+        if (inputDate) {
+            const parts = inputDate.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+        }
+        return inputDate;
+    };
+
     const getSkillTypeIcon = (skillType) => {
         switch (skillType) {
             case 'Database':
@@ -231,10 +241,6 @@ function Createproject() {
                         </div>
                         <div style={{ display: "flex", flexDirection: "row", width: '100%' }}>
                             <TextField
-                            type='date'>
-
-                            </TextField>
-                            <TextField
                                 sx={{ mt: 1, mb: 2, width: "100%", }}
                                 variant="outlined"
                                 label="Description"
@@ -251,11 +257,12 @@ function Createproject() {
                         </div>
                         <div style={{ display: "flex", flexDirection: "row", marginTop: '10px', width: '100%' }}>
                             <TextField
-                                sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
+                                type='date'
+                                sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
                                 variant="outlined"
                                 label="Start"
-                                value={formData.startDate}
-                                onChange={(event) => setFormData({ ...formData, startDate: event.target.value })}
+                                value={formatDate(formData.startDate)}
+                                onChange={(event) => setFormData({ ...formData, startDate: formatDate(event.target.value) })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -265,11 +272,12 @@ function Createproject() {
                                 }}
                             />
                             <TextField
-                                sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
+                                type='date'
+                                sx={{ mt: 1, mb: 2, width: "50%", }}
                                 variant="outlined"
                                 label="End"
-                                value={formData.endDate}
-                                onChange={(event) => setFormData({ ...formData, endDate: event.target.value })}
+                                value={formatDate(formData.endDate)}
+                                onChange={(event) => setFormData({ ...formData, endDate: formatDate(event.target.value) })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -279,11 +287,11 @@ function Createproject() {
                                 }}
                             />
                             <TextField
-                                sx={{ mt: 1, mb: 2, width: "100%" }}
+                                sx={{ mt: 1, mb: 2, width: "100%", marginLeft: '10px' }}
                                 variant="outlined"
                                 label="Budget"
                                 value={formData.budget}
-                                onChange={(event) => setFormData({ ...formData, budget:  parseFloat(event.target.value) })}
+                                onChange={(event) => setFormData({ ...formData, budget: parseFloat(event.target.value) })}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -332,8 +340,9 @@ function Createproject() {
                                     sx={{
                                         m: 1,
                                         height: '35px',
-                                        backgroundColor: '#D1D1D1',
+                                        backgroundColor: '#e6e6e6',
                                         color: 'black',
+                                        border: '1px solid black',
                                     }}
                                     variant="filled"
                                     color="info"
@@ -354,7 +363,8 @@ function Createproject() {
                                             backgroundColor: '#EEEEEE',
                                             flexBasis: 'calc(25% - 8px)',
                                             border: 'none',
-                                            height: '145px'
+                                            height: '145px',
+                                            minWidth: '200px',
                                         }}
                                         key={item.skill_id}
                                     >
