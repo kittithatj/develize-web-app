@@ -11,10 +11,7 @@ import {
   IconButton,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import InputBase from "@mui/material/InputBase";
 import { skillTypeList } from "../config/skill-type-list";
 import Pagination from "@mui/material/Pagination";
 import ListItem from "@mui/material/ListItem";
@@ -36,6 +33,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import DnsIcon from "@mui/icons-material/Dns";
+import CheckIcon from "@mui/icons-material/Check";
 import TypeSpecimenIcon from "@mui/icons-material/TypeSpecimen";
 import DescriptionIcon from "@mui/icons-material/Description";
 import AddIcon from "@mui/icons-material/Add";
@@ -249,6 +247,25 @@ function Createproject() {
         return <IntegrationInstructionsIcon />;
       default:
         return <MoreHorizIcon />;
+    }
+  };
+
+  const getSkillTypeColor = (skillType) => {
+    switch (skillType) {
+      case "Database":
+        return "error";
+      case "Others":
+        return "default";
+      case "Tool":
+        return "secondary";
+      case "Library":
+        return "success";
+      case "Programming Language":
+        return "primary";
+      case "Framework":
+        return "warning";
+      default:
+        return "default";
     }
   };
 
@@ -535,17 +552,14 @@ function Createproject() {
                   key={item.skill_id}
                   sx={{
                     m: 1,
-                    height: "35px",
-                    backgroundColor: "#e6e6e6",
-                    color: "black",
-                    border: "1px solid black",
+                    height: "40px",
                   }}
-                  variant="filled"
-                  color="info"
+                  variant="outlined"
+                  color={getSkillTypeColor(item.skillType)}
                   size="medium"
                   label={item.skillName}
                   onDelete={() => handleDeleteSkill(item)}
-                  avatar={getSkillTypeIcon(item.skillType)}
+                  icon={getSkillTypeIcon(item.skillType)}
                 />
               ))}
             </div>
@@ -615,11 +629,8 @@ function Createproject() {
                       .includes(searchValue.toLowerCase()) &&
                     (selectedType === "" || s.skillType === selectedType)
                 )
-                .map((item, index) => (
-                  <Box 
-                  sx={{width: "33.33%",}}
-                  padding="8px"
-                  >
+                .map((item) => (
+                  <Box sx={{ width: "33.33%" }} padding="8px">
                     <ListItem
                       key={item.skill_id}
                       sx={{
@@ -634,57 +645,22 @@ function Createproject() {
                         primary={item.skillName}
                         secondary={item.skillType}
                       ></ListItemText>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => {
+                            addSkill(item)
+                        }}
+                        disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                      >
+                        {
+                            skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id) 
+                            ? <CheckIcon /> 
+                            : <AddIcon />
+                        }
+                      </IconButton>
                     </ListItem>
                   </Box>
-                  // <Card
-                  //     elevation={0}
-                  //     sx={{
-                  //         backgroundColor: '#FFFFFF',
-                  //         flexBasis: 'calc(50% - 8px)',
-                  //         border: '1px solid #ccc',
-                  //         height: '100px',
-                  //         minWidth: '200px',
-                  //     }}
-                  //     key={item.skill_id}
-                  // >
-                  //     <CardContent>
-                  //         <div style={{ display: 'flex', alignItems: 'center' }}>
-                  //             <span style={{ fontSize: '24px', marginRight: '8px' }}>{getSkillTypeIcon(item.skillType)}</span>
-                  //             <Typography variant="h6" gutterBottom>
-                  //                 {item.skillName}
-                  //             </Typography>
-                  //             <Button
-                  //                 variant="text"
-                  //                 disableElevation
-                  //                 sx={{
-                  //                     backgroundColor: 'transparent',
-                  //                     color: 'black',
-                  //                     border: 'none',
-                  //                     width: '20px',
-                  //                     height: '20px',
-                  //                     borderRadius: '1000%',
-                  //                     display: 'flex',
-                  //                     justifyContent: 'center',
-                  //                     alignItems: 'center',
-                  //                     '&:hover': {
-                  //                         backgroundColor: 'transparent',
-                  //                         color: 'white',
-                  //                     },
-                  //                 }}
-                  //                 onClick={() => addSkill(item)}
-                  //                 disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
-                  //             >
-                  //                 <AddIcon />
-                  //             </Button>
-                  //         </div>
-
-                  //         <div style={{ display: 'flex', alignItems: 'center' }}>
-                  //             <Typography variant="body2" color="text.secondary">
-                  //                 {item.skillType}
-                  //             </Typography>
-                  //         </div>
-                  //     </CardContent>
-                  // </Card>
                 ))}
             </div>
             <Button
