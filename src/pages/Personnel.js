@@ -138,39 +138,33 @@ function Personnel() {
     <div className="main-content">
       <div className="top-content">
         <ThemeProvider theme={theme}>
-          <Paper sx={{padding:"30px"}}>
+          <Paper sx={{ padding: "30px" }}>
             <Box
-            className="flex-center"
-            sx={{
-              mb: 2
-            }}
+              className="flex-center"
+              sx={{
+                mb: 2,
+              }}
             >
               <Typography
-              sx={{
-                mt: 1,
-                mb: 1,
-                fontWeight: "bold",
-                display: "flex",
-                alignItems: "center",
-              }}
-              variant="h5"
-              component="div"
-            >
-              Personnel Management
-            </Typography>
-            <Link
-            to={"create/"}
-            >
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-            >
-              Create Personnel
-            </Button>
-            </Link>
-            
+                sx={{
+                  mt: 1,
+                  mb: 1,
+                  fontWeight: "bold",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                variant="h5"
+                component="div"
+              >
+                Personnel Management
+              </Typography>
+              <Link to={"create/"}>
+                <Button variant="contained" startIcon={<AddIcon />}>
+                  Create Personnel
+                </Button>
+              </Link>
             </Box>
-            
+
             <div>
               {personnel.length > 0 && (
                 <div>

@@ -40,7 +40,7 @@ function Skill() {
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const itemsPerPage = 8; // เปลี่ยนจำนวนรายการต่อหน้าเป็น 8
+  const itemsPerPage = 7; // เปลี่ยนจำนวนรายการต่อหน้าเป็น 7
 
   const fetchSkillData = () => {
     setLoading(true);
