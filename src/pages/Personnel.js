@@ -212,7 +212,6 @@ function Personnel() {
                     count={Math.ceil(personnel.length / itemsPerPage)}
                     page={currentPage}
                     onChange={(event, page) => setCurrentPage(page)}
-                    color='primary'
                   />
                 </Box>
 

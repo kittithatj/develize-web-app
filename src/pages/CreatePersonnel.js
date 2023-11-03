@@ -208,6 +208,7 @@ export default function CreatePersonnel() {
                                             margin="normal"
                                             style={{ marginRight: '8px' }}
                                             required={true}
+                                            error={formData.firstName === ''}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -221,6 +222,7 @@ export default function CreatePersonnel() {
                                             label="Last Name"
                                             value={formData.lastName}
                                             onChange={handleChange}
+                                            error={formData.lastName === ''}
                                             fullWidth
                                             margin="normal"
                                             style={{ marginLeft: '8px' }}
@@ -232,6 +234,7 @@ export default function CreatePersonnel() {
                                         label="Position"
                                         value={formData.position}
                                         onChange={handleChange}
+                                        error={formData.position === ''}
                                         fullWidth
                                         margin="normal"
                                         InputProps={{
@@ -247,6 +250,7 @@ export default function CreatePersonnel() {
                                         label="Division"
                                         value={formData.division}
                                         onChange={handleChange}
+                                        error={formData.division === ''}
                                         fullWidth
                                         margin="normal"
                                         InputProps={{
@@ -263,6 +267,7 @@ export default function CreatePersonnel() {
                                         value={formData.phoneNumber}
                                         onChange={handleChange}
                                         fullWidth
+                                        error={formData.phoneNumber === ''}
                                         margin="normal"
                                         type='number'
                                         InputProps={{
@@ -279,6 +284,7 @@ export default function CreatePersonnel() {
                                         value={formData.email}
                                         onChange={handleChange}
                                         fullWidth
+                                        error={formData.email === ''}
                                         margin="normal"
                                         InputProps={{
                                             startAdornment: (

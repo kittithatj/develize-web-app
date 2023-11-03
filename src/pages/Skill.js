@@ -108,6 +108,7 @@ function Skill() {
 
     const handleSkillTypeChange = (event) => {
         setSelectedType(event.target.value);
+        setPage(1);
     }
 
     const handleSearchValueChange = (event) => {
