@@ -142,6 +142,7 @@ function Personnel() {
             <Box
               className="flex-center"
               sx={{
+                justifyContent: "space-between",
                 mb: 2,
               }}
             >
@@ -181,7 +182,7 @@ function Personnel() {
                       <Box
                         sx={{
                           width: "30%",
-                          paddingLeft: "56px",
+                          marginLeft: "56px",
                           fontWeight: "600",
                         }}
                       >
@@ -189,17 +190,17 @@ function Personnel() {
                           Information
                         </Typography>
                       </Box>
-                      <Box sx={{ width: "24%" }}>
+                      <Box sx={{ width: "30%" }}>
                         <Typography component="div" sx={{ fontWeight: "600" }}>
                           Status
                         </Typography>
                       </Box>
-                      <Box sx={{ width: "32%" }}>
+                      <Box sx={{ width: "40%" }}>
                         <Typography component="div" sx={{ fontWeight: "600" }}>
                           Skills
                         </Typography>
                       </Box>
-                      <ListItemText sx={{ width: "128px" }} />
+                      <ListItemText sx={{ width: "165px" }} />
                     </ListItem>
 
                     <div className="line"></div>

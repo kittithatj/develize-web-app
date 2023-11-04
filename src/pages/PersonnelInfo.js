@@ -27,6 +27,7 @@ import HandymaIconn from '@mui/icons-material/Handyman';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import {stringToColor} from "../components/SkillGroupAvatar";
 
 function PersonnelEdit() {
 
@@ -112,7 +113,7 @@ function PersonnelEdit() {
         } else {
             let count = 0;
             p.projectHistories.forEach((project) => {
-                if (project.project.projectStatus === 'In Progress') count++;
+                if (project.projectStatus === 'In Progress') count++;
             });
             if (count > 0) {
                 return { status: count + ' Project Working', color: 'warning' };
@@ -156,10 +157,17 @@ function PersonnelEdit() {
                                     sx={{
                                         width: 100,
                                         height: 100,
-                                        backgroundColor: "#3f51b5",
+                                        backgroundColor: stringToColor(dataPersonnel.firstName + ' ' + dataPersonnel.lastName),
                                     }}
                                 >
+                                    <Typography
+                                  sx={{
+                                    fontSize: "2rem",
+                                  }}
+                                  >
                                     {getInitials(dataPersonnel.firstName, dataPersonnel.lastName)}
+                                  </Typography>
+                                    
                                 </Avatar>
 
                             </Badge>

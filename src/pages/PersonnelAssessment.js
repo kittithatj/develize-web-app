@@ -1,8 +1,14 @@
 import {
+  Avatar,
+  Badge,
   Box,
   Button,
   CircularProgress,
-  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Paper,
   Rating,
   Tooltip,
@@ -13,12 +19,14 @@ import { useParams } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { PersonnelAPI } from "../api/personnel-api";
 import HelpIcon from "@mui/icons-material/Help";
-import { set } from "react-hook-form";
+import { stringToColor } from "../components/SkillGroupAvatar";
 
 function PersonnelAssessment() {
   const { id } = useParams();
   const [user, setUser, openSnackbar] = useOutletContext({});
   const [assessForm, setAssessForm] = useState([]);
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [personnelInfo, setPersonnelInfo] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +34,7 @@ function PersonnelAssessment() {
     PersonnelAPI.getPersonnelById(id)
       .then((data) => {
         console.log(data);
+        setPersonnelInfo(data);
       })
       .catch((err) => {
         console.log(err);
@@ -96,30 +105,46 @@ function PersonnelAssessment() {
       },
     ];
     await PersonnelAPI.getAccessScore(id)
-    .catch(() => {
-      setAssessForm(initForm);
-      setLoading(false);
-    })
-    .then((data) => {
-      const newForm = []
-      Object.keys(data).forEach((key) => {
-        initForm.forEach((item) => {
-          if (item.keyName === key) {
-            newForm.push({
-              ...item,
-              score: data[key],
-            });
-          }
+      .catch(() => {
+        setAssessForm(initForm);
+        setLoading(false);
+      })
+      .then((data) => {
+        const newForm = [];
+        Object.keys(data).forEach((key) => {
+          initForm.forEach((item) => {
+            if (item.keyName === key) {
+              newForm.push({
+                ...item,
+                score: data[key],
+              });
+            }
+          });
         });
+        setAssessForm(newForm);
+        setLoading(false);
       });
-      setAssessForm(newForm);
-      setLoading(false);
-    });
   };
 
   const onBack = () => {
     window.history.back();
   };
+
+  const handleOpenConfirm = () => {
+    let valid = assessForm.every((item) => item.score !== 0);
+    if (!valid) {
+      openSnackbar({
+        status: "warning",
+        message: "Please assess all criteria before submit!",
+      });
+      return;
+    }
+    setOpenConfirm(true);
+  }
+
+  const handleCloseConfirm = () => {
+    setOpenConfirm(false);
+  }
 
   const submitAssessment = () => {
     let formData = {
@@ -144,100 +169,205 @@ function PersonnelAssessment() {
   };
 
   const saveAssessment = (formData) => {
-    PersonnelAPI.assessPersonnel(formData)
-    .then((res) => {
+    PersonnelAPI.assessPersonnel(formData).then((res) => {
       console.log(res);
-    })
+    });
+  };
+
+  const getAvatarText = (firstName, lastName) => {
+    if (!firstName && !lastName) return "";
+    const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
+    const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : "";
+    return firstInitial + lastInitial;
   };
 
   return (
     <div className="main-content">
-      <Paper elevation={0} sx={{ padding: "50px" }}>
-        <Container sx={{}}>
-          <Typography variant="h4">Personnel Assessment</Typography>
-        </Container>
-        <Container sx={{display:'flex', justifyContent:'center'}}>
-          <table>
-            <tbody>
-              {loading && (
-                <Box sx={{margin:'2rem'}}>
-                  <CircularProgress size={100}/>
-                </Box>
-              )}
-              {!loading &&
-                assessForm.map((item, index) => {
-                  return (
-                    <tr>
-                      <td key={index + 1}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            padding: 0,
-                            marginY: 2,
-                            marginRight: 1,
-                          }}
-                        >
-                          <Box sx={{ fontSize: "1.2rem", marginRight: "10px" }}>
-                            {item.title}
-                          </Box>
-                          <Tooltip
-                            title={item.tooltip}
-                            placement="bottom-start"
-                          >
-                            <HelpIcon
-                              fontSize="medium"
-                              color="disabled"
-                            ></HelpIcon>
-                          </Tooltip>
-                        </Box>
-                      </td>
-                      <td>
-                        <Box
-                          key={index + 1}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            padding: 0,
-                            marginY: 2,
-                            marginRight: 1,
-                          }}
-                        >
-                          <Rating
-                            name={item.keyName}
-                            max={10}
-                            defaultValue={item.score}
-                            onChange={(event, newValue) => {
-                              setAssessValue(item.title, newValue);
-                            }}
-                          />
-                        </Box>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </Container>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: "10px",
-          }}
-        >
-          <Button color="error" variant="outlined" onClick={onBack}>
-            Back
-          </Button>
-          <Button
-            color="success"
-            variant="contained"
-            onClick={submitAssessment}
+      <div className="top-content">
+        <Paper sx={{ padding: "30px" }}>
+          <Typography
+            sx={{
+              mt: 1,
+              mb: 1,
+              fontWeight: "bold",
+            }}
+            variant="h5"
+            component="div"
           >
-            Submit
-          </Button>
-        </Box>
-      </Paper>
+            Personnel Management
+          </Typography>
+
+          {/* -----Personnel Information----- */}
+          <Box className="flex-center">
+            <Button
+              className="flex-center"
+              sx={{
+                borderRadius: "10px",
+                flexDirection: "column",
+                p: 2,
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.05)",
+                },
+              }}
+            >
+              <Box className="header" sx={{ marginBottom: "0.5rem" }}>
+                <Badge
+                  overlap="circular"
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  style={{ marginLeft: "-4px" }}
+                >
+                  <Avatar
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      backgroundColor: stringToColor(
+                        personnelInfo.firstName + " " + personnelInfo.lastName
+                      ),
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: "2rem",
+                      }}
+                    >
+                      {getAvatarText(
+                        personnelInfo.firstName,
+                        personnelInfo.lastName
+                      )}
+                    </Typography>
+                  </Avatar>
+                </Badge>
+              </Box>
+              <Typography
+                sx={{
+                  fontSize: "1.5rem",
+                  color: "black",
+                }}
+              >
+                {personnelInfo.firstName + " " + personnelInfo.lastName}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: "1rem",
+                  color: "gray",
+                }}
+              >
+                {personnelInfo.position}
+              </Typography>
+            </Button>
+          </Box>
+
+          {/* -----Personnel Information----- */}
+
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <table>
+              <tbody>
+                {loading && (
+                  <Box sx={{ margin: "2rem" }}>
+                    <CircularProgress size={100} />
+                  </Box>
+                )}
+                {!loading &&
+                  assessForm.map((item, index) => {
+                    return (
+                      <tr>
+                        <td key={index + 1}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              padding: 0,
+                              marginY: 2,
+                              marginRight: 1,
+                            }}
+                          >
+                            <Box
+                              sx={{ fontSize: "1.2rem", marginRight: "10px" }}
+                            >
+                              {item.title}
+                            </Box>
+                            <Tooltip
+                              title={item.tooltip}
+                              placement="bottom-start"
+                            >
+                              <HelpIcon
+                                fontSize="medium"
+                                color="disabled"
+                              ></HelpIcon>
+                            </Tooltip>
+                          </Box>
+                        </td>
+                        <td>
+                          <Box
+                            key={index + 1}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              padding: 0,
+                              marginY: 2,
+                              marginRight: 1,
+                            }}
+                          >
+                            <Rating
+                              name={item.keyName}
+                              max={10}
+                              defaultValue={item.score}
+                              onChange={(event, newValue) => {
+                                setAssessValue(item.title, newValue);
+                              }}
+                            />
+                          </Box>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+            }}
+          >
+            <Button color="error" variant="outlined" onClick={onBack}>
+              Back
+            </Button>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={handleOpenConfirm}
+            >
+              Submit
+            </Button>
+          </Box>
+        </Paper>
+        <Dialog
+          open={openConfirm}
+          onClose={handleCloseConfirm}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Comfirm Assessment"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Do you want to submit this assessment?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button color="error" onClick={handleCloseConfirm}>Cancel</Button>
+            <Button color="success" onClick={submitAssessment} autoFocus>
+              Comfirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 }

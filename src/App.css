@@ -68,7 +68,7 @@ input[type=number] {
   font-size: 2rem;
   background: none;
   color: #000;
-  z-index: 2000;
+  z-index: 99;
 }
 
 .nav-menu {
@@ -81,7 +81,7 @@ input[type=number] {
   top: 0;
   left: -100%;
   transition: 850ms;
-  z-index: 2200;
+  z-index: 100;
 }
 
 .nav-menu.active {
@@ -134,7 +134,7 @@ input[type=number] {
 
 .flex-center {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 

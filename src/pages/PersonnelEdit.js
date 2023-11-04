@@ -186,7 +186,7 @@ function PersonnelEdit() {
         } else {
             let count = 0;
             p.projectHistories.forEach((project) => {
-                if (project.project.projectStatus === 'In Progress') count++;
+                if (project.projectStatus === 'In Progress') count++;
             });
             if (count > 0) {
                 return { status: count + ' Project Working', color: 'warning' };

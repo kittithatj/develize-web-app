@@ -763,7 +763,7 @@ function Createproject() {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent: "center", // จัด pagination อยู่กลาง
+                justifyContent: "flex-start", // จัด pagination อยู่กลาง
                 alignItems: "center",
                 width: "100%",
               }}
@@ -813,7 +813,7 @@ function Createproject() {
                     </ListItem>
                   </Box>
                 ))}
-              <box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+              <Box sx={{ width:"100%", display: "flex", justifyContent: "center", mt: 2 }}>
                 <Pagination
                   count={Math.ceil(
                     displayedSkills
@@ -829,7 +829,7 @@ function Createproject() {
                   page={currentPageSkill}
                   onChange={(event, page) => setCurrentPageSkill(page)}
                 />
-              </box>
+              </Box>
             </div>
             <Button
               variant="contained"
