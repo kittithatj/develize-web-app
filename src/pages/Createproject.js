@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  Chip,
-  Button,
-  MenuItem,
-  Select,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -22,6 +12,7 @@ import List from "@mui/material/List";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
+import SkillFroupAvatar from "../components/SkillGroupAvatar";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -44,6 +35,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import ProfileAvatar from "../components/ProfileAvatar";
 
 function Createproject() {
   const [activeStep, setActiveStep] = useState(0);
@@ -54,27 +46,43 @@ function Createproject() {
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [page, setPage] = useState(1);
 
   const [displayedSkills, setDisplayedSkills] = useState([]);
   const [currentType, setCurrentType] = useState("");
 
-  const handleMemberChange = (event, index) => {
-    const updatedMembers = [...formData.memberIdList];
-    updatedMembers[index] = event.target.value;
-    setFormData({ ...formData, memberIdList: updatedMembers });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const [currentPageSkill, setCurrentPageSkill] = useState(1);
+  const itemsPerPageSkill = 12;
+
+
+  const handleOpenDialog = (person) => {
+    setSelectedPersonnel(person);
+    setOpenDialog(true);
+  };
+  const [selectedPersonnel, setSelectedPersonnel] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const fullname = (p) => {
+    return p.firstName + " " + p.lastName;
   };
 
-  const handleRoleChange = (event, index) => {
-    const updatedRoles = [...formData.role];
-    updatedRoles[index] = event.target.value;
-    setFormData({ ...formData, role: updatedRoles });
-  };
-
-  const handleAddRow = () => {
-    setFormData({
-      memberIdList: [...formData.memberIdList, ""],
-      role: [...formData.role, ""],
-    });
+  const status = (p) => {
+    if (p.projectHistories.length === 0) {
+      return { status: "Not Assigned", color: "success" };
+    } else {
+      let count = 0;
+      p.projectHistories.forEach((project) => {
+        if (project.projectStatus === "On-going") count++;
+      });
+      if (count > 0) {
+        return { status: count + " Project Working", color: "warning" };
+      } else {
+        return { status: "Not Assigned", color: "success" };
+      }
+    }
   };
 
   const handleRemoveRow = (index) => {
@@ -97,10 +105,18 @@ function Createproject() {
 
   const handleSkillTypeChange = (event) => {
     setSelectedType(event.target.value);
+    setCurrentPageSkill(1);
   };
   const handleSearchValueChange = (event) => {
     setSearchValue(event.target.value);
+    setCurrentPageSkill(1);
   };
+
+  const [searchPositionValue, setSearchPositionValue] = useState("");
+  const handleSearchPositionValueChange = (event) => {
+    setSearchPositionValue(event.target.value);
+  };
+
 
   const [loadingPerson, setLoadingPerson] = useState(false);
   const [dataPersonnel, setDataPersonnel] = useState("");
@@ -112,14 +128,9 @@ function Createproject() {
     });
   };
 
-  const [projectName, setProjectName] = useState("");
-  const [projectDes, setProjectDes] = useState("");
   const typeOptions = ["Digital Marketing", "AppService", "Security System"];
   const statusOptions = ["On Success", "On Holding", "On Going"];
   const memberOptions = ["Project Leader", "Developer", "Engineer", "Tester"];
-  const [projectStart, setProjectStart] = useState("");
-  const [projectEnd, setProjectEnd] = useState("");
-  const [projectBudget, setProjectBudget] = useState("");
 
   const [formData, setFormData] = useState({
     projectName: "",
@@ -253,7 +264,16 @@ function Createproject() {
   };
 
   return (
-    <div className="main-content">
+    <div className="main-content"
+      sx={{
+        width: "100%",
+        backgroundColor: "white",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "center",
+        padding: "15px",
+      }}>
       <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
         <Grid item xs={12} md={6}>
           <Box
@@ -280,11 +300,19 @@ function Createproject() {
             >
               Create New Project
             </Typography>
+            <div>
+              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px',marginRight:'375px' }}>
+                ProjectName
+              </span>
+              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
+                ProjectType
+              </span>
+            </div>
             <div
               style={{
                 display: "flex",
                 flexDirection: "row",
-                marginTop: "10px",
+                marginTop: "-10px",
                 width: "100%",
               }}
             >
@@ -447,77 +475,187 @@ function Createproject() {
                 marginBottom: "15px",
               }}
             >
-              <span style={{ fontSize: "15px", marginLeft: "10px" }}>
+              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
                 Member List
               </span>
-              <IconButton
-                onClick={handleAddRow}
-                sx={{ p: "5px", alignSelf: "center" }}
-              >
-                <AddIcon />
-              </IconButton>
             </div>
-            <div style={{ width: "100%", marginBottom: "15px" }}>
-              {formData.memberIdList.map((member, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                  }}
-                >
-                  <Select
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "100%",
+                  marginLeft: "2vw",
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <Box
                     sx={{
-                      mt: 1,
-                      mb: 2,
+                      display: "flex",
                       width: "100%",
-                      height: "100%",
-                      marginRight: 2,
+                      borderStyle: "solid",
+                      borderRadius: "5px",
+                      borderColor: "#F0f0f0",
+                      borderWidth: "2px",
                     }}
-                    value={formData.memberIdList[index]}
-                    onChange={(event) => handleMemberChange(event, index)}
                   >
-                    <MenuItem value="">Select Member</MenuItem>
-                    {dataPersonnel.map((person) => (
-                      <MenuItem
-                        key={person.personnel_id}
-                        value={person.personnel_id}
-                      >
-                        {person.firstName} {person.lastName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <Select
-                    sx={{
-                      mt: 1,
-                      mb: 2,
-                      width: "100%",
-                      height: "100%",
-                    }}
-                    value={formData.role[index]}
-                    onChange={(event) => handleRoleChange(event, index)}
-                  >
-                    <MenuItem value="">Select Role</MenuItem>
-                    {memberOptions.map((role) => (
-                      <MenuItem key={role} value={role}>
-                        {role}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Search Position"
+                      inputProps={{ "aria-label": "search position" }}
+                      value={searchValue}
+                      onChange={handleSearchValueChange}
+                    />
                     <IconButton
-                      onClick={() => handleRemoveRow(index)}
-                      sx={{ p: "5px", alignSelf: "center", marginLeft: "8px" }}
+                      type="button"
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                      disabled
                     >
-                      <DeleteIcon />
+                      <SearchIcon />
                     </IconButton>
-                  </div>
+                  </Box>
                 </div>
-              ))}
+                <div style={{ marginLeft: "8px", flex: 1 }}>
+                  <TextField
+                    sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50, }}
+                    size="small"
+                    id="select-skill-type"
+                    select
+                    label="Select Skill"
+                    variant="standard"
+                    value={selectedType}
+                    onChange={handleSkillTypeChange}
+                  >
+                    {skillTypeList.map((type) => (
+                      <MenuItem key={type.label} value={type.value}>
+                        {type.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </div>
+              </div>
+              {dataPersonnel.length > 0 && (
+                <div>
+                  <List
+                    sx={{
+                      width: "47vw",
+                      minWidth: 500,
+                      bgcolor: "background.paper",
+                      zIndex: 200,
+                      padding: 0,
+                    }}
+                  >
+                    <ListItem>
+                      <Box
+                        sx={{
+                          width: "30%",
+                          paddingLeft: "56px",
+                          fontWeight: "600",
+                        }}
+                      >
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Information
+                        </Typography>
+                      </Box>
+                      <Box sx={{ marginLeft: '7%' }}>
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Status
+                        </Typography>
+                      </Box>
+                      <Box sx={{ marginLeft: '20%' }}>
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Skills
+                        </Typography>
+                      </Box>
+                      <ListItemText sx={{ width: "128px" }} />
+                    </ListItem>
+
+                    <div className="line"></div>
+                    {dataPersonnel
+                      .slice(
+                        (currentPage - 1) * itemsPerPage,
+                        currentPage * itemsPerPage
+                      )
+                      .map((dataPersonnel, i, array) => {
+                        return (
+                          <Box>
+                            <ListItemButton
+                              component="div"
+                              key={dataPersonnel.personnel_id}
+                              divider={i + 1 === array.length ? false : true}
+                              onClick={() => handleOpenDialog(dataPersonnel)}
+                            >
+                              <ListItemAvatar>
+                                <ProfileAvatar
+                                  variant="circular"
+                                  name={fullname(dataPersonnel)}
+                                />
+                              </ListItemAvatar>
+                              <ListItemText
+                                sx={{ width: "30%" }}
+                                primary={fullname(dataPersonnel)}
+                                secondary={dataPersonnel.position}
+                              />
+                              <Box
+                                component="div"
+                                sx={{ display: "flex", width: "30%" }}
+                              >
+                                <Chip
+                                  label={status(dataPersonnel).status}
+                                  color={status(dataPersonnel).color}
+                                  sx={{
+                                    justifyContent: "center",
+                                    "& .MuiChip-label": {
+                                      margin: 0,
+                                    },
+                                  }}
+                                />
+                              </Box>
+                              <Box
+                                component="div"
+                                sx={{ display: "flex", width: "40%" }}
+                              >
+                                {dataPersonnel.skills.length > 0 && (
+                                  <AvatarGroup max={5}>
+                                    {dataPersonnel.skills.map((skill) => {
+                                      return (
+                                        <Tooltip
+                                          key={skill?.skill_id}
+                                          title={skill.skillName}
+                                        >
+                                          <div>
+                                            <SkillFroupAvatar
+                                              variant="circular"
+                                              name={skill.skillName}
+                                            />
+                                          </div>
+                                        </Tooltip>
+                                      );
+                                    })}
+                                  </AvatarGroup>
+                                )}
+                              </Box>
+                            </ListItemButton>
+                          </Box>
+                        );
+                      })}
+                  </List>
+
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+                  >
+                    <Pagination
+                      count={Math.ceil(dataPersonnel.length / itemsPerPage)}
+                      page={currentPage}
+                      onChange={(event, page) => setCurrentPage(page)}
+                    />
+                  </Box>
+                </div>
+              )}
             </div>
 
-            <span style={{ fontSize: "15px", marginLeft: "10px" }}>
+            <span style={{ fontSize: "15px", }}>
               Skill Required
             </span>
             <div
@@ -556,35 +694,45 @@ function Createproject() {
                 alignItems: "center",
                 width: "100%",
                 marginTop: "15px",
+                marginLeft: "2vw",
               }}
             >
               <div style={{ flex: 1 }}>
-                <TextField
-                  id="standard-basic"
-                  label="Search Skill"
-                  variant="standard"
-                  sx={{ width: "110%" }}
-                  value={searchValue}
-                  onChange={handleSearchValueChange}
-                  inputProps={{ "aria-label": "search skill" }}
-                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    width: "100%",
+                    borderStyle: "solid",
+                    borderRadius: "5px",
+                    borderColor: "#F0f0f0",
+                    borderWidth: "2px",
+                  }}
+                >
+                  <InputBase
+                    sx={{ ml: 1, flex: 1 }}
+                    placeholder="Search Skill"
+                    inputProps={{ "aria-label": "search skill" }}
+                    value={searchValue}
+                    onChange={handleSearchValueChange}
+                  />
+                  <IconButton
+                    type="button"
+                    sx={{ p: "10px" }}
+                    aria-label="search"
+                    disabled
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </Box>
               </div>
-              <IconButton
-                type="button"
-                sx={{ p: "10px" }}
-                aria-label="search"
-                disabled
-              >
-                <SearchIcon />
-              </IconButton>
               <div style={{ marginLeft: "8px", flex: 1 }}>
                 <TextField
-                  sx={{ width: "100%", height: 40 }}
+                  sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
                   size="small"
                   id="select-skill-type"
                   select
                   label="Select Skill Type"
-                  variant="filled"
+                  variant="standard"
                   value={selectedType}
                   onChange={handleSkillTypeChange}
                 >
@@ -601,10 +749,9 @@ function Createproject() {
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                marginTop: "8px",
-                maxWidth: "100%",
+                justifyContent: "center", // จัด pagination อยู่กลาง
                 alignItems: "center",
-                justifyContent: "flex-start",
+                width: "100%",
               }}
             >
               {displayedSkills
@@ -613,12 +760,16 @@ function Createproject() {
                     s.skillName
                       .toLowerCase()
                       .includes(searchValue.toLowerCase()) &&
-                    (selectedType === "" || s.skillType === selectedType)
+                    (selectedType === '' || s.skillType === selectedType)
+                )
+                .slice(
+                  (currentPageSkill - 1) * itemsPerPageSkill,
+                  currentPageSkill * itemsPerPageSkill
                 )
                 .map((item, index) => (
-                  <Box 
-                  sx={{width: "33.33%",}}
-                  padding="8px"
+                  <Box
+                    sx={{ width: "33.33%", }}
+                    padding="8px"
                   >
                     <ListItem
                       key={item.skill_id}
@@ -636,56 +787,24 @@ function Createproject() {
                       ></ListItemText>
                     </ListItem>
                   </Box>
-                  // <Card
-                  //     elevation={0}
-                  //     sx={{
-                  //         backgroundColor: '#FFFFFF',
-                  //         flexBasis: 'calc(50% - 8px)',
-                  //         border: '1px solid #ccc',
-                  //         height: '100px',
-                  //         minWidth: '200px',
-                  //     }}
-                  //     key={item.skill_id}
-                  // >
-                  //     <CardContent>
-                  //         <div style={{ display: 'flex', alignItems: 'center' }}>
-                  //             <span style={{ fontSize: '24px', marginRight: '8px' }}>{getSkillTypeIcon(item.skillType)}</span>
-                  //             <Typography variant="h6" gutterBottom>
-                  //                 {item.skillName}
-                  //             </Typography>
-                  //             <Button
-                  //                 variant="text"
-                  //                 disableElevation
-                  //                 sx={{
-                  //                     backgroundColor: 'transparent',
-                  //                     color: 'black',
-                  //                     border: 'none',
-                  //                     width: '20px',
-                  //                     height: '20px',
-                  //                     borderRadius: '1000%',
-                  //                     display: 'flex',
-                  //                     justifyContent: 'center',
-                  //                     alignItems: 'center',
-                  //                     '&:hover': {
-                  //                         backgroundColor: 'transparent',
-                  //                         color: 'white',
-                  //                     },
-                  //                 }}
-                  //                 onClick={() => addSkill(item)}
-                  //                 disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
-                  //             >
-                  //                 <AddIcon />
-                  //             </Button>
-                  //         </div>
-
-                  //         <div style={{ display: 'flex', alignItems: 'center' }}>
-                  //             <Typography variant="body2" color="text.secondary">
-                  //                 {item.skillType}
-                  //             </Typography>
-                  //         </div>
-                  //     </CardContent>
-                  // </Card>
                 ))}
+              <box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <Pagination
+                  count={Math.ceil(
+                    displayedSkills
+                      .filter(
+                        (s) =>
+                          s.skillName
+                            .toLowerCase()
+                            .includes(searchValue.toLowerCase()) &&
+                          (selectedType === '' || s.skillType === selectedType)
+                      )
+                      .length / itemsPerPageSkill
+                  )}
+                  page={currentPageSkill}
+                  onChange={(event, page) => setCurrentPageSkill(page)}
+                />
+              </box>
             </div>
             <Button
               variant="contained"

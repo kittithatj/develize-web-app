@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from React Router
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Select } from "@mui/material";
+import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Select, Paper } from "@mui/material";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
@@ -69,79 +69,93 @@ function Project() {
                     backgroundColor: "transparent",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "flex-start",
-                    justifyContent: "flex-start",
+                    alignItems: "flex-center",
+                    justifyContent: "flex-center",
                     padding: "15px",
                     margin: "10px",
                 }}
             >
-                <Grid
-                    container
-                    justifyContent="flex-start"
-                    alignItems="stretch"
-                    spacing={2}
-                    sx={{ display: 'flex', flexDirection: 'row' }}
-                >
-
-                    <Button
-                        sx={{ position: 'fixed', bottom: 30, right: 30, zIndex: 2300 }}
-                        variant="contained"
-                        startIcon={<AddIcon />}
-                        href={'/project/createproject'}
+                <Paper sx={{ padding: "30px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom:'12px' }}>
+                        <Typography
+                            sx={{
+                                mt: 1,
+                                mb: 1,
+                                fontWeight: "bold",
+                            }}
+                            variant="h5"
+                            component="div"
+                        >
+                            Project Management
+                        </Typography>
+                        <Link to={"/project/createproject"}>
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                            >
+                                Create Project
+                            </Button>
+                        </Link>
+                    </div>
+                    <Grid
+                        container
+                        justifyContent="flex-start"
+                        alignItems="stretch"
+                        spacing={2}
+                        sx={{ display: 'flex', flexDirection: 'row' }}
                     >
-                        Create Project
-                    </Button>
-                    {projectData
-                        .sort((a, b) => a.projectName.localeCompare(b.projectName))
-                        .map((item) => (
-                            <Grid key={item.project_id}>
-                                <div>
-                                    <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px', marginTop: '15px' }}>
-                                        <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-                                            <div>
-                                                {item.projectType === 'Security System' && <img src="https://i.ibb.co/SwPWB9h/security.png" width="100%" height="60%" />}
-                                                {item.projectType === 'Digital Markerting' && <img src="https://i.ibb.co/mv0tX9b/buissines.jpg" width="100%" height="60%" />}
-                                                {item.projectType === 'AppService' && <img src="https://i.ibb.co/ygSHmW2/buissines-1.png" width="100%" height="60%" />}
-                                                <Typography variant="h5" component="div" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
-                                                    <div>
-                                                        {item.projectName}
-                                                        <p style={{ fontSize: "small", color: 'green' }}>
-                                                            {new Date(item.startDate).getDate()} {months[new Date(item.startDate).getMonth()]} {new Date(item.startDate).getFullYear()} - {new Date(item.endDate).getDate()} {months[new Date(item.endDate).getMonth()]} {new Date(item.endDate).getFullYear()}
+                        {projectData
+                            .sort((a, b) => a.projectName.localeCompare(b.projectName))
+                            .map((item) => (
+                                <Grid key={item.project_id}>
+                                    <div sx={{ with:'100%'}}>
+                                        <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px', marginTop: '15px' }}>
+                                            <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                                                <div>
+                                                    {item.projectType === 'Security System' && <img src="https://i.ibb.co/SwPWB9h/security.png" width="100%" height="60%" />}
+                                                    {item.projectType === 'Digital Markerting' && <img src="https://i.ibb.co/mv0tX9b/buissines.jpg" width="100%" height="60%" />}
+                                                    {item.projectType === 'AppService' && <img src="https://i.ibb.co/ygSHmW2/buissines-1.png" width="100%" height="60%" />}
+                                                    <Typography variant="h5" component="div" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
+                                                        <div>
+                                                            {item.projectName}
+                                                            <p style={{ fontSize: "small", color: 'green' }}>
+                                                                {new Date(item.startDate).getDate()} {months[new Date(item.startDate).getMonth()]} {new Date(item.startDate).getFullYear()} - {new Date(item.endDate).getDate()} {months[new Date(item.endDate).getMonth()]} {new Date(item.endDate).getFullYear()}
+                                                            </p>
+                                                        </div>
+                                                        <Chip
+                                                            label={status(item)?.status || 'On-going'}
+                                                            color={status(item)?.color || 'warning'}
+                                                            sx={{
+                                                                "& .MuiChip-label": {
+                                                                    margin: 0,
+                                                                }
+                                                            }}
+                                                        />
+                                                    </Typography>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        <p style={{ fontSize: "small", color: 'black', fontWeight: "bold", display: 'inline-flex', alignItems: 'center' }}>
+                                                            {item.projectType === 'Security System' && <SettingsSuggestIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType === 'Digital Markerting' && <AttachMoneyIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType === 'AppService' && <SupportAgentIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType}
                                                         </p>
-                                                    </div>
-                                                    <Chip
-                                                        label={status(item)?.status || 'On-going'}
-                                                        color={status(item)?.color || 'warning'}
-                                                        sx={{
-                                                            "& .MuiChip-label": {
-                                                                margin: 0,
-                                                            }
-                                                        }}
-                                                    />
-                                                </Typography>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    <p style={{ fontSize: "small", color: 'black', fontWeight: "bold", display: 'inline-flex', alignItems: 'center' }}>
-                                                        {item.projectType === 'Security System' && <SettingsSuggestIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
-                                                        {item.projectType === 'Digital Markerting' && <AttachMoneyIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
-                                                        {item.projectType === 'AppService' && <SupportAgentIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
-                                                        {item.projectType}
-                                                    </p>
-                                                </Typography>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    {item.projectDescription}
-                                                </Typography>
-                                            </div>
-                                            <Link to={`/project/projectdetail/${item.project_id}`}>
-                                                <Button color="primary" style={{ alignSelf: 'flex-end', margin: '8px 0', borderRadius: 0 }}>
-                                                    View Detail
-                                                </Button>
-                                            </Link>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </Grid>
-                        ))}
-                </Grid>
+                                                    </Typography>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        {item.projectDescription}
+                                                    </Typography>
+                                                </div>
+                                                <Link to={`/project/projectdetail/${item.project_id}`}>
+                                                    <Button color="primary" style={{ alignSelf: 'flex-end', margin: '8px 0', borderRadius: 0 }}>
+                                                        View Detail
+                                                    </Button>
+                                                </Link>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </Grid>
+                            ))}
+                    </Grid>
+                </Paper>
             </Box>
         </div>
     );

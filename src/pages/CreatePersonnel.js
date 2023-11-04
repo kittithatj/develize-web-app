@@ -182,7 +182,7 @@ export default function CreatePersonnel() {
                                 variant="h5"
                                 color="textSecondary"
                             >
-                                Personnel Details
+                                CreatePersonnel
                             </Typography>
                         </div>
                         <Box sx={{ width: '100%' }}>
@@ -308,29 +308,42 @@ export default function CreatePersonnel() {
                                                 display: 'flex',
                                                 alignItems: 'center',
                                                 width: 300,
-                                                backgroundColor: '#E6E6E6',
                                             }}
                                         >
-                                            <div style={{ flex: 1, display: 'flex', alignItems: 'center', width: '300px' }}>
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    width: "100%",
+                                                    borderStyle: "solid",
+                                                    borderRadius: "5px",
+                                                    borderColor: "#F0f0f0",
+                                                    borderWidth: "2px",
+                                                }}
+                                            >
                                                 <InputBase
-                                                    sx={{ ml: 1, width: '300px' }}
+                                                    sx={{ ml: 1, flex: 1 }}
                                                     placeholder="Search Skill"
-                                                    inputProps={{ 'aria-label': 'search skill' }}
+                                                    inputProps={{ "aria-label": "search skill" }}
                                                     value={searchValue}
                                                     onChange={handleSearchValueChange}
                                                 />
-                                                <IconButton type="button" sx={{ p: '10px' }} aria-label="search" disabled>
+                                                <IconButton
+                                                    type="button"
+                                                    sx={{ p: "10px" }}
+                                                    aria-label="search"
+                                                    disabled
+                                                >
                                                     <SearchIcon />
                                                 </IconButton>
-                                            </div>
+                                            </Box>
                                         </Paper>
                                         <TextField
-                                            sx={{ mb: 2, mt: 2, ml: 2, width: 200, height: 40 }}
-                                            size='small'
+                                            sx={{ mb: 2, mt: 2, ml: 2, width: 250, height: 50 }}
+                                            size="small"
                                             id="select-skill-type"
                                             select
                                             label="Select Skill Type"
-                                            variant="filled"
+                                            variant="standard"
                                             value={selectedType}
                                             onChange={handleSkillTypeChange}
                                         >
