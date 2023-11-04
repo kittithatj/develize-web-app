@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, InputBase, } from "@mui/material";
+import { Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, InputBase, ThemeProvider, createTheme, } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { skillTypeList } from "../config/skill-type-list";
@@ -218,6 +218,26 @@ function Createproject() {
       });
     }
   };
+
+  const theme = createTheme({
+    status: {
+      danger: "#e53e3e",
+    },
+    palette: {
+      primary: {
+        main: "#0971f1",
+        darker: "#053e85",
+      },
+      success: {
+        main: "#64dd17",
+        contrastText: "#fff",
+      },
+      warning: {
+        main: "#fbc02d",
+        contrastText: "#fff",
+      },
+    },
+  });
 
   const handleDeleteSkill = (item) => {
     const updatedSkills = skillSelect.filter(
@@ -553,7 +573,7 @@ function Createproject() {
                 </div>
               </div>
               {dataPersonnel.length > 0 && (
-                <div>
+                <ThemeProvider theme={theme}>
                   <List
                     sx={{
                       width: "47vw",
@@ -668,7 +688,7 @@ function Createproject() {
                       onChange={(event, page) => setCurrentPage(page)}
                     />
                   </Box>
-                </div>
+                </ThemeProvider>
               )}
             </div>
 

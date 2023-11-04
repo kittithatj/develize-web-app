@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from React Router
-import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Select, Paper } from "@mui/material";
+import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, Select, Paper, createTheme, ThemeProvider } from "@mui/material";
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
@@ -56,6 +56,26 @@ function Project() {
         }
     };
 
+    const theme = createTheme({
+        status: {
+          danger: "#e53e3e",
+        },
+        palette: {
+          primary: {
+            main: "#0971f1",
+            darker: "#053e85",
+          },
+          success: {
+            main: "#64dd17",
+            contrastText: "#fff",
+          },
+          warning: {
+            main: "#fbc02d",
+            contrastText: "#fff",
+          },
+        },
+      });
+
     useEffect(() => {
         fetchProjectData();
         fetchPersonnelData();
@@ -108,7 +128,7 @@ function Project() {
                             .sort((a, b) => a.projectName.localeCompare(b.projectName))
                             .map((item) => (
                                 <Grid key={item.project_id}>
-                                    <div sx={{ with:'100%'}}>
+                                    <ThemeProvider theme={theme} sx={{ with:'100%'}}>
                                         <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px', marginTop: '15px' }}>
                                             <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                                                 <div>
@@ -151,7 +171,7 @@ function Project() {
                                                 </Link>
                                             </CardContent>
                                         </Card>
-                                    </div>
+                                    </ThemeProvider>
                                 </Grid>
                             ))}
                     </Grid>
