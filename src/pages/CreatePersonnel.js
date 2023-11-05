@@ -29,6 +29,7 @@ import HandymaIconn from '@mui/icons-material/Handyman';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 
 export default function CreatePersonnel() {
     const navigate = useNavigate();
@@ -40,6 +41,8 @@ export default function CreatePersonnel() {
     const [searchValue, setSearchValue] = useState('');
     const [selectedType, setSelectedType] = useState('');
     const [chipCount, setChipCount] = useState(0);
+
+    const employmentStatus = ["Full-time", "Part-time", "Temporary", "Intern", "Outsource", "Probationary", "Resigned"];
 
     const [currentPageSkill, setCurrentPageSkill] = useState(1);
     const itemsPerPageSkill = 12;
@@ -181,12 +184,11 @@ export default function CreatePersonnel() {
         }
     };
 
-    const steps = ['Personnel Information', 'Skills', 'Assessment'];
+    const steps = ['Personnel Information', 'Skills'];
 
     const stepContents = [
         'Personnel Information',
         'Skills',
-        'Assessment',
     ];
 
     return (
@@ -221,130 +223,142 @@ export default function CreatePersonnel() {
                                     </Step>
                                 ))}
                             </Stepper>
-                            <Typography sx={{ mt: 2 }}>
-                                {stepContents[activeStep]}
-                            </Typography>
                             {activeStep === 0 && (
                                 <form>
-                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
-                                            Firstname
-                                        </span>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '540px' }}>
-                                            Lastname
-                                        </span>
-                                    </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', }}>
-                                        <TextField
-                                            name="firstName"
-                                            value={formData.firstName}
-                                            onChange={handleChange}
-                                            fullWidth
-                                            margin="normal"
-                                            style={{ marginRight: '8px' }}
-                                            required={true}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <PersonIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
-                                        <TextField
-                                            name="lastName"
-                                            value={formData.lastName}
-                                            onChange={handleChange}
-                                            fullWidth
-                                            margin="normal"
-                                            style={{ marginLeft: '8px' }}
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <PersonIcon />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                        />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                Firstname
+                                            </div>
+                                            <TextField
+                                                name="firstName"
+                                                value={formData.firstName}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                            />
+                                        </div>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                Lastname
+                                            </div>
+                                            <TextField
+                                                name="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                            />
+                                        </div>
                                     </div>
 
-                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
-                                            Position
-                                        </span>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '20px' }}>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                Position
+                                            </div>
+                                            <TextField
+                                                name="position"
+                                                value={formData.position}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <PermContactCalendarIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                Division
+                                            </div>
+                                            <TextField
+                                                name="division"
+                                                value={formData.division}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <SupervisedUserCircleIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                    <TextField
-                                        name="position"
-                                        value={formData.position}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <PermContactCalendarIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
-                                            Division
-                                        </span>
+
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '20px' }}>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                PhoneNumber
+                                            </div>
+                                            <TextField
+                                                name="phoneNumber"
+                                                value={formData.phoneNumber}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                                type='number'
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <AddIcCallIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                                                Email
+                                            </div>
+                                            <TextField
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                fullWidth
+                                                margin="normal"
+                                                InputProps={{
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <MailOutlineIcon />
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </div>
                                     </div>
-                                    <TextField
-                                        name="division"
-                                        value={formData.division}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <SupervisedUserCircleIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
-                                            Phone Number
-                                        </span>
+
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", }}>
+                                        <div style={{ flex: 1, display: "flex", flexDirection: "column", marginBottom: '20px' }}>
+                                            <div style={{ fontSize: "15px", marginBottom: '0' }}>
+                                                EmploymentStatus
+                                            </div>
+                                            <Select
+                                                sx={{ mt: 1, mb: 2, width: "100%" }}
+                                                value={formData.employmentStatus}
+                                                name="employmentStatus" 
+                                                onChange={handleChange} 
+                                                startAdornment={
+                                                    <InputAdornment position="start">
+                                                      <AutorenewIcon />
+                                                    </InputAdornment>
+                                                  }
+                                            >
+                                                {employmentStatus.map((type) => (
+                                                    <MenuItem key={type} value={type}>
+                                                        {type}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </div>
                                     </div>
-                                    <TextField
-                                        name="phoneNumber"
-                                        value={formData.phoneNumber}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        type='number'
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <AddIcCallIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
-                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
-                                            Email
-                                        </span>
-                                    </div>
-                                    <TextField
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        fullWidth
-                                        margin="normal"
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <MailOutlineIcon />
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
                                 </form>
                             )}
 
@@ -522,18 +536,10 @@ export default function CreatePersonnel() {
                                 <Button
                                     variant="contained"
                                     color="success"
-                                    disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '')}
-                                    onClick={handleCreate}
-                                >
-                                    Create Personnel
-                                </Button>
-
-                                <Button
-                                    variant="contained"
-                                    color="primary"
                                     onClick={handleNextStep}
+                                    disabled={activeStep === 0 && (formData.firstName === '' || formData.lastName === '' || formData.position === '' || formData.division === '' || formData.phoneNumber === '' || formData.email === '' || formData.employmentStatus === '')}
                                 >
-                                    {activeStep === steps.length - 1 ? 'Save' : 'Next'}
+                                    {activeStep === steps.length - 1 ? 'Create' : 'Next'}
                                 </Button>
                             </Box>
                         </Box>

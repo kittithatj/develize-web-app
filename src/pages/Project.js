@@ -14,6 +14,11 @@ import AddIcon from '@mui/icons-material/Add';
 import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import WebDevelopment from '../components/image/WebDevelopment.png';
+import MobileAppDevelopment from '../components/image//MobileAppDevelopment.png';
+import DesktopApplicationDevelopment from '../components/image/DesktopApplicationDevelopment.png';
+import GameDevelopment from '../components/image/GameDevelopment.png';
+
 
 function Project() {
     const months = [
@@ -58,23 +63,23 @@ function Project() {
 
     const theme = createTheme({
         status: {
-          danger: "#e53e3e",
+            danger: "#e53e3e",
         },
         palette: {
-          primary: {
-            main: "#0971f1",
-            darker: "#053e85",
-          },
-          success: {
-            main: "#64dd17",
-            contrastText: "#fff",
-          },
-          warning: {
-            main: "#fbc02d",
-            contrastText: "#fff",
-          },
+            primary: {
+                main: "#0971f1",
+                darker: "#053e85",
+            },
+            success: {
+                main: "#64dd17",
+                contrastText: "#fff",
+            },
+            warning: {
+                main: "#fbc02d",
+                contrastText: "#fff",
+            },
         },
-      });
+    });
 
     useEffect(() => {
         fetchProjectData();
@@ -96,7 +101,7 @@ function Project() {
                 }}
             >
                 <Paper sx={{ padding: "30px" }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom:'12px' }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: '12px' }}>
                         <Typography
                             sx={{
                                 mt: 1,
@@ -128,13 +133,14 @@ function Project() {
                             .sort((a, b) => a.projectName.localeCompare(b.projectName))
                             .map((item) => (
                                 <Grid key={item.project_id}>
-                                    <ThemeProvider theme={theme} sx={{ with:'100%'}}>
+                                    <ThemeProvider theme={theme} sx={{ with: '100%' }}>
                                         <Card style={{ flex: '1', width: '400px', height: '450px', marginRight: '16px', marginTop: '15px' }}>
                                             <CardContent style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
                                                 <div>
-                                                    {item.projectType === 'Security System' && <img src="https://i.ibb.co/SwPWB9h/security.png" width="100%" height="60%" />}
-                                                    {item.projectType === 'Digital Markerting' && <img src="https://i.ibb.co/mv0tX9b/buissines.jpg" width="100%" height="60%" />}
-                                                    {item.projectType === 'AppService' && <img src="https://i.ibb.co/ygSHmW2/buissines-1.png" width="100%" height="60%" />}
+                                                    {item.projectType === 'Web Development' && <img src={WebDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Mobile App Development' && <img src={MobileAppDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Desktop Application Development' && <img src={DesktopApplicationDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Game Development' && <img src={GameDevelopment} width="100%" height="60%" />}
                                                     <Typography variant="h5" component="div" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
                                                         <div>
                                                             {item.projectName}
@@ -154,9 +160,9 @@ function Project() {
                                                     </Typography>
                                                     <Typography variant="body2" color="textSecondary">
                                                         <p style={{ fontSize: "small", color: 'black', fontWeight: "bold", display: 'inline-flex', alignItems: 'center' }}>
-                                                            {item.projectType === 'Security System' && <SettingsSuggestIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
-                                                            {item.projectType === 'Digital Markerting' && <AttachMoneyIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
-                                                            {item.projectType === 'AppService' && <SupportAgentIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType === 'Web Development' && <SettingsSuggestIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType === 'Mobile App Development' && <AttachMoneyIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
+                                                            {item.projectType === 'Desktop Application Development' && <SupportAgentIcon style={{ fontSize: '25px', marginRight: '4px' }} />}
                                                             {item.projectType}
                                                         </p>
                                                     </Typography>
