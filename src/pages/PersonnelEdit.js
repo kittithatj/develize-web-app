@@ -11,6 +11,11 @@ import CardActions from '@mui/material/CardActions';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import ListItem from "@mui/material/ListItem";
+import List from "@mui/material/List";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Pagination from "@mui/material/Pagination";
 
 
 // API
@@ -34,6 +39,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { color } from "framer-motion";
+import CheckIcon from "@mui/icons-material/Check";
 
 
 function PersonnelEdit() {
@@ -65,6 +71,8 @@ function PersonnelEdit() {
     const [divisionEdit, setDivisionEdit] = useState('');
     const [positionEdit, setPositionEdit] = useState('');
     const [employmentStatusEdit, setEmploymentStatusEdit] = useState('');
+    const [currentPageSkill, setCurrentPageSkill] = useState(1);
+    const itemsPerPageSkill = 12;
 
 
     const handleDeleteSkill = (item) => {
@@ -193,6 +201,25 @@ function PersonnelEdit() {
             } else {
                 return { status: 'Not Assigned', color: 'success' };
             }
+        }
+    };
+
+    const getSkillTypeColor = (skillType) => {
+        switch (skillType) {
+            case "Database":
+                return "error";
+            case "Others":
+                return "default";
+            case "Tool":
+                return "secondary";
+            case "Library":
+                return "success";
+            case "Programming Language":
+                return "primary";
+            case "Framework":
+                return "warning";
+            default:
+                return "default";
         }
     };
 
@@ -544,41 +571,60 @@ function PersonnelEdit() {
                             </Typography>
                         </div>
                         <div className="content">
-                            <div style={{ border: '1px solid #ccc', borderRadius: '5px', padding: '8px', minHeight: '100px', height: 'auto' }}>
-                                {skillSelect
-                                    .sort((a, b) => a.skillName.localeCompare(b.skillName))
-                                    .map((item) => (
-                                        <Chip
-                                            sx={{
-                                                m: 1,
-                                                height: '35px',
-                                                color: 'black',
-                                            }}
-                                            variant="outlined"
-                                            color="default"
-                                            size="medium"
-                                            label={item.skillName}
-                                            onDelete={() => (handleDeleteSkill(item))}
-                                            avatar={getSkillTypeIcon(item.skillType)}
-                                        />
-                                    ))}
+                            <div
+                                style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "5px",
+                                    padding: "8px",
+                                    minHeight: "100px",
+                                    height: "auto",
+                                    width: "100%",
+                                }}
+                            >
+                                {skillSelect.map((item) => (
+                                    <Chip
+                                        key={item.skill_id}
+                                        sx={{
+                                            m: 1,
+                                            height: "40px",
+                                        }}
+                                        variant="outlined"
+                                        color={getSkillTypeColor(item.skillType)}
+                                        size="medium"
+                                        label={item.skillName}
+                                        onDelete={() => handleDeleteSkill(item)}
+                                        icon={getSkillTypeIcon(item.skillType)}
+                                    />
+                                ))}
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginTop: '10px' }}>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', width: '60%' }}>
-                                        <TextField
-                                            id="standard-basic"
-                                            label="Search Skill"
-                                            variant="standard"
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            width: "70%",
+                                            borderStyle: "solid",
+                                            borderRadius: "5px",
+                                            borderColor: "#F0f0f0",
+                                            borderWidth: "2px",
+                                        }}
+                                    >
+                                        <InputBase
                                             sx={{ ml: 1, flex: 1 }}
+                                            placeholder="Search Skill"
+                                            inputProps={{ "aria-label": "search skill" }}
                                             value={searchValue}
                                             onChange={handleSearchValueChange}
-                                            inputProps={{ 'aria-label': 'search skill' }}
                                         />
-                                        <IconButton type="button" sx={{ p: '10px' }} aria-label="search" disabled>
+                                        <IconButton
+                                            type="button"
+                                            sx={{ p: "10px" }}
+                                            aria-label="search"
+                                            disabled
+                                        >
                                             <SearchIcon />
                                         </IconButton>
-                                    </div>
+                                    </Box>
                                 </div>
                                 <div style={{ marginLeft: '8px' }}>
                                     <TextField
@@ -600,61 +646,78 @@ function PersonnelEdit() {
                                 </div>
                             </div>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px', maxWidth: '100%' }}>
-                                {skillList
-                                    .filter((s) => s.skillName.toLowerCase().includes(searchValue.toLowerCase()))
-                                    .filter((s) => selectedType === '' || s.skillType === selectedType)
-                                    .sort((a, b) => a.skillName.localeCompare(b.skillName))
-                                    .map((item, index) => (
-                                        <Card
-                                            sx={{
-                                                backgroundColor: '#EEEEEE',
-                                                flexBasis: 'calc(25% - 8px)',
-                                                border: 'none',
-                                                height: '145px'
-                                            }}
-                                        >
-                                            <CardContent>
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '24px', marginRight: '8px' }}>{getSkillTypeIcon(item.skillType)}</span>
-                                                    <Typography variant="h6" gutterBottom>
-                                                        {item.skillName}
-                                                    </Typography>
-                                                </div>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {item.skillType}
-                                                </Typography>
-                                            </CardContent>
-                                            <Button
-                                                variant="contained"
-                                                disableElevation
-                                                endIcon={<AddIcon />}
-                                                sx={{
-                                                    backgroundColor: '#E2E2E2',
-                                                    color: 'black',
-                                                    border: 'none',
-                                                    width: '100%',
-                                                    '&:hover': {
-                                                        backgroundColor: '#7F7F7F',
-                                                        color: 'white',
-                                                    },
-                                                }}
-                                                onClick={() => addSkill(item)}
-                                                disabled={isAddButtonDisabled(item)}
-                                            >
-                                                Add
-                                            </Button>
-                                        </Card>
-                                    ))}
-
-                                {skillList
-                                    .filter((s) => !skillSelect.includes(s))
-                                    .filter((s) => s.skillName.toLowerCase().includes(searchValue.toLowerCase()))
-                                    .filter((s) => selectedType === '' || s.skillType === selectedType)
-                                    .length === 0 && (
-                                        <Typography variant="body2" sx={{ fontSize: 17, color: 'red', display: 'flex', alignItems: 'center' }}>
-                                            <CancelIcon sx={{ fontSize: 20, color: 'red', marginRight: '10px' }} /> Not Found Skill
-                                        </Typography>
-                                    )}
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        justifyContent: "flex-start",
+                                        alignItems: "center",
+                                        width: "100%",
+                                    }}
+                                >
+                                    {skillList
+                                        .filter(
+                                            (s) =>
+                                                s.skillName
+                                                    .toLowerCase()
+                                                    .includes(searchValue.toLowerCase()) &&
+                                                (selectedType === '' || s.skillType === selectedType)
+                                        )
+                                        .slice(
+                                            (currentPageSkill - 1) * itemsPerPageSkill,
+                                            currentPageSkill * itemsPerPageSkill
+                                        )
+                                        .map((item) => (
+                                            <Box sx={{ width: "33.33%" }} padding="8px">
+                                                <ListItem
+                                                    key={item.skill_id}
+                                                    sx={{
+                                                        border: "1px solid #ccc",
+                                                        borderRadius: "5px",
+                                                    }}
+                                                >
+                                                    <ListItemAvatar>
+                                                        <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText
+                                                        primary={item.skillName}
+                                                        secondary={item.skillType}
+                                                    ></ListItemText>
+                                                    <IconButton
+                                                        edge="end"
+                                                        aria-label="delete"
+                                                        onClick={() => {
+                                                            addSkill(item)
+                                                        }}
+                                                        disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                                                    >
+                                                        {
+                                                            skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)
+                                                                ? <CheckIcon />
+                                                                : <AddIcon />
+                                                        }
+                                                    </IconButton>
+                                                </ListItem>
+                                            </Box>
+                                        ))}
+                                    <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2 }}>
+                                        <Pagination
+                                            count={Math.ceil(
+                                                skillList
+                                                    .filter(
+                                                        (s) =>
+                                                            s.skillName
+                                                                .toLowerCase()
+                                                                .includes(searchValue.toLowerCase()) &&
+                                                            (selectedType === '' || s.skillType === selectedType)
+                                                    )
+                                                    .length / itemsPerPageSkill
+                                            )}
+                                            page={currentPageSkill}
+                                            onChange={(event, page) => setCurrentPageSkill(page)}
+                                        />
+                                    </Box>
+                                </div>
                             </div>
                         </div>
                     </Box>
