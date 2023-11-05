@@ -10,6 +10,9 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import SkillFroupAvatar from "../components/SkillGroupAvatar";
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -50,7 +53,7 @@ function Createproject() {
   const [currentType, setCurrentType] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 6;
 
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
   const itemsPerPageSkill = 12;
@@ -299,6 +302,16 @@ function Createproject() {
         return "default";
     }
   };
+  const steps = ['Project Details', 'Select Personnel', 'Select Skills'];
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
 
   return (
     <div className="main-content"
@@ -311,11 +324,13 @@ function Createproject() {
         justifyContent: "center",
         padding: "15px",
       }}>
-      <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
-        <Grid item xs={12} md={6}>
+      <Grid container justifyContent="center" alignItems="stretch" spacing={1}>
+
+        <Grid item xs={12} md={8}>
           <Box
             sx={{
               width: "100%",
+              margin: "0 auto",
               backgroundColor: "white",
               display: "flex",
               flexDirection: "column",
@@ -324,551 +339,642 @@ function Createproject() {
               padding: "15px",
             }}
           >
-            <Typography
-              variant="h5"
-              component="div"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                fontWeight: "bold",
-                marginBottom: "10px",
-              }}
-            >
-              Create New Project
-            </Typography>
-            <div>
-              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px',marginRight:'375px' }}>
-                ProjectName
-              </span>
-              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
-                ProjectType
-              </span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "-10px",
-                width: "100%",
-              }}
-            >
-              <TextField
-                sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
-                variant="outlined"
-                value={formData.projectName}
-                onChange={(event) =>
-                  setFormData({ ...formData, projectName: event.target.value })
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <DnsIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <Select
-                sx={{ mt: 1, mb: 2, width: "50%", marginLeft: "10px" }}
-                value={formData.projectType}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <TypeSpecimenIcon />
-                  </InputAdornment>
-                }
-                onChange={(event) =>
-                  setFormData({ ...formData, projectType: event.target.value })
-                }
-              >
-                {typeOptions.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </div>
-            <div
-              style={{ display: "flex", flexDirection: "row", width: "100%" }}
-            >
-              <TextField
-                sx={{ mt: 1, mb: 2, width: "100%" }}
-                variant="outlined"
-                value={formData.projectDescription}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    projectDescription: event.target.value,
-                  })
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <DescriptionIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                width: "100%",
-              }}
-            >
-              <TextField
-                type="date"
-                sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
-                variant="outlined"
-                value={formatDate(formData.startDate)}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    startDate: formatDate(event.target.value),
-                  })
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccessTimeIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                type="date"
-                sx={{ mt: 1, mb: 2, width: "50%" }}
-                variant="outlined"
-                value={formatDate(formData.endDate)}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    endDate: formatDate(event.target.value),
-                  })
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AccessTimeIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                sx={{ mt: 1, mb: 2, width: "100%", marginLeft: "10px" }}
-                variant="outlined"
-                value={formData.budget}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    budget: parseFloat(event.target.value),
-                  })
-                }
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AttachMoneyIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                marginTop: "10px",
-                width: "100%",
-              }}
-            >
-              <Select
-                startAdornment={
-                  <InputAdornment position="start">
-                    <AutorenewIcon />
-                  </InputAdornment>
-                }
-                sx={{ mt: 1, mb: 2, width: "100%" }}
-                value={formData.projectStatus}
-                onChange={(event) =>
-                  setFormData({
-                    ...formData,
-                    projectStatus: event.target.value,
-                  })
-                }
-              >
-                {statusOptions.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "15px",
-              }}
-            >
-              <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
-                Member List
-              </span>
-            </div>
-            <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                  marginLeft: "2vw",
-                }}
-              >
-                <div style={{ flex: 1 }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      width: "100%",
-                      borderStyle: "solid",
-                      borderRadius: "5px",
-                      borderColor: "#F0f0f0",
-                      borderWidth: "2px",
-                    }}
-                  >
-                    <InputBase
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder="Search Position"
-                      inputProps={{ "aria-label": "search position" }}
-                      value={searchValue}
-                      onChange={handleSearchValueChange}
-                    />
-                    <IconButton
-                      type="button"
-                      sx={{ p: "10px" }}
-                      aria-label="search"
-                      disabled
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </Box>
+            {activeStep === 0 && (
+              <div style={{ width: '100%'}}>
+                <Typography
+                  variant="h5"
+                  component="div"
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    fontWeight: "bold",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Create New Project
+                </Typography>
+                <div>
+                  <Stepper activeStep={activeStep} alternativeLabel  style={{ marginTop:'30px'}}>
+                    {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
                 </div>
-                <div style={{ marginLeft: "8px", flex: 1 }}>
+                <div>
+                  <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px', marginRight: '540px' }}>
+                    ProjectName
+                  </span>
+                  <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
+                    ProjectType
+                  </span>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "-10px",
+                    width: "100%",
+                  }}
+                >
                   <TextField
-                    sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50, }}
-                    size="small"
-                    id="select-skill-type"
-                    select
-                    label="Select Skill"
-                    variant="standard"
-                    value={selectedType}
-                    onChange={handleSkillTypeChange}
+                    sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
+                    variant="outlined"
+                    value={formData.projectName}
+                    onChange={(event) =>
+                      setFormData({ ...formData, projectName: event.target.value })
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <DnsIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <Select
+                    sx={{ mt: 1, mb: 2, width: "50%", marginLeft: "10px" }}
+                    value={formData.projectType}
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <TypeSpecimenIcon />
+                      </InputAdornment>
+                    }
+                    onChange={(event) =>
+                      setFormData({ ...formData, projectType: event.target.value })
+                    }
                   >
-                    {skillTypeList.map((type) => (
-                      <MenuItem key={type.label} value={type.value}>
-                        {type.label}
+                    {typeOptions.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type}
                       </MenuItem>
                     ))}
-                  </TextField>
+                  </Select>
                 </div>
+                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                  <span style={{ fontSize: "15px", fontWeight: '600', }}>
+                    Description
+                  </span>
+                  <TextField
+                    sx={{ mt: 1, mb: 2, width: "100%" }}
+                    variant="outlined"
+                    value={formData.projectDescription}
+                    onChange={(event) =>
+                      setFormData({
+                        ...formData,
+                        projectDescription: event.target.value,
+                      })
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <DescriptionIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                </div>
+                <div style={{ display: "flex", flexDirection: "row", marginTop: "10px", width: "100%" }}>
+                  <div style={{ display: "flex", flexDirection: "column", width: "50%", marginRight: '10px' }}>
+                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                      Start Date
+                    </span>
+                    <TextField
+                      type="date"
+                      sx={{ mt: 1, mb: 2, width: "100%" }}
+                      variant="outlined"
+                      value={formatDate(formData.startDate)}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          startDate: formatDate(event.target.value),
+                        })
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AccessTimeIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
+                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                      End Date
+                    </span>
+                    <TextField
+                      type="date"
+                      sx={{ mt: 1, mb: 2, width: "100%" }}
+                      variant="outlined"
+                      value={formatDate(formData.endDate)}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          endDate: formatDate(event.target.value),
+                        })
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AccessTimeIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%", marginLeft: "10px" }}>
+                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                      Budget
+                    </span>
+                    <TextField
+                      sx={{ mt: 1, mb: 2, width: "100%" }}
+                      variant="outlined"
+                      value={formData.budget}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          budget: parseFloat(event.target.value),
+                        })
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <AttachMoneyIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                    width: "100%",
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%",}}>
+                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                      Proejct Status
+                    </span>
+                    <Select
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <AutorenewIcon />
+                        </InputAdornment>
+                      }
+                      sx={{ mt: 1, mb: 2, width: "100%" }}
+                      value={formData.projectStatus}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          projectStatus: event.target.value,
+                        })
+                      }
+                    >
+                      {statusOptions.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+                <Button
+                  variant="contained"
+                  color="success"
+                  style={{ marginTop: "10px", marginLeft: "auto", display: 'flex', justifyContent: 'flex-end' }}
+                  onClick={activeStep < 2 ? handleNext : createProjectData}
+                >
+                  {activeStep < 2 ? "Next" : "Create Project"}
+                </Button>
               </div>
-              {dataPersonnel.length > 0 && (
-                <ThemeProvider theme={theme}>
-                  <List
-                    sx={{
-                      width: "47vw",
-                      minWidth: 500,
-                      bgcolor: "background.paper",
-                      zIndex: 200,
-                      padding: 0,
+            )}
+
+            {activeStep === 1 && (
+              <div style={{
+                width: '100%'
+              }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "50px",
+                    width: '100%'
+                  }}
+                >
+                  <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '-20px' }}>
+                    Member List
+                  </span>
+                </div>
+                <Stepper activeStep={activeStep} alternativeLabel>
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
+                <div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      marginLeft: "2vw",
                     }}
                   >
-                    <ListItem>
+                    <div style={{ flex: 1 }}>
                       <Box
                         sx={{
-                          width: "30%",
-                          paddingLeft: "56px",
-                          fontWeight: "600",
+                          display: "flex",
+                          width: "100%",
+                          borderStyle: "solid",
+                          borderRadius: "5px",
+                          borderColor: "#F0f0f0",
+                          borderWidth: "2px",
                         }}
                       >
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Information
-                        </Typography>
+                        <InputBase
+                          sx={{ ml: 1, flex: 1 }}
+                          placeholder="Search Position"
+                          inputProps={{ "aria-label": "search position" }}
+                          value={searchValue}
+                          onChange={handleSearchValueChange}
+                        />
+                        <IconButton
+                          type="button"
+                          sx={{ p: "10px" }}
+                          aria-label="search"
+                          disabled
+                        >
+                          <SearchIcon />
+                        </IconButton>
                       </Box>
-                      <Box sx={{ marginLeft: '7%' }}>
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Status
-                        </Typography>
-                      </Box>
-                      <Box sx={{ marginLeft: '20%' }}>
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Skills
-                        </Typography>
-                      </Box>
-                      <ListItemText sx={{ width: "128px" }} />
-                    </ListItem>
-
-                    <div className="line"></div>
-                    {dataPersonnel
-                      .slice(
-                        (currentPage - 1) * itemsPerPage,
-                        currentPage * itemsPerPage
-                      )
-                      .map((dataPersonnel, i, array) => {
-                        return (
-                          <Box>
-                            <ListItemButton
-                              component="div"
-                              key={dataPersonnel.personnel_id}
-                              divider={i + 1 === array.length ? false : true}
-                              onClick={() => handleOpenDialog(dataPersonnel)}
-                            >
-                              <ListItemAvatar>
-                                <ProfileAvatar
-                                  variant="circular"
-                                  name={fullname(dataPersonnel)}
-                                />
-                              </ListItemAvatar>
-                              <ListItemText
-                                sx={{ width: "30%" }}
-                                primary={fullname(dataPersonnel)}
-                                secondary={dataPersonnel.position}
-                              />
-                              <Box
-                                component="div"
-                                sx={{ display: "flex", width: "30%" }}
-                              >
-                                <Chip
-                                  label={status(dataPersonnel).status}
-                                  color={status(dataPersonnel).color}
-                                  sx={{
-                                    justifyContent: "center",
-                                    "& .MuiChip-label": {
-                                      margin: 0,
-                                    },
-                                  }}
-                                />
-                              </Box>
-                              <Box
-                                component="div"
-                                sx={{ display: "flex", width: "40%" }}
-                              >
-                                {dataPersonnel.skills.length > 0 && (
-                                  <AvatarGroup max={5}>
-                                    {dataPersonnel.skills.map((skill) => {
-                                      return (
-                                        <Tooltip
-                                          key={skill?.skill_id}
-                                          title={skill.skillName}
-                                        >
-                                          <div>
-                                            <SkillFroupAvatar
-                                              variant="circular"
-                                              name={skill.skillName}
-                                            />
-                                          </div>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </AvatarGroup>
-                                )}
-                              </Box>
-                            </ListItemButton>
+                    </div>
+                    <div style={{ marginLeft: "8px", flex: 1 }}>
+                      <TextField
+                        sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50, }}
+                        size="small"
+                        id="select-skill-type"
+                        select
+                        label="Select Skill"
+                        variant="standard"
+                        value={selectedType}
+                        onChange={handleSkillTypeChange}
+                      >
+                        {skillTypeList.map((type) => (
+                          <MenuItem key={type.label} value={type.value}>
+                            {type.label}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
+                  </div>
+                  {dataPersonnel.length > 0 && (
+                    <ThemeProvider theme={theme}>
+                      <List
+                        sx={{
+                          width: "100%",
+                          minWidth: 500,
+                          bgcolor: "background.paper",
+                          zIndex: 200,
+                          padding: 0,
+                        }}
+                      >
+                        <ListItem>
+                          <Box
+                            sx={{
+                              width: "30%",
+                              paddingLeft: "56px",
+                              fontWeight: "600",
+                            }}
+                          >
+                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                              Information
+                            </Typography>
                           </Box>
-                        );
-                      })}
-                  </List>
+                          <Box sx={{ marginLeft: '7%' }}>
+                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                              Status
+                            </Typography>
+                          </Box>
+                          <Box sx={{ marginLeft: '20%' }}>
+                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                              Skills
+                            </Typography>
+                          </Box>
+                          <ListItemText sx={{ width: "128px" }} />
+                        </ListItem>
 
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                  >
-                    <Pagination
-                      count={Math.ceil(dataPersonnel.length / itemsPerPage)}
-                      page={currentPage}
-                      onChange={(event, page) => setCurrentPage(page)}
-                    />
-                  </Box>
-                </ThemeProvider>
-              )}
-            </div>
+                        <div className="line"></div>
+                        {dataPersonnel
+                          .slice(
+                            (currentPage - 1) * itemsPerPage,
+                            currentPage * itemsPerPage
+                          )
+                          .map((dataPersonnel, i, array) => {
+                            return (
+                              <Box>
+                                <ListItemButton
+                                  component="div"
+                                  key={dataPersonnel.personnel_id}
+                                  divider={i + 1 === array.length ? false : true}
+                                  onClick={() => handleOpenDialog(dataPersonnel)}
+                                >
+                                  <ListItemAvatar>
+                                    <ProfileAvatar
+                                      variant="circular"
+                                      name={fullname(dataPersonnel)}
+                                    />
+                                  </ListItemAvatar>
+                                  <ListItemText
+                                    sx={{ width: "30%" }}
+                                    primary={fullname(dataPersonnel)}
+                                    secondary={dataPersonnel.position}
+                                  />
+                                  <Box
+                                    component="div"
+                                    sx={{ display: "flex", width: "30%" }}
+                                  >
+                                    <Chip
+                                      label={status(dataPersonnel).status}
+                                      color={status(dataPersonnel).color}
+                                      sx={{
+                                        justifyContent: "center",
+                                        "& .MuiChip-label": {
+                                          margin: 0,
+                                        },
+                                      }}
+                                    />
+                                  </Box>
+                                  <Box
+                                    component="div"
+                                    sx={{ display: "flex", width: "40%" }}
+                                  >
+                                    {dataPersonnel.skills.length > 0 && (
+                                      <AvatarGroup max={5}>
+                                        {dataPersonnel.skills.map((skill) => {
+                                          return (
+                                            <Tooltip
+                                              key={skill?.skill_id}
+                                              title={skill.skillName}
+                                            >
+                                              <div>
+                                                <SkillFroupAvatar
+                                                  variant="circular"
+                                                  name={skill.skillName}
+                                                />
+                                              </div>
+                                            </Tooltip>
+                                          );
+                                        })}
+                                      </AvatarGroup>
+                                    )}
+                                  </Box>
+                                </ListItemButton>
+                              </Box>
+                            );
+                          })}
+                      </List>
 
-            <span style={{ fontSize: "15px", }}>
-              Skill Required
-            </span>
-            <div
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                padding: "8px",
-                minHeight: "100px",
-                height: "auto",
-                width: "100%",
-              }}
-            >
-              {skillSelect.map((item) => (
-                <Chip
-                  key={item.skill_id}
-                  sx={{
-                    m: 1,
-                    height: "40px",
-                  }}
-                  variant="outlined"
-                  color={getSkillTypeColor(item.skillType)}
-                  size="medium"
-                  label={item.skillName}
-                  onDelete={() => handleDeleteSkill(item)}
-                  icon={getSkillTypeIcon(item.skillType)}
-                />
-              ))}
-            </div>
+                      <Box
+                        sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+                      >
+                        <Pagination
+                          count={Math.ceil(dataPersonnel.length / itemsPerPage)}
+                          page={currentPage}
+                          onChange={(event, page) => setCurrentPage(page)}
+                        />
+                      </Box>
+                    </ThemeProvider>
+                  )}
+                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      style={{ marginTop: "10px" }}
+                      onClick={activeStep < 2 ? handleNext : createProjectData}
+                    >
+                      {activeStep < 2 ? "Next" : "Create Project"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                marginTop: "15px",
-                marginLeft: "2vw",
-              }}
-            >
-              <div style={{ flex: 1 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    width: "100%",
-                    borderStyle: "solid",
+            {activeStep === 2 && (
+              <div>
+                <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '50px' }}>
+                  Skill Required
+                </span>
+                <div>
+                  <Stepper activeStep={activeStep} alternativeLabel style={{ fontSize: "25px", fontWeight: '600', marginTop: '10px', marginBottom: '10px' }}>
+                    {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #ccc",
                     borderRadius: "5px",
-                    borderColor: "#F0f0f0",
-                    borderWidth: "2px",
+                    padding: "8px",
+                    minHeight: "100px",
+                    height: "auto",
+                    width: "100%",
                   }}
                 >
-                  <InputBase
-                    sx={{ ml: 1, flex: 1 }}
-                    placeholder="Search Skill"
-                    inputProps={{ "aria-label": "search skill" }}
-                    value={searchValue}
-                    onChange={handleSearchValueChange}
-                  />
-                  <IconButton
-                    type="button"
-                    sx={{ p: "10px" }}
-                    aria-label="search"
-                    disabled
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </Box>
-              </div>
-              <div style={{ marginLeft: "8px", flex: 1 }}>
-                <TextField
-                  sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
-                  size="small"
-                  id="select-skill-type"
-                  select
-                  label="Select Skill Type"
-                  variant="standard"
-                  value={selectedType}
-                  onChange={handleSkillTypeChange}
-                >
-                  {skillTypeList.map((type) => (
-                    <MenuItem key={type.label} value={type.value}>
-                      {type.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "flex-start", // จัด pagination อยู่กลาง
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              {displayedSkills
-                .filter(
-                  (s) =>
-                    s.skillName
-                      .toLowerCase()
-                      .includes(searchValue.toLowerCase()) &&
-                    (selectedType === '' || s.skillType === selectedType)
-                )
-                .slice(
-                  (currentPageSkill - 1) * itemsPerPageSkill,
-                  currentPageSkill * itemsPerPageSkill
-                )
-                .map((item) => (
-                  <Box sx={{ width: "33.33%" }} padding="8px">
-                    <ListItem
+                  {skillSelect.map((item) => (
+                    <Chip
                       key={item.skill_id}
                       sx={{
-                        border: "1px solid #ccc",
+                        m: 1,
+                        height: "40px",
+                      }}
+                      variant="outlined"
+                      color={getSkillTypeColor(item.skillType)}
+                      size="medium"
+                      label={item.skillName}
+                      onDelete={() => handleDeleteSkill(item)}
+                      icon={getSkillTypeIcon(item.skillType)}
+                    />
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: "15px",
+                    marginLeft: "2vw",
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        borderStyle: "solid",
                         borderRadius: "5px",
+                        borderColor: "#F0f0f0",
+                        borderWidth: "2px",
                       }}
                     >
-                      <ListItemAvatar>
-                        <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={item.skillName}
-                        secondary={item.skillType}
-                      ></ListItemText>
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Skill"
+                        inputProps={{ "aria-label": "search skill" }}
+                        value={searchValue}
+                        onChange={handleSearchValueChange}
+                      />
                       <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => {
-                            addSkill(item)
-                        }}
-                        disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                        disabled
                       >
-                        {
-                            skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id) 
-                            ? <CheckIcon /> 
-                            : <AddIcon />
-                        }
+                        <SearchIcon />
                       </IconButton>
-                    </ListItem>
+                    </Box>
+                  </div>
+                  <div style={{ marginLeft: "8px", flex: 1 }}>
+                    <TextField
+                      sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
+                      size="small"
+                      id="select-skill-type"
+                      select
+                      label="Select Skill Type"
+                      variant="standard"
+                      value={selectedType}
+                      onChange={handleSkillTypeChange}
+                    >
+                      {skillTypeList.map((type) => (
+                        <MenuItem key={type.label} value={type.value}>
+                          {type.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  {displayedSkills
+                    .filter(
+                      (s) =>
+                        s.skillName
+                          .toLowerCase()
+                          .includes(searchValue.toLowerCase()) &&
+                        (selectedType === '' || s.skillType === selectedType)
+                    )
+                    .slice(
+                      (currentPageSkill - 1) * itemsPerPageSkill,
+                      currentPageSkill * itemsPerPageSkill
+                    )
+                    .map((item) => (
+                      <Box sx={{ width: "33.33%" }} padding="8px">
+                        <ListItem
+                          key={item.skill_id}
+                          sx={{
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <ListItemAvatar>
+                            <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={item.skillName}
+                            secondary={item.skillType}
+                          ></ListItemText>
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={() => {
+                              addSkill(item)
+                            }}
+                            disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                          >
+                            {
+                              skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)
+                                ? <CheckIcon />
+                                : <AddIcon />
+                            }
+                          </IconButton>
+                        </ListItem>
+                      </Box>
+                    ))}
+                  <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2 }}>
+                    <Pagination
+                      count={Math.ceil(
+                        displayedSkills
+                          .filter(
+                            (s) =>
+                              s.skillName
+                                .toLowerCase()
+                                .includes(searchValue.toLowerCase()) &&
+                              (selectedType === '' || s.skillType === selectedType)
+                          )
+                          .length / itemsPerPageSkill
+                      )}
+                      page={currentPageSkill}
+                      onChange={(event, page) => setCurrentPageSkill(page)}
+                    />
                   </Box>
-                ))}
-              <Box sx={{ width:"100%", display: "flex", justifyContent: "center", mt: 2 }}>
-                <Pagination
-                  count={Math.ceil(
-                    displayedSkills
-                      .filter(
-                        (s) =>
-                          s.skillName
-                            .toLowerCase()
-                            .includes(searchValue.toLowerCase()) &&
-                          (selectedType === '' || s.skillType === selectedType)
-                      )
-                      .length / itemsPerPageSkill
-                  )}
-                  page={currentPageSkill}
-                  onChange={(event, page) => setCurrentPageSkill(page)}
-                />
-              </Box>
-            </div>
-            <Button
-              variant="contained"
-              color="success"
-              style={{ marginTop: "10px", marginLeft: "auto" }}
-              disabled={
-                activeStep === 0 &&
-                (formData.projectName === "" ||
-                  formData.projectType === "" ||
-                  formData.projectDescription === "" ||
-                  formData.startDate === "" ||
-                  formData.endDate === "" ||
-                  formData.budget === "" ||
-                  skillSelect.length === 0)
-              }
-              onClick={createProjectData}
-            >
-              Create Project
-            </Button>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    disabled={activeStep === 0}
+                    style={{ height: '40px' }}
+                    onClick={handleBack}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    style={{ marginTop: "10px", marginLeft: "auto" }}
+                    disabled={
+                      activeStep === 0 &&
+                      (formData.projectName === "" ||
+                        formData.projectType === "" ||
+                        formData.projectDescription === "" ||
+                        formData.startDate === "" ||
+                        formData.endDate === "" ||
+                        formData.budget === "" ||
+                        skillSelect.length === 0)
+                    }
+                    onClick={createProjectData}
+                  >
+                    Create Project
+                  </Button>
+                </div>
+              </div>
+            )}
           </Box>
         </Grid>
       </Grid>

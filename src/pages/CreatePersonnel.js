@@ -198,17 +198,23 @@ export default function CreatePersonnel() {
                             </Typography>
                             {activeStep === 0 && (
                                 <form>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
+                                            Firstname
+                                        </span>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '540px' }}>
+                                            Lastname
+                                        </span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', }}>
                                         <TextField
                                             name="firstName"
-                                            label="First Name"
                                             value={formData.firstName}
                                             onChange={handleChange}
                                             fullWidth
                                             margin="normal"
                                             style={{ marginRight: '8px' }}
                                             required={true}
-                                            error={formData.firstName === ''}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -219,22 +225,30 @@ export default function CreatePersonnel() {
                                         />
                                         <TextField
                                             name="lastName"
-                                            label="Last Name"
                                             value={formData.lastName}
                                             onChange={handleChange}
-                                            error={formData.lastName === ''}
                                             fullWidth
                                             margin="normal"
                                             style={{ marginLeft: '8px' }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <PersonIcon />
+                                                    </InputAdornment>
+                                                ),
+                                            }}
                                         />
                                     </div>
 
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
+                                            Position
+                                        </span>
+                                    </div>
                                     <TextField
                                         name="position"
-                                        label="Position"
                                         value={formData.position}
                                         onChange={handleChange}
-                                        error={formData.position === ''}
                                         fullWidth
                                         margin="normal"
                                         InputProps={{
@@ -245,12 +259,15 @@ export default function CreatePersonnel() {
                                             ),
                                         }}
                                     />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
+                                            Division
+                                        </span>
+                                    </div>
                                     <TextField
                                         name="division"
-                                        label="Division"
                                         value={formData.division}
                                         onChange={handleChange}
-                                        error={formData.division === ''}
                                         fullWidth
                                         margin="normal"
                                         InputProps={{
@@ -261,13 +278,16 @@ export default function CreatePersonnel() {
                                             ),
                                         }}
                                     />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
+                                            Phone Number
+                                        </span>
+                                    </div>
                                     <TextField
                                         name="phoneNumber"
-                                        label="Phone Number"
                                         value={formData.phoneNumber}
                                         onChange={handleChange}
                                         fullWidth
-                                        error={formData.phoneNumber === ''}
                                         margin="normal"
                                         type='number'
                                         InputProps={{
@@ -278,13 +298,16 @@ export default function CreatePersonnel() {
                                             ),
                                         }}
                                     />
+                                    <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '-15px' }}>
+                                        <span style={{ fontSize: "15px", fontWeight: '600', marginRight: '395px' }}>
+                                            Email
+                                        </span>
+                                    </div>
                                     <TextField
                                         name="email"
-                                        label="Email"
                                         value={formData.email}
                                         onChange={handleChange}
                                         fullWidth
-                                        error={formData.email === ''}
                                         margin="normal"
                                         InputProps={{
                                             startAdornment: (
