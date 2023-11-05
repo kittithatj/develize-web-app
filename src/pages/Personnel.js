@@ -42,6 +42,7 @@ import HandymaIconn from "@mui/icons-material/Handyman";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
+import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function Personnel() {
   const [personnel, setPersonnel] = useState([]);
@@ -75,6 +76,10 @@ function Personnel() {
         main: "#0971f1",
         darker: "#053e85",
       },
+      secondary: {
+        main: "#C4C4C4",
+        contrastText: "#fff",
+      },
       success: {
         main: "#64dd17",
         contrastText: "#fff",
@@ -87,6 +92,7 @@ function Personnel() {
   });
 
   const status = (p) => {
+    if(p?.employmentStatus === "Resigned") return { status: "Resigned", color: "secondary" };
     if (p.projectHistories.length === 0) {
       return { status: "Not Assigned", color: "success" };
     } else {
@@ -313,7 +319,13 @@ function Personnel() {
         </ThemeProvider>
       </div>
 
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <PersonnelInfoDialog
+      personnel={selectedPersonnel}
+      open={openDialog}
+      setOpen={setOpenDialog}
+      />
+
+      {/* <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Personnel Information</DialogTitle>
         <DialogContent>
           {selectedPersonnel && (
@@ -467,7 +479,7 @@ function Personnel() {
             </Button>
           )}
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }

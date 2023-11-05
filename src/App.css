@@ -68,7 +68,7 @@ input[type=number] {
   font-size: 2rem;
   background: none;
   color: #000;
-  z-index: 99;
+  z-index: 9999;
 }
 
 .nav-menu {
@@ -81,7 +81,7 @@ input[type=number] {
   top: 0;
   left: -100%;
   transition: 850ms;
-  z-index: 100;
+  z-index: 9999;
 }
 
 .nav-menu.active {

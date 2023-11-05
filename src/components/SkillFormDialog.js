@@ -81,7 +81,7 @@ function SkillFormDialog(props) {
                     </TextField>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>
+                    <Button color='error' onClick={handleClose}>
                         Cancel
                     </Button>
                     <Button
