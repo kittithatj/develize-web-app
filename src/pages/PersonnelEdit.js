@@ -3,13 +3,11 @@ import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Grid from '@mui/material/Grid';
-import InputBase from '@mui/material/InputBase';
 import { skillTypeList } from '../config/skill-type-list';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Dialog from '@mui/material/Dialog';
-import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 
 

@@ -16,6 +16,7 @@ import {
   createTheme,
 } from "@mui/material";
 import { stringToColor } from "../components/SkillGroupAvatar";
+import { PersonnelAPI } from "../api/personnel-api";
 
 //icon
 import EmailIcon from "@mui/icons-material/Email";
@@ -25,6 +26,7 @@ import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import ReactApexChart from "react-apexcharts";
 
 // Props:
 //     open: Boolean;
@@ -32,6 +34,8 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 //     personnel: Object;
 function PersonnelInfoDialog(props) {
   const [personnel, setPersonnel] = React.useState({});
+  const [assessmentScore, setAssessmentScore] = React.useState({});
+  const [chartData, setChartData] = React.useState();
 
   const handleClose = () => {
     props.setOpen(false);
@@ -135,12 +139,78 @@ function PersonnelInfoDialog(props) {
 
   useEffect(() => {
     setPersonnel(props.personnel);
-    console.log(props.personnel);
+    PersonnelAPI.getOverviewAccessScore(props.personnel?.personnel_id)
+      .then((res) => {
+        setAssessmentScore(res);
+        console.log(res);
+        let overviewScore = [
+          res?.overviewScore?.jobKnowledge.toFixed(2),
+          res?.overviewScore?.innovation.toFixed(2),
+          res?.overviewScore?.teamwork.toFixed(2),
+          res?.overviewScore?.deliverableQuality.toFixed(2),
+          res?.overviewScore?.attitude.toFixed(2),
+          res?.overviewScore?.attendance.toFixed(2),
+        ];
+        let userScore = [
+          res?.userScore?.jobKnowledge.toFixed(2),
+          res?.userScore?.innovation.toFixed(2),
+          res?.userScore?.teamwork.toFixed(2),
+          res?.userScore?.deliverableQuality.toFixed(2),
+          res?.userScore?.attitude.toFixed(2),
+          res?.userScore?.attendance.toFixed(2),
+        ];
+        let scoreSeries = [];
+        overviewScore &&
+          scoreSeries.push({
+            name: "Average Score",
+            data: overviewScore,
+          });
+        if (userScore != null) {
+          scoreSeries.push({
+            name: "Your Score",
+            data: userScore,
+          });
+        }
+        setChartData({
+          series: scoreSeries,
+          options: {
+            plotOptions: {
+              radar: {
+                polygons: {
+                  strokeColor: "#e8e8e8",
+                  fill: {
+                    colors: ["#f8f8f8", "#fff"],
+                  },
+                },
+              },
+            },
+            xaxis: {
+              categories: [
+                "Job Knowledge",
+                "Innovation",
+                "Teamwork",
+                "Deliverable Quality",
+                "Attitude",
+                "Attendance",
+              ],
+            },
+            yaxis: {
+              show: false,
+              max: 10,
+              min: 0,
+            },
+          },
+        });
+      })
+      .catch(() => {
+        setChartData(null);
+        setAssessmentScore(null);
+      });
   }, [props.personnel]);
 
   return (
     <div>
-      <Dialog open={props.open} onClose={handleClose}>
+      <Dialog open={props.open} onClose={handleClose} maxWidth={"lg"}>
         <DialogTitle>
           <Box
             sx={{
@@ -219,7 +289,49 @@ function PersonnelInfoDialog(props) {
               </table>
             </Box>
             <Box sx={{ borderLeft: "2px solid #dedede", mx: "1rem" }}></Box>
-            <Box></Box>
+            <Box
+              className="flex-center"
+              sx={{ flexDirection: "column", justifyContent: "flex-start" }}
+            >
+              <Typography fontSize={"1.3rem"}>Assessments Overview</Typography>
+              {chartData && (
+                <ReactApexChart
+                  options={chartData.options}
+                  series={chartData.series}
+                  type="radar"
+                  width={320}
+                  height={300}
+                />
+              )}
+              {chartData && (
+                <Box>
+                  Average Score :{" "}
+                  {assessmentScore?.overviewScore?.jobPerformance.toFixed(2)}
+                </Box>
+              )}
+              {!chartData && (
+                <Box
+                  className="flex-center"
+                  sx={{
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    height: "300px",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      color: "#c4c4c4",
+                      fontSize: "1rem",
+                      textAlign: "center",
+                      mt: "1rem",
+                      width: "320px",
+                    }}
+                  >
+                    No assessment data
+                  </Typography>
+                </Box>
+              )}
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>

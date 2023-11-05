@@ -20,6 +20,7 @@ import { useOutletContext } from "react-router-dom";
 import { PersonnelAPI } from "../api/personnel-api";
 import HelpIcon from "@mui/icons-material/Help";
 import { stringToColor } from "../components/SkillGroupAvatar";
+import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function PersonnelAssessment() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ function PersonnelAssessment() {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [personnelInfo, setPersonnelInfo] = useState({});
   const [loading, setLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     initialData();
@@ -171,6 +173,11 @@ function PersonnelAssessment() {
   const saveAssessment = (formData) => {
     PersonnelAPI.assessPersonnel(formData).then((res) => {
       console.log(res);
+      openSnackbar({
+        status: "success",
+        message: "Assessed successfully!",
+      })
+      window.history.back();
     });
   };
 
@@ -179,6 +186,14 @@ function PersonnelAssessment() {
     const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
     const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : "";
     return firstInitial + lastInitial;
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
@@ -194,7 +209,7 @@ function PersonnelAssessment() {
             variant="h5"
             component="div"
           >
-            Personnel Management
+            Personnel Assessment
           </Typography>
 
           {/* -----Personnel Information----- */}
@@ -209,6 +224,7 @@ function PersonnelAssessment() {
                   backgroundColor: "rgba(0, 0, 0, 0.05)",
                 },
               }}
+              onClick={handleOpenDialog}
             >
               <Box className="header" sx={{ marginBottom: "0.5rem" }}>
                 <Badge
@@ -368,6 +384,11 @@ function PersonnelAssessment() {
           </DialogActions>
         </Dialog>
       </div>
+      <PersonnelInfoDialog
+      personnel={personnelInfo}
+      open={openDialog}
+      setOpen={setOpenDialog}
+      />
     </div>
   );
 }

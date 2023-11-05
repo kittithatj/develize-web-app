@@ -78,5 +78,17 @@ export const PersonnelAPI = {
                 throw new Error(res.statusText);
             }
         })
+    },
+
+    getOverviewAccessScore: async (id) => {
+        return fetch(Api.url + Api.personnel_overview_access_score + id, {
+            method: 'GET',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
     }
 }
