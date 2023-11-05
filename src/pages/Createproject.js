@@ -129,7 +129,9 @@ function Createproject() {
     });
   };
 
-  const typeOptions = ["Digital Marketing", "AppService", "Security System"];
+  const typeOptions = ["Web Development", "Mobile App Development", "Desktop Application Development" , "Game Development" , "Embedded System Development",
+"AI and Machine Learning Development" , "Database Management and System" , "DevOps and CI/CD" , "Cloud-Based Development" , "Security and Cybersecurity System" , 
+"Artificial Reality (AR) and Virtual Reality (VR) Development"];
   const statusOptions = ["On Success", "On Holding", "On Going"];
   const memberOptions = ["Project Leader", "Developer", "Engineer", "Tester"];
 
