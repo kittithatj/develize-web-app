@@ -18,7 +18,13 @@ import WebDevelopment from '../components/image/WebDevelopment.png';
 import MobileAppDevelopment from '../components/image//MobileAppDevelopment.png';
 import DesktopApplicationDevelopment from '../components/image/DesktopApplicationDevelopment.png';
 import GameDevelopment from '../components/image/GameDevelopment.png';
-
+import EmbeddedSystemDevelopment from '../components/image/EmbeddedSystemDevelopment.png';
+import AIandMachineLearningDevelopment from '../components/image/AIandMachineLearningDevelopment.png';
+import DatabaseManagementandSystem from '../components/image/DatabaseManagementandSystem.png';
+import DevOpsandCICD from '../components/image/DevOpsandCICD.png';
+import CloudBasedDevelopment from '../components/image/CloudBasedDevelopment.png';
+import SecurityandCybersecuritySystem from '../components/image/SecurityandCybersecuritySystem.png';
+import ArtificialRealityandVirtualRealityDevelopment from '../components/image/ArtificialRealityandVirtualRealityDevelopment.png';
 
 function Project() {
     const months = [
@@ -141,6 +147,13 @@ function Project() {
                                                     {item.projectType === 'Mobile App Development' && <img src={MobileAppDevelopment} width="100%" height="60%" />}
                                                     {item.projectType === 'Desktop Application Development' && <img src={DesktopApplicationDevelopment} width="100%" height="60%" />}
                                                     {item.projectType === 'Game Development' && <img src={GameDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Embedded System Development' && <img src={EmbeddedSystemDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'AI and Machine Learning Development' && <img src={AIandMachineLearningDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Database Management and System' && <img src={DatabaseManagementandSystem} width="100%" height="60%" />}
+                                                    {item.projectType === 'DevOps and CI/CD' && <img src={DevOpsandCICD} width="100%" height="60%" />}
+                                                    {item.projectType === 'Cloud-Based Development' && <img src={CloudBasedDevelopment} width="100%" height="60%" />}
+                                                    {item.projectType === 'Security and Cybersecurity System' && <img src={SecurityandCybersecuritySystem} width="100%" height="60%" />}
+                                                    {item.projectType === 'Artificial Reality (AR) and Virtual Reality (VR) Development' && <img src={ArtificialRealityandVirtualRealityDevelopment} width="100%" height="60%" />}
                                                     <Typography variant="h5" component="div" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', color: '#3f51b5', marginBottom: '10px' }}>
                                                         <div>
                                                             {item.projectName}

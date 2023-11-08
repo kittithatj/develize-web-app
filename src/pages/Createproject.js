@@ -129,9 +129,9 @@ function Createproject() {
     });
   };
 
-  const typeOptions = ["Web Development", "Mobile App Development", "Desktop Application Development" , "Game Development" , "Embedded System Development",
-"AI and Machine Learning Development" , "Database Management and System" , "DevOps and CI/CD" , "Cloud-Based Development" , "Security and Cybersecurity System" , 
-"Artificial Reality (AR) and Virtual Reality (VR) Development"];
+  const typeOptions = ["Web Development", "Mobile App Development", "Desktop Application Development", "Game Development", "Embedded System Development",
+    "AI and Machine Learning Development", "Database Management and System", "DevOps and CI/CD", "Cloud-Based Development", "Security and Cybersecurity System",
+    "Artificial Reality (AR) and Virtual Reality (VR) Development"];
   const statusOptions = ["On Success", "On Holding", "On Going"];
   const memberOptions = ["Project Leader", "Developer", "Engineer", "Tester"];
 
@@ -180,9 +180,12 @@ function Createproject() {
       startDate: formData.startDate,
       endDate: formData.endDate,
       skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+      memberIdList: formData.memberIdList.map((member) => ({
+        personnel_id: member.personnel_id,
+        role: member.role,
+      })),
       budget: formData.budget,
       projectStatus: formData.projectStatus,
-      memberIdList: formData.memberIdList,
     };
 
     ProjectAPI.createProject(dataToSend)
@@ -342,7 +345,7 @@ function Createproject() {
             }}
           >
             {activeStep === 0 && (
-              <div style={{ width: '100%'}}>
+              <div style={{ width: '100%' }}>
                 <Typography
                   variant="h5"
                   component="div"
@@ -357,7 +360,7 @@ function Createproject() {
                   Create New Project
                 </Typography>
                 <div>
-                  <Stepper activeStep={activeStep} alternativeLabel  style={{ marginTop:'30px'}}>
+                  <Stepper activeStep={activeStep} alternativeLabel style={{ marginTop: '30px' }}>
                     {steps.map((label) => (
                       <Step key={label}>
                         <StepLabel>{label}</StepLabel>
@@ -519,7 +522,7 @@ function Createproject() {
                     width: "100%",
                   }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", width: "100%",}}>
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%", }}>
                     <span style={{ fontSize: "15px", fontWeight: '600' }}>
                       Proejct Status
                     </span>
@@ -558,6 +561,198 @@ function Createproject() {
             )}
 
             {activeStep === 1 && (
+              <div>
+                <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '50px' }}>
+                  Skill Required
+                </span>
+                <div>
+                  <Stepper activeStep={activeStep} alternativeLabel style={{ fontSize: "25px", fontWeight: '600', marginTop: '10px', marginBottom: '10px' }}>
+                    {steps.map((label) => (
+                      <Step key={label}>
+                        <StepLabel>{label}</StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </div>
+                <div
+                  style={{
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    padding: "8px",
+                    minHeight: "100px",
+                    height: "auto",
+                    width: "100%",
+                  }}
+                >
+                  {skillSelect.map((item) => (
+                    <Chip
+                      key={item.skill_id}
+                      sx={{
+                        m: 1,
+                        height: "40px",
+                      }}
+                      variant="outlined"
+                      color={getSkillTypeColor(item.skillType)}
+                      size="medium"
+                      label={item.skillName}
+                      onDelete={() => handleDeleteSkill(item)}
+                      icon={getSkillTypeIcon(item.skillType)}
+                    />
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "100%",
+                    marginTop: "15px",
+                    marginLeft: "2vw",
+                  }}
+                >
+                  <div style={{ flex: 1 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        borderStyle: "solid",
+                        borderRadius: "5px",
+                        borderColor: "#F0f0f0",
+                        borderWidth: "2px",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Skill"
+                        inputProps={{ "aria-label": "search skill" }}
+                        value={searchValue}
+                        onChange={handleSearchValueChange}
+                      />
+                      <IconButton
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                        disabled
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </Box>
+                  </div>
+                  <div style={{ marginLeft: "8px", flex: 1 }}>
+                    <TextField
+                      sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
+                      size="small"
+                      id="select-skill-type"
+                      select
+                      label="Select Skill Type"
+                      variant="standard"
+                      value={selectedType}
+                      onChange={handleSkillTypeChange}
+                    >
+                      {skillTypeList.map((type) => (
+                        <MenuItem key={type.label} value={type.value}>
+                          {type.label}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  {displayedSkills
+                    .filter(
+                      (s) =>
+                        s.skillName
+                          .toLowerCase()
+                          .includes(searchValue.toLowerCase()) &&
+                        (selectedType === '' || s.skillType === selectedType)
+                    )
+                    .slice(
+                      (currentPageSkill - 1) * itemsPerPageSkill,
+                      currentPageSkill * itemsPerPageSkill
+                    )
+                    .map((item) => (
+                      <Box sx={{ width: "33.33%" }} padding="8px">
+                        <ListItem
+                          key={item.skill_id}
+                          sx={{
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                          }}
+                        >
+                          <ListItemAvatar>
+                            <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={item.skillName}
+                            secondary={item.skillType}
+                          ></ListItemText>
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={() => {
+                              addSkill(item)
+                            }}
+                            disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                          >
+                            {
+                              skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)
+                                ? <CheckIcon />
+                                : <AddIcon />
+                            }
+                          </IconButton>
+                        </ListItem>
+                      </Box>
+                    ))}
+                  <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2 }}>
+                    <Pagination
+                      count={Math.ceil(
+                        displayedSkills
+                          .filter(
+                            (s) =>
+                              s.skillName
+                                .toLowerCase()
+                                .includes(searchValue.toLowerCase()) &&
+                              (selectedType === '' || s.skillType === selectedType)
+                          )
+                          .length / itemsPerPageSkill
+                      )}
+                      page={currentPageSkill}
+                      onChange={(event, page) => setCurrentPageSkill(page)}
+                    />
+                  </Box>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    disabled={activeStep === 0}
+                    style={{ height: '40px' }}
+                    onClick={handleBack}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    style={{ marginTop: "10px" }}
+                    onClick={activeStep < 2 ? handleNext : createProjectData}
+                  >
+                    {activeStep < 2 ? "Next" : "Create Project"}
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {activeStep === 2 && (
               <div style={{
                 width: '100%'
               }}>
@@ -766,214 +961,22 @@ function Createproject() {
                     <Button
                       variant="contained"
                       color="success"
-                      style={{ marginTop: "10px" }}
-                      onClick={activeStep < 2 ? handleNext : createProjectData}
+                      style={{ marginTop: "10px", marginLeft: "auto" }}
+                      disabled={
+                        activeStep === 0 &&
+                        (formData.projectName === "" ||
+                          formData.projectType === "" ||
+                          formData.projectDescription === "" ||
+                          formData.startDate === "" ||
+                          formData.endDate === "" ||
+                          formData.budget === "" ||
+                          skillSelect.length === 0)
+                      }
+                      onClick={createProjectData}
                     >
-                      {activeStep < 2 ? "Next" : "Create Project"}
+                      Create Project
                     </Button>
                   </div>
-                </div>
-              </div>
-            )}
-
-            {activeStep === 2 && (
-              <div>
-                <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '50px' }}>
-                  Skill Required
-                </span>
-                <div>
-                  <Stepper activeStep={activeStep} alternativeLabel style={{ fontSize: "25px", fontWeight: '600', marginTop: '10px', marginBottom: '10px' }}>
-                    {steps.map((label) => (
-                      <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
-                </div>
-                <div
-                  style={{
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    padding: "8px",
-                    minHeight: "100px",
-                    height: "auto",
-                    width: "100%",
-                  }}
-                >
-                  {skillSelect.map((item) => (
-                    <Chip
-                      key={item.skill_id}
-                      sx={{
-                        m: 1,
-                        height: "40px",
-                      }}
-                      variant="outlined"
-                      color={getSkillTypeColor(item.skillType)}
-                      size="medium"
-                      label={item.skillName}
-                      onDelete={() => handleDeleteSkill(item)}
-                      icon={getSkillTypeIcon(item.skillType)}
-                    />
-                  ))}
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    width: "100%",
-                    marginTop: "15px",
-                    marginLeft: "2vw",
-                  }}
-                >
-                  <div style={{ flex: 1 }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        borderStyle: "solid",
-                        borderRadius: "5px",
-                        borderColor: "#F0f0f0",
-                        borderWidth: "2px",
-                      }}
-                    >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Search Skill"
-                        inputProps={{ "aria-label": "search skill" }}
-                        value={searchValue}
-                        onChange={handleSearchValueChange}
-                      />
-                      <IconButton
-                        type="button"
-                        sx={{ p: "10px" }}
-                        aria-label="search"
-                        disabled
-                      >
-                        <SearchIcon />
-                      </IconButton>
-                    </Box>
-                  </div>
-                  <div style={{ marginLeft: "8px", flex: 1 }}>
-                    <TextField
-                      sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
-                      size="small"
-                      id="select-skill-type"
-                      select
-                      label="Select Skill Type"
-                      variant="standard"
-                      value={selectedType}
-                      onChange={handleSkillTypeChange}
-                    >
-                      {skillTypeList.map((type) => (
-                        <MenuItem key={type.label} value={type.value}>
-                          {type.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "flex-start",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  {displayedSkills
-                    .filter(
-                      (s) =>
-                        s.skillName
-                          .toLowerCase()
-                          .includes(searchValue.toLowerCase()) &&
-                        (selectedType === '' || s.skillType === selectedType)
-                    )
-                    .slice(
-                      (currentPageSkill - 1) * itemsPerPageSkill,
-                      currentPageSkill * itemsPerPageSkill
-                    )
-                    .map((item) => (
-                      <Box sx={{ width: "33.33%" }} padding="8px">
-                        <ListItem
-                          key={item.skill_id}
-                          sx={{
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <ListItemAvatar>
-                            <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={item.skillName}
-                            secondary={item.skillType}
-                          ></ListItemText>
-                          <IconButton
-                            edge="end"
-                            aria-label="delete"
-                            onClick={() => {
-                              addSkill(item)
-                            }}
-                            disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
-                          >
-                            {
-                              skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)
-                                ? <CheckIcon />
-                                : <AddIcon />
-                            }
-                          </IconButton>
-                        </ListItem>
-                      </Box>
-                    ))}
-                  <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2 }}>
-                    <Pagination
-                      count={Math.ceil(
-                        displayedSkills
-                          .filter(
-                            (s) =>
-                              s.skillName
-                                .toLowerCase()
-                                .includes(searchValue.toLowerCase()) &&
-                              (selectedType === '' || s.skillType === selectedType)
-                          )
-                          .length / itemsPerPageSkill
-                      )}
-                      page={currentPageSkill}
-                      onChange={(event, page) => setCurrentPageSkill(page)}
-                    />
-                  </Box>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    disabled={activeStep === 0}
-                    style={{ height: '40px' }}
-                    onClick={handleBack}
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    style={{ marginTop: "10px", marginLeft: "auto" }}
-                    disabled={
-                      activeStep === 0 &&
-                      (formData.projectName === "" ||
-                        formData.projectType === "" ||
-                        formData.projectDescription === "" ||
-                        formData.startDate === "" ||
-                        formData.endDate === "" ||
-                        formData.budget === "" ||
-                        skillSelect.length === 0)
-                    }
-                    onClick={createProjectData}
-                  >
-                    Create Project
-                  </Button>
                 </div>
               </div>
             )}
