@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, InputBase, ThemeProvider, createTheme, } from "@mui/material";
+import {
+  Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, InputBase, ThemeProvider, createTheme,
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { skillTypeList } from "../config/skill-type-list";
@@ -12,6 +15,7 @@ import Avatar from "@mui/material/Avatar";
 import SkillFroupAvatar from "../components/SkillGroupAvatar";
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
+import Paper from '@mui/material/Paper';
 import StepLabel from '@mui/material/StepLabel';
 
 // API
@@ -39,6 +43,130 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
 
 function Createproject() {
+  const createProjectData = () => {
+    const createProjectData = () => {
+      if (
+        formData.projectName === "" ||
+        formData.projectType === "" ||
+        formData.projectDescription === "" ||
+        formData.startDate === "" ||
+        formData.endDate === "" ||
+        formData.budget === "" ||
+        skillSelect.length === 0 ||
+        formData.memberIdList.length === 0
+      ) {
+        openSnackbar({
+          status: "error",
+          message: "Field is empty",
+        });
+        return;
+      }
+      console.log("formData:", formData);
+      const skillIds = skillSelect.map((skill) => skill.skill_id);
+
+      const dataToSend = {
+        projectName: formData.projectName,
+        projectType: formData.projectType,
+        projectDescription: formData.projectDescription,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+        memberIdList: formData.memberIdList.map((member) => ({
+          personnel_id: member.personnel_id,
+          role: member.role,
+        })),
+        budget: formData.budget,
+        projectStatus: formData.projectStatus,
+      };
+
+      ProjectAPI.createProject(dataToSend)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            throw new Error(res.status);
+          }
+        })
+        .then(() => {
+          openSnackbar({
+            status: "success",
+            message: "Create Project Successfully",
+          });
+          navigate("../Project");
+        })
+        .catch(() => {
+          openSnackbar({
+            status: "error",
+            message: "Create Project Failed",
+          });
+        });
+    };
+    handleOpenDialog();
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirm = () => {
+    const createProjectData = () => {
+      if (
+        formData.projectName === "" ||
+        formData.projectType === "" ||
+        formData.projectDescription === "" ||
+        formData.startDate === "" ||
+        formData.endDate === "" ||
+        formData.budget === "" ||
+        skillSelect.length === 0 ||
+        formData.memberIdList.length === 0
+      ) {
+        openSnackbar({
+          status: "error",
+          message: "Field is empty",
+        });
+        return;
+      }
+      console.log("formData:", formData);
+      const skillIds = skillSelect.map((skill) => skill.skill_id);
+
+      const dataToSend = {
+        projectName: formData.projectName,
+        projectType: formData.projectType,
+        projectDescription: formData.projectDescription,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+        memberIdList: formData.memberIdList.map((member) => ({
+          personnel_id: member.personnel_id,
+          role: member.role,
+        })),
+        budget: formData.budget,
+        projectStatus: formData.projectStatus,
+      };
+
+      ProjectAPI.createProject(dataToSend)
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          } else {
+            throw new Error(res.status);
+          }
+        })
+        .then(() => {
+          openSnackbar({
+            status: "success",
+            message: "Create Project Successfully",
+          });
+          navigate("../Project");
+        })
+        .catch(() => {
+          openSnackbar({
+            status: "error",
+            message: "Create Project Failed",
+          });
+        });
+    };
+    handleCloseDialog();
+  };
   const [activeStep, setActiveStep] = useState(0);
   const navigate = useNavigate();
   const [user, setUser, openSnackbar] = useOutletContext({});
@@ -152,64 +280,6 @@ function Createproject() {
     fetchSkillData();
     fetchPersonnelData();
   }, [currentType]);
-
-  const createProjectData = () => {
-    if (
-      formData.projectName === "" ||
-      formData.projectType === "" ||
-      formData.projectDescription === "" ||
-      formData.startDate === "" ||
-      formData.endDate === "" ||
-      formData.budget === "" ||
-      skillSelect.length === 0 ||
-      formData.memberIdList.length === 0
-    ) {
-      openSnackbar({
-        status: "error",
-        message: "Field is empty",
-      });
-      return;
-    }
-    console.log("formData:", formData);
-    const skillIds = skillSelect.map((skill) => skill.skill_id);
-
-    const dataToSend = {
-      projectName: formData.projectName,
-      projectType: formData.projectType,
-      projectDescription: formData.projectDescription,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
-      skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
-      memberIdList: formData.memberIdList.map((member) => ({
-        personnel_id: member.personnel_id,
-        role: member.role,
-      })),
-      budget: formData.budget,
-      projectStatus: formData.projectStatus,
-    };
-
-    ProjectAPI.createProject(dataToSend)
-      .then((res) => {
-        if (res.status === 200) {
-          return res.json();
-        } else {
-          throw new Error(res.status);
-        }
-      })
-      .then(() => {
-        openSnackbar({
-          status: "success",
-          message: "Create Project Successfully",
-        });
-        navigate("../Project");
-      })
-      .catch(() => {
-        openSnackbar({
-          status: "error",
-          message: "Create Project Failed",
-        });
-      });
-  };
 
   const addSkill = (item) => {
     if (
@@ -332,7 +402,7 @@ function Createproject() {
       <Grid container justifyContent="center" alignItems="stretch" spacing={1}>
 
         <Grid item xs={12} md={8}>
-          <Box
+          <Paper
             sx={{
               width: "100%",
               margin: "0 auto",
@@ -976,11 +1046,25 @@ function Createproject() {
                     >
                       Create Project
                     </Button>
+                    <Dialog open={openDialog} onClose={handleCloseDialog}>
+                      <DialogTitle>Confirm Project Creation</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          Are you sure you want to create this project?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={handleCloseDialog}>Cancel</Button>
+                        <Button onClick={handleConfirm} color="success">
+                          Confirm
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </div>
                 </div>
               </div>
             )}
-          </Box>
+          </Paper>
         </Grid>
       </Grid>
     </div>

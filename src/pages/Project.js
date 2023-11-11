@@ -94,7 +94,7 @@ function Project() {
 
     return (
         <div className="main-content">
-            <Box
+            <Paper
                 sx={{
                     width: "100%",
                     backgroundColor: "transparent",
@@ -195,7 +195,7 @@ function Project() {
                             ))}
                     </Grid>
                 </Paper>
-            </Box>
+            </Paper>
         </div>
     );
 }

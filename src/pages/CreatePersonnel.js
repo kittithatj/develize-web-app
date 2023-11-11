@@ -1,5 +1,25 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Typography, Grid, Button, TextField, Step, StepLabel, Stepper, Select, MenuItem, InputAdornment, IconButton, Chip, Avatar } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+    Box,
+    Typography,
+    Grid,
+    Button,
+    TextField,
+    Step,
+    StepLabel,
+    Stepper,
+    Select,
+    MenuItem,
+    InputAdornment,
+    IconButton,
+    Chip,
+    Avatar,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions
+} from '@mui/material';
+
 import PersonIcon from '@mui/icons-material/Person';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import AddIcCallIcon from '@mui/icons-material/AddIcCall';
@@ -22,7 +42,6 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import CheckIcon from "@mui/icons-material/Check";
 import Pagination from "@mui/material/Pagination";
-
 import StorageIcon from '@mui/icons-material/Storage';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import HandymaIconn from '@mui/icons-material/Handyman';
@@ -35,8 +54,8 @@ export default function CreatePersonnel() {
     const navigate = useNavigate();
     const [user, setUser, openSnackbar] = useOutletContext({});
 
-    const [skillList, setSkillList] = useState([])
-    const [skillSelect, setSkillSelect] = useState([])
+    const [skillList, setSkillList] = useState([]);
+    const [skillSelect, setSkillSelect] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [selectedType, setSelectedType] = useState('');
@@ -47,18 +66,20 @@ export default function CreatePersonnel() {
     const [currentPageSkill, setCurrentPageSkill] = useState(1);
     const itemsPerPageSkill = 12;
 
+    const [openDialog, setOpenDialog] = useState(false);
+
     const fetchSkillData = () => {
-        setLoading(true)
+        setLoading(true);
         skillApi.getAllSKills().then(data => {
-            setSkillList(data)
-            setLoading(false)
-            console.log('Skill SP', data)
-        })
-    }
+            setSkillList(data);
+            setLoading(false);
+            console.log('Skill SP', data);
+        });
+    };
 
     useEffect(() => {
-        fetchSkillData()
-    }, [])
+        fetchSkillData();
+    }, []);
 
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState({
@@ -81,14 +102,15 @@ export default function CreatePersonnel() {
     };
 
     const handleDeleteSkill = (item) => {
-        setSkillSelect(skillSelect.filter((s) => s.skill_id !== item.skill_id))
-    }
+        setSkillSelect(skillSelect.filter((s) => s.skill_id !== item.skill_id));
+    };
 
     const handleNextStep = () => {
-        if (activeStep === 0) {
-            console.log('ข้อมูลที่บันทึก:', formData);
+        if (activeStep === steps.length - 1) {
+            setOpenDialog(true);
+        } else {
+            handleNext();
         }
-        handleNext();
     };
 
     const handleNext = () => {
@@ -100,6 +122,8 @@ export default function CreatePersonnel() {
     };
 
     const handleCreate = () => {
+        setOpenDialog(false);
+
         const dataToSend = {
             ...formData,
             skillsId: skillSelect.map((skill) => skill.skill_id),
@@ -126,20 +150,20 @@ export default function CreatePersonnel() {
                     message: 'Create Personnel Failed'
                 });
             });
-    }
+    };
 
     const addSkill = (item) => {
-        setSkillSelect(prevArray => [...prevArray, item])
-        setTimeout(() => console.log(skillSelect), 200)
-    }
+        setSkillSelect(prevArray => [...prevArray, item]);
+        setTimeout(() => console.log(skillSelect), 200);
+    };
 
     const handleSearchValueChange = (event) => {
         setSearchValue(event.target.value);
-    }
+    };
 
     const handleSkillTypeChange = (event) => {
         setSelectedType(event.target.value);
-    }
+    };
 
     const countSkill = (item) => {
         setSkillSelect((prevArray) => [...prevArray, item]);
@@ -195,7 +219,7 @@ export default function CreatePersonnel() {
         <div className="main-content">
             <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
                 <Grid item xs={12} md={6}>
-                    <Box
+                    <Paper
                         sx={{
                             width: '100%',
                             backgroundColor: 'white',
@@ -343,13 +367,13 @@ export default function CreatePersonnel() {
                                             <Select
                                                 sx={{ mt: 1, mb: 2, width: "100%" }}
                                                 value={formData.employmentStatus}
-                                                name="employmentStatus" 
-                                                onChange={handleChange} 
+                                                name="employmentStatus"
+                                                onChange={handleChange}
                                                 startAdornment={
                                                     <InputAdornment position="start">
-                                                      <AutorenewIcon />
+                                                        <AutorenewIcon />
                                                     </InputAdornment>
-                                                  }
+                                                }
                                             >
                                                 {employmentStatus.map((type) => (
                                                     <MenuItem key={type} value={type}>
@@ -541,9 +565,30 @@ export default function CreatePersonnel() {
                                 >
                                     {activeStep === steps.length - 1 ? 'Create' : 'Next'}
                                 </Button>
+                                <Dialog
+                                    open={openDialog}
+                                    onClose={() => setOpenDialog(false)}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                >
+                                    <DialogTitle id="alert-dialog-title">{"Confirmation"}</DialogTitle>
+                                    <DialogContent>
+                                        <Typography variant="body1">
+                                            Are you sure you want to create this personnel?
+                                        </Typography>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={() => setOpenDialog(false)} color="primary">
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleCreate} color="success" autoFocus>
+                                            Create
+                                        </Button>
+                                    </DialogActions>
+                                </Dialog>
                             </Box>
                         </Box>
-                    </Box>
+                    </Paper>
                 </Grid>
             </Grid>
         </div>
