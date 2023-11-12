@@ -1,7 +1,7 @@
 // SYSTEM
 import { Avatar, Badge, Box, Typography, TextField, InputAdornment, Chip, Button, IconButton, MenuItem, InputBase, } from "@mui/material";
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import Grid from '@mui/material/Grid';
 import { skillTypeList } from '../config/skill-type-list';
 import Card from '@mui/material/Card';
@@ -435,9 +435,11 @@ function PersonnelEdit() {
                             >
                                 Personnel Editing
                             </Typography>
-                            <Button variant="outlined" color="error" sx={{ borderRadius: '30px', width: '80px' }} href={'/Personnel/' + dataPersonnel.personnel_id}>
-                                Back
-                            </Button>
+                            <Link to="/personnel">
+                                <Button variant="outlined" color="error" sx={{ borderRadius: '30px', width: '80px' }} >
+                                    Back
+                                </Button>
+                            </Link>
                         </div>
                         <div className="content">
                             <div style={{ display: "flex", flexDirection: "row" }}>

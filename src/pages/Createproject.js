@@ -1,7 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box, Typography, TextField, InputAdornment, Chip, Button, MenuItem, Select, IconButton, ListItemButton, AvatarGroup, Tooltip, InputBase, ThemeProvider, createTheme,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+  Box,
+  Typography,
+  TextField,
+  InputAdornment,
+  Chip,
+  Button,
+  MenuItem,
+  Select,
+  IconButton,
+  ListItemButton,
+  AvatarGroup,
+  Tooltip,
+  InputBase,
+  ThemeProvider,
+  createTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -13,10 +31,10 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import SkillFroupAvatar from "../components/SkillGroupAvatar";
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import Paper from '@mui/material/Paper';
-import StepLabel from '@mui/material/StepLabel';
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import Paper from "@mui/material/Paper";
+import StepLabel from "@mui/material/StepLabel";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -108,63 +126,64 @@ function Createproject() {
   };
 
   const handleConfirm = () => {
-    const createProjectData = () => {
-      if (
-        formData.projectName === "" ||
-        formData.projectType === "" ||
-        formData.projectDescription === "" ||
-        formData.startDate === "" ||
-        formData.endDate === "" ||
-        formData.budget === "" ||
-        skillSelect.length === 0 ||
-        formData.memberIdList.length === 0
-      ) {
+    // const createProjectData = () => {
+    if (
+      formData.projectName === "" ||
+      formData.projectType === "" ||
+      formData.projectDescription === "" ||
+      formData.startDate === "" ||
+      formData.endDate === "" ||
+      formData.budget === ""
+      // ||
+      // skillSelect.length === 0 ||
+      // formData.memberIdList.length === 0
+    ) {
+      openSnackbar({
+        status: "error",
+        message: "Field is empty",
+      });
+      return;
+    }
+    console.log("formData:", formData);
+    const skillIds = skillSelect.map((skill) => skill.skill_id);
+
+    const dataToSend = {
+      projectName: formData.projectName,
+      projectType: formData.projectType,
+      projectDescription: formData.projectDescription,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+      memberAssignment: formData.memberIdList.map((member) => ({
+        personnel_id: member.personnel_id,
+        role: member.role,
+      })),
+      budget: formData.budget,
+      projectStatus: formData.projectStatus,
+    };
+
+    ProjectAPI.createProject(dataToSend)
+      .then((res) => {
+        // if (res.status === 200) {
+        return res.json();
+        // } else {
+        //   throw new Error(res.status);
+        // }
+      })
+      .then(() => {
+        openSnackbar({
+          status: "success",
+          message: "Create Project Successfully",
+        });
+        navigate("../Project");
+      })
+      .catch(() => {
         openSnackbar({
           status: "error",
-          message: "Field is empty",
+          message: "Create Project Failed",
         });
-        return;
-      }
-      console.log("formData:", formData);
-      const skillIds = skillSelect.map((skill) => skill.skill_id);
-
-      const dataToSend = {
-        projectName: formData.projectName,
-        projectType: formData.projectType,
-        projectDescription: formData.projectDescription,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
-        memberIdList: formData.memberIdList.map((member) => ({
-          personnel_id: member.personnel_id,
-          role: member.role,
-        })),
-        budget: formData.budget,
-        projectStatus: formData.projectStatus,
-      };
-
-      ProjectAPI.createProject(dataToSend)
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            throw new Error(res.status);
-          }
-        })
-        .then(() => {
-          openSnackbar({
-            status: "success",
-            message: "Create Project Successfully",
-          });
-          navigate("../Project");
-        })
-        .catch(() => {
-          openSnackbar({
-            status: "error",
-            message: "Create Project Failed",
-          });
-        });
-    };
+      });
+    // };
     handleCloseDialog();
   };
   const [activeStep, setActiveStep] = useState(0);
@@ -185,7 +204,6 @@ function Createproject() {
 
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
   const itemsPerPageSkill = 12;
-
 
   const handleOpenDialog = (person) => {
     setSelectedPersonnel(person);
@@ -246,7 +264,6 @@ function Createproject() {
     setSearchPositionValue(event.target.value);
   };
 
-
   const [loadingPerson, setLoadingPerson] = useState(false);
   const [dataPersonnel, setDataPersonnel] = useState("");
 
@@ -257,11 +274,21 @@ function Createproject() {
     });
   };
 
-  const typeOptions = ["Web Development", "Mobile App Development", "Desktop Application Development", "Game Development", "Embedded System Development",
-    "AI and Machine Learning Development", "Database Management and System", "DevOps and CI/CD", "Cloud-Based Development", "Security and Cybersecurity System",
-    "Artificial Reality (AR) and Virtual Reality (VR) Development"];
-  const statusOptions = ["On Success", "On Holding", "On Going"];
-  const memberOptions = ["Project Leader", "Developer", "Engineer", "Tester"];
+  const typeOptions = [
+    "Web Development",
+    "Mobile App Development",
+    "Desktop Application Development",
+    "Game Development",
+    "Embedded System Development",
+    "AI and Machine Learning Development",
+    "Database Management and System",
+    "DevOps and CI/CD",
+    "Cloud-Based Development",
+    "Security and Cybersecurity System",
+    "Artificial Reality (AR) and Virtual Reality (VR) Development",
+  ];
+  const statusOptions = ["Completed", "Holding", "On-going", "Canceled"];
+  //const memberOptions = ["Project Leader", "Developer", "Engineer", "Tester"];
 
   const [formData, setFormData] = useState({
     projectName: "",
@@ -377,7 +404,7 @@ function Createproject() {
         return "default";
     }
   };
-  const steps = ['Project Details', 'Select Personnel', 'Select Skills'];
+  const steps = ["Project Details", "Select Personnel", "Select Skills"];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -387,9 +414,9 @@ function Createproject() {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-
   return (
-    <div className="main-content"
+    <div
+      className="main-content"
       sx={{
         width: "100%",
         backgroundColor: "white",
@@ -398,9 +425,9 @@ function Createproject() {
         alignItems: "flex-start",
         justifyContent: "center",
         padding: "15px",
-      }}>
+      }}
+    >
       <Grid container justifyContent="center" alignItems="stretch" spacing={1}>
-
         <Grid item xs={12} md={8}>
           <Paper
             sx={{
@@ -415,7 +442,7 @@ function Createproject() {
             }}
           >
             {activeStep === 0 && (
-              <div style={{ width: '100%' }}>
+              <div style={{ width: "100%" }}>
                 <Typography
                   variant="h5"
                   component="div"
@@ -430,7 +457,11 @@ function Createproject() {
                   Create New Project
                 </Typography>
                 <div>
-                  <Stepper activeStep={activeStep} alternativeLabel style={{ marginTop: '30px' }}>
+                  <Stepper
+                    activeStep={activeStep}
+                    alternativeLabel
+                    style={{ marginTop: "30px" }}
+                  >
                     {steps.map((label) => (
                       <Step key={label}>
                         <StepLabel>{label}</StepLabel>
@@ -439,10 +470,23 @@ function Createproject() {
                   </Stepper>
                 </div>
                 <div>
-                  <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px', marginRight: '540px' }}>
+                  <span
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "600",
+                      marginBottom: "-20px",
+                      marginRight: "540px",
+                    }}
+                  >
                     ProjectName
                   </span>
-                  <span style={{ fontSize: "15px", fontWeight: '600', marginBottom: '-20px' }}>
+                  <span
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "600",
+                      marginBottom: "-20px",
+                    }}
+                  >
                     ProjectType
                   </span>
                 </div>
@@ -459,7 +503,10 @@ function Createproject() {
                     variant="outlined"
                     value={formData.projectName}
                     onChange={(event) =>
-                      setFormData({ ...formData, projectName: event.target.value })
+                      setFormData({
+                        ...formData,
+                        projectName: event.target.value,
+                      })
                     }
                     InputProps={{
                       startAdornment: (
@@ -478,7 +525,10 @@ function Createproject() {
                       </InputAdornment>
                     }
                     onChange={(event) =>
-                      setFormData({ ...formData, projectType: event.target.value })
+                      setFormData({
+                        ...formData,
+                        projectType: event.target.value,
+                      })
                     }
                   >
                     {typeOptions.map((type) => (
@@ -488,8 +538,14 @@ function Createproject() {
                     ))}
                   </Select>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                  <span style={{ fontSize: "15px", fontWeight: '600', }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                  }}
+                >
+                  <span style={{ fontSize: "15px", fontWeight: "600" }}>
                     Description
                   </span>
                   <TextField
@@ -511,9 +567,23 @@ function Createproject() {
                     }}
                   />
                 </div>
-                <div style={{ display: "flex", flexDirection: "row", marginTop: "10px", width: "100%" }}>
-                  <div style={{ display: "flex", flexDirection: "column", width: "50%", marginRight: '10px' }}>
-                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    marginTop: "10px",
+                    width: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "50%",
+                      marginRight: "10px",
+                    }}
+                  >
+                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
                       Start Date
                     </span>
                     <TextField
@@ -536,8 +606,14 @@ function Createproject() {
                       }}
                     />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
-                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "50%",
+                    }}
+                  >
+                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
                       End Date
                     </span>
                     <TextField
@@ -560,8 +636,15 @@ function Createproject() {
                       }}
                     />
                   </div>
-                  <div style={{ display: "flex", flexDirection: "column", width: "100%", marginLeft: "10px" }}>
-                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
                       Budget
                     </span>
                     <TextField
@@ -592,8 +675,14 @@ function Createproject() {
                     width: "100%",
                   }}
                 >
-                  <div style={{ display: "flex", flexDirection: "column", width: "100%", }}>
-                    <span style={{ fontSize: "15px", fontWeight: '600' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                    }}
+                  >
+                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
                       Proejct Status
                     </span>
                     <Select
@@ -622,7 +711,12 @@ function Createproject() {
                 <Button
                   variant="contained"
                   color="success"
-                  style={{ marginTop: "10px", marginLeft: "auto", display: 'flex', justifyContent: 'flex-end' }}
+                  style={{
+                    marginTop: "10px",
+                    marginLeft: "auto",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
                   onClick={activeStep < 2 ? handleNext : createProjectData}
                 >
                   {activeStep < 2 ? "Next" : "Create Project"}
@@ -632,11 +726,26 @@ function Createproject() {
 
             {activeStep === 1 && (
               <div>
-                <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '50px' }}>
+                <span
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "600",
+                    marginBottom: "50px",
+                  }}
+                >
                   Skill Required
                 </span>
                 <div>
-                  <Stepper activeStep={activeStep} alternativeLabel style={{ fontSize: "25px", fontWeight: '600', marginTop: '10px', marginBottom: '10px' }}>
+                  <Stepper
+                    activeStep={activeStep}
+                    alternativeLabel
+                    style={{
+                      fontSize: "25px",
+                      fontWeight: "600",
+                      marginTop: "10px",
+                      marginBottom: "10px",
+                    }}
+                  >
                     {steps.map((label) => (
                       <Step key={label}>
                         <StepLabel>{label}</StepLabel>
@@ -743,7 +852,7 @@ function Createproject() {
                         s.skillName
                           .toLowerCase()
                           .includes(searchValue.toLowerCase()) &&
-                        (selectedType === '' || s.skillType === selectedType)
+                        (selectedType === "" || s.skillType === selectedType)
                     )
                     .slice(
                       (currentPageSkill - 1) * itemsPerPageSkill,
@@ -769,43 +878,61 @@ function Createproject() {
                             edge="end"
                             aria-label="delete"
                             onClick={() => {
-                              addSkill(item)
+                              addSkill(item);
                             }}
-                            disabled={skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)}
+                            disabled={skillSelect.some(
+                              (selectedSkill) =>
+                                selectedSkill.skill_id === item.skill_id
+                            )}
                           >
-                            {
-                              skillSelect.some((selectedSkill) => selectedSkill.skill_id === item.skill_id)
-                                ? <CheckIcon />
-                                : <AddIcon />
-                            }
+                            {skillSelect.some(
+                              (selectedSkill) =>
+                                selectedSkill.skill_id === item.skill_id
+                            ) ? (
+                              <CheckIcon />
+                            ) : (
+                              <AddIcon />
+                            )}
                           </IconButton>
                         </ListItem>
                       </Box>
                     ))}
-                  <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2 }}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      mt: 2,
+                    }}
+                  >
                     <Pagination
                       count={Math.ceil(
-                        displayedSkills
-                          .filter(
-                            (s) =>
-                              s.skillName
-                                .toLowerCase()
-                                .includes(searchValue.toLowerCase()) &&
-                              (selectedType === '' || s.skillType === selectedType)
-                          )
-                          .length / itemsPerPageSkill
+                        displayedSkills.filter(
+                          (s) =>
+                            s.skillName
+                              .toLowerCase()
+                              .includes(searchValue.toLowerCase()) &&
+                            (selectedType === "" ||
+                              s.skillType === selectedType)
+                        ).length / itemsPerPageSkill
                       )}
                       page={currentPageSkill}
                       onChange={(event, page) => setCurrentPageSkill(page)}
                     />
                   </Box>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                  }}
+                >
                   <Button
                     variant="outlined"
                     color="error"
                     disabled={activeStep === 0}
-                    style={{ height: '40px' }}
+                    style={{ height: "40px" }}
                     onClick={handleBack}
                   >
                     Back
@@ -823,18 +950,26 @@ function Createproject() {
             )}
 
             {activeStep === 2 && (
-              <div style={{
-                width: '100%'
-              }}>
+              <div
+                style={{
+                  width: "100%",
+                }}
+              >
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     marginBottom: "50px",
-                    width: '100%'
+                    width: "100%",
                   }}
                 >
-                  <span style={{ fontSize: "25px", fontWeight: '600', marginBottom: '-20px' }}>
+                  <span
+                    style={{
+                      fontSize: "25px",
+                      fontWeight: "600",
+                      marginBottom: "-20px",
+                    }}
+                  >
                     Member List
                   </span>
                 </div>
@@ -884,7 +1019,7 @@ function Createproject() {
                     </div>
                     <div style={{ marginLeft: "8px", flex: 1 }}>
                       <TextField
-                        sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50, }}
+                        sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
                         size="small"
                         id="select-skill-type"
                         select
@@ -920,17 +1055,26 @@ function Createproject() {
                               fontWeight: "600",
                             }}
                           >
-                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
                               Information
                             </Typography>
                           </Box>
-                          <Box sx={{ marginLeft: '7%' }}>
-                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                          <Box sx={{ marginLeft: "7%" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
                               Status
                             </Typography>
                           </Box>
-                          <Box sx={{ marginLeft: '20%' }}>
-                            <Typography component="div" sx={{ fontWeight: "600" }}>
+                          <Box sx={{ marginLeft: "20%" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
                               Skills
                             </Typography>
                           </Box>
@@ -949,8 +1093,12 @@ function Createproject() {
                                 <ListItemButton
                                   component="div"
                                   key={dataPersonnel.personnel_id}
-                                  divider={i + 1 === array.length ? false : true}
-                                  onClick={() => handleOpenDialog(dataPersonnel)}
+                                  divider={
+                                    i + 1 === array.length ? false : true
+                                  }
+                                  onClick={() =>
+                                    handleOpenDialog(dataPersonnel)
+                                  }
                                 >
                                   <ListItemAvatar>
                                     <ProfileAvatar
@@ -1009,7 +1157,11 @@ function Createproject() {
                       </List>
 
                       <Box
-                        sx={{ display: "flex", justifyContent: "center", mt: 2 }}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          mt: 2,
+                        }}
                       >
                         <Pagination
                           count={Math.ceil(dataPersonnel.length / itemsPerPage)}
@@ -1019,7 +1171,13 @@ function Createproject() {
                       </Box>
                     </ThemeProvider>
                   )}
-                  <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      marginTop: "10px",
+                    }}
+                  >
                     <Button
                       variant="outlined"
                       color="error"

@@ -10,6 +10,10 @@ import {
   Badge,
   Box,
   Chip,
+  List,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
   ThemeProvider,
   Tooltip,
   Typography,
@@ -17,8 +21,13 @@ import {
 } from "@mui/material";
 import { stringToColor } from "../components/SkillGroupAvatar";
 import { PersonnelAPI } from "../api/personnel-api";
+import { Link } from "react-router-dom";
 
 //icon
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import FastForwardIcon from "@mui/icons-material/FastForward";
+import PauseIcon from "@mui/icons-material/Pause";
+import CheckIcon from "@mui/icons-material/Check";
 import EmailIcon from "@mui/icons-material/Email";
 import CallIcon from "@mui/icons-material/Call";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -28,6 +37,7 @@ import WorkIcon from "@mui/icons-material/Work";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReactApexChart from "react-apexcharts";
 
+
 // Props:
 //     open: Boolean;
 //     SetOpen: Function;
@@ -36,6 +46,7 @@ function PersonnelInfoDialog(props) {
   const [personnel, setPersonnel] = React.useState({});
   const [assessmentScore, setAssessmentScore] = React.useState({});
   const [chartData, setChartData] = React.useState();
+  const [viewChart, setViewChart] = React.useState(true);
 
   const handleClose = () => {
     props.setOpen(false);
@@ -46,6 +57,153 @@ function PersonnelInfoDialog(props) {
     const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
     const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : "";
     return firstInitial + lastInitial;
+  };
+
+  const getIconProjectStatus = (status) => { 
+    if (status === "On-going" || "On Going") return {
+      color: "#fbc02d",
+      icon:<FastForwardIcon />
+    };
+    if (status === "Completed") return {
+      color: "#64dd17",
+      icon:<CheckIcon />
+    };
+    if (status === "Holding") return {
+      color: "#c4c4c4",
+      icon:<PauseIcon />
+    };
+    if (status === "Cancelled") return {
+      color: "#e53e3e",
+      icon:<CloseIcon />
+    };
+    else return {
+      color: "#c4c4c4",
+      icon:<QuestionMarkIcon />
+    };
+  };
+
+  const getDateFormatted = (date) => {
+    if (!date) return "";
+    const dateObj = new Date(date);
+    const month = dateObj.toLocaleString("default", { month: "short" });
+    const day = dateObj.getDate();
+    const year = dateObj.getFullYear();
+    return day + " " + month + " " + year;
+  };
+
+  const boxChart = () => {
+    return (
+      <Box
+        className="flex-center"
+        sx={{ flexDirection: "column", justifyContent: "flex-start" }}
+      >
+        <Typography fontSize={"1.3rem"}>Assessments Overview</Typography>
+        {chartData && (
+          <ReactApexChart
+            options={chartData.options}
+            series={chartData.series}
+            type="radar"
+            width={320}
+            height={300}
+          />
+        )}
+        {chartData && (
+          <Box>
+            Average Score :{" "}
+            {assessmentScore?.overviewScore?.jobPerformance.toFixed(2)}
+          </Box>
+        )}
+        {!chartData && (
+          <Box
+            className="flex-center"
+            sx={{
+              flexDirection: "column",
+              justifyContent: "center",
+              height: "300px",
+            }}
+          >
+            <Typography
+              sx={{
+                color: "#c4c4c4",
+                fontSize: "1rem",
+                textAlign: "center",
+                mt: "1rem",
+                width: "320px",
+              }}
+            >
+              No assessment data
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    );
+  };
+
+  const boxProjectHistory = () => {
+    return (
+      <Box
+        className="flex-center"
+        sx={{
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          minWidth: "320px",
+        }}
+      >
+        <Typography fontSize={"1.3rem"}>Project Histories</Typography>
+
+        <List
+          sx={{ width: "100%", maxWidth: 360, maxHeight: 320, bgcolor: "background.paper", overflow: 'auto' }}
+        >
+          {personnel?.projectHistories?.map((project, index) => {
+            return (
+              <Box>
+              <ListItemButton>
+                <ListItemAvatar>
+                  <Avatar sx={{ backgroundColor: getIconProjectStatus(project?.projectStatus).color }}>
+                    {getIconProjectStatus(project?.projectStatus).icon}
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText>
+                  <Typography>{project?.projectName}</Typography>
+                  <Typography fontSize="small" color="gray">
+                    {project?.projectType}
+                  </Typography>
+                  <Typography fontSize="small" color="skyblue">
+                    {getDateFormatted(project?.startDate)} -{" "}
+                    {getDateFormatted(project?.endDate)}
+                  </Typography>
+                </ListItemText>
+              </ListItemButton>
+              {(index!==personnel?.projectHistories.length-1) &&<div className="line"/>}
+              </Box>
+            );
+          })}
+        </List>
+
+        {!personnel?.projectHistories?.length && (
+          <Box
+            className="flex-center"
+            sx={{
+              flexDirection: "column",
+              justifyContent: "center",
+              height: "300px",
+            }}
+          >
+            <Typography
+              sx={{
+                color: "#c4c4c4",
+                fontSize: "1rem",
+                textAlign: "center",
+                mt: "1rem",
+                width: "320px",
+              }}
+            >
+              This Personnel has not been assigned to any project
+            </Typography>
+          </Box>
+        )}
+      </Box>
+    );
   };
 
   const status = (p) => {
@@ -229,7 +387,10 @@ function PersonnelInfoDialog(props) {
         </DialogTitle>
         <DialogContent>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <Box className="flex-center" sx={{ flexDirection: "column" }}>
+            <Box
+              className="flex-center"
+              sx={{ flexDirection: "column", minWidth: "200px" }}
+            >
               <Box
                 className="header"
                 sx={{
@@ -278,6 +439,7 @@ function PersonnelInfoDialog(props) {
                             wordWrap: "break-word",
                             maxWidth: "250px",
                             whiteSpace: "normal",
+                            minWidth: "200px",
                           }}
                         >
                           {item.info}
@@ -289,53 +451,33 @@ function PersonnelInfoDialog(props) {
               </table>
             </Box>
             <Box sx={{ borderLeft: "2px solid #dedede", mx: "1rem" }}></Box>
-            <Box
-              className="flex-center"
-              sx={{ flexDirection: "column", justifyContent: "flex-start" }}
-            >
-              <Typography fontSize={"1.3rem"}>Assessments Overview</Typography>
-              {chartData && (
-                <ReactApexChart
-                  options={chartData.options}
-                  series={chartData.series}
-                  type="radar"
-                  width={320}
-                  height={300}
-                />
-              )}
-              {chartData && (
-                <Box>
-                  Average Score :{" "}
-                  {assessmentScore?.overviewScore?.jobPerformance.toFixed(2)}
-                </Box>
-              )}
-              {!chartData && (
-                <Box
-                  className="flex-center"
-                  sx={{
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    height: "300px",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      color: "#c4c4c4",
-                      fontSize: "1rem",
-                      textAlign: "center",
-                      mt: "1rem",
-                      width: "320px",
-                    }}
-                  >
-                    No assessment data
-                  </Typography>
-                </Box>
-              )}
-            </Box>
+
+            {viewChart ? boxChart() : boxProjectHistory()}
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
+          <Link to={"edit/" + personnel?.personnel_id}>
+            <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>
+              Edit
+            </Button>
+          </Link>
+          {viewChart ? (
+            <Button
+              onClick={() => {
+                setViewChart(false);
+              }}
+            >
+              Project History
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setViewChart(true);
+              }}
+            >
+              Assessment Score
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>
