@@ -19,6 +19,7 @@ export const Api = {
     personnel_get_access_score:'/personnel/get-access/',// + id
     personnel_overview_access_score:'/personnel/overview-access/',// + id
     position_list_get:'/personnel/position/list',
+    division_list_get:'/personnel/division/list',
 
     project_get: '/project/get-list',
     project_create:'/project/create'

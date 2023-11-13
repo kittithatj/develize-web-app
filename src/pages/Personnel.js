@@ -12,16 +12,13 @@ import {
   Tooltip,
   Typography,
   createTheme,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
-  TextField,
-  InputAdornment,
   ListItem,
-  Card,
   Paper,
+  CircularProgress,
+  TextField,
+  InputBase,
+  Autocomplete,
 } from "@mui/material";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import React, { useEffect, useState } from "react";
@@ -31,40 +28,88 @@ import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutli
 import SkillFroupAvatar from "../components/SkillGroupAvatar";
 import { Link } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 
-import PersonIcon from "@mui/icons-material/Person";
-import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import StorageIcon from "@mui/icons-material/Storage";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import HandymaIconn from "@mui/icons-material/Handyman";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import TerminalIcon from "@mui/icons-material/Terminal";
-import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
+// import StorageIcon from "@mui/icons-material/Storage";
+// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+// import HandymaIconn from "@mui/icons-material/Handyman";
+// import MenuBookIcon from "@mui/icons-material/MenuBook";
+// import TerminalIcon from "@mui/icons-material/Terminal";
+// import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
+import { PersonnelAPI } from "../api/personnel-api";
 
 function Personnel() {
   const [personnel, setPersonnel] = useState([]);
+  const [positionList, setPositionList] = useState([]);
+  const [divisionList, setDivisionList] = useState([]);
+  const [searchForm, setSearchForm] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 8;
 
   const fetchPersonnelData = () => {
+    setLoading(true);
     fetch(Api.url + Api.personnel_get)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
         setPersonnel(data);
+        setLoading(false);
       });
+  };
+
+  const searchFilter = (person) => {
+    if (searchForm?.name) {
+      if (!fullname(person).toLowerCase().includes(searchForm?.name.toLowerCase())) {
+        return false;
+      }
+    }
+    if (searchForm?.skillName) {
+      if (!person.skills.some((skill) => skill.skillName.toLowerCase().includes(searchForm?.skillName.toLowerCase()))) {
+        return false;
+      }
+    }
+    if (searchForm?.position) {
+      if (!person.position.toLowerCase().includes(searchForm?.position.toLowerCase())) {
+        return false;
+      }
+    }
+    if (searchForm?.division) {
+      if (!person.division.toLowerCase().includes(searchForm?.division.toLowerCase())) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const fetchLoopUpData = () => {
+    PersonnelAPI.getPositionList().then((data) => {
+      setPositionList(data);
+    });
+    PersonnelAPI.getDivisionList().then((data) => {
+      setDivisionList(data);
+    });
   };
 
   useEffect(() => {
     fetchPersonnelData();
+    fetchLoopUpData();
   }, []);
 
   const fullname = (p) => {
     return p.firstName + " " + p.lastName;
+  };
+
+  const handleSearchValueChange = (e) => {
+    const { name, value, outerText } = e.target;
+    const key = name
+    setSearchForm({ ...searchForm, [key]: value || outerText });
+  };
+
+  const handleAutocompleteChange = (key, value) => {
+    setSearchForm({ ...searchForm, [key]: value });
   };
 
   const theme = createTheme({
@@ -92,7 +137,8 @@ function Personnel() {
   });
 
   const status = (p) => {
-    if(p?.employmentStatus === "Resigned") return { status: "Resigned", color: "secondary" };
+    if (p?.employmentStatus === "Resigned")
+      return { status: "Resigned", color: "secondary" };
     if (p.projectHistories.length === 0) {
       return { status: "Not Assigned", color: "success" };
     } else {
@@ -116,29 +162,29 @@ function Personnel() {
     setOpenDialog(true);
   };
 
-  const handleCloseDialog = () => {
-    setSelectedPersonnel(null);
-    setOpenDialog(false);
-  };
+  // const handleCloseDialog = () => {
+  //   setSelectedPersonnel(null);
+  //   setOpenDialog(false);
+  // };
 
-  const getSkillTypeIcon = (skillType) => {
-    switch (skillType) {
-      case "Database":
-        return <StorageIcon />;
-      case "Others":
-        return <MoreHorizIcon />;
-      case "Tool":
-        return <HandymaIconn />;
-      case "Library":
-        return <MenuBookIcon />;
-      case "Programming Language":
-        return <TerminalIcon />;
-      case "Framework":
-        return <IntegrationInstructionsIcon />;
-      default:
-        return <MoreHorizIcon />;
-    }
-  };
+  // const getSkillTypeIcon = (skillType) => {
+  //   switch (skillType) {
+  //     case "Database":
+  //       return <StorageIcon />;
+  //     case "Others":
+  //       return <MoreHorizIcon />;
+  //     case "Tool":
+  //       return <HandymaIconn />;
+  //     case "Library":
+  //       return <MenuBookIcon />;
+  //     case "Programming Language":
+  //       return <TerminalIcon />;
+  //     case "Framework":
+  //       return <IntegrationInstructionsIcon />;
+  //     default:
+  //       return <MoreHorizIcon />;
+  //   }
+  // };
 
   return (
     <div className="main-content">
@@ -173,8 +219,106 @@ function Personnel() {
             </Box>
 
             <div>
-              {personnel.length > 0 && (
+              <Box className="flex-center" sx={{ minWidth: "50vw" }}>
+                {loading && <CircularProgress sx={{ my: 5 }} size={100} />}
+              </Box>
+              {personnel.length > 0 ? (
                 <div>
+                  <Box
+                    className="flex-center"
+                    sx={{
+                      justifyContent: "space-between",
+                      mb: 2,
+                      gap: "15px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "30%",
+                        borderStyle: "solid",
+                        borderRadius: "5px",
+                        borderColor: "#F0f0f0",
+                        borderWidth: "2px",
+                        height: "58px",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Personnel Name"
+                        inputProps={{ "aria-label": "search skill" }}
+                        value={searchForm?.name}
+                        name="name"
+                        onChange={handleSearchValueChange}
+                      />
+                      <IconButton
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                        disabled
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "30%",
+                        borderStyle: "solid",
+                        borderRadius: "5px",
+                        borderColor: "#F0f0f0",
+                        borderWidth: "2px",
+                        height: "58px",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Skill"
+                        inputProps={{ "aria-label": "search skill" }}
+                        value={searchForm?.skillName}
+                        name="skillName"
+                        onChange={handleSearchValueChange}
+                      />
+                      <IconButton
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                        disabled
+                      >
+                        <SearchIcon />
+                      </IconButton>
+                    </Box>
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={positionList}
+                      sx={{ width: '20%' }}
+                      name="position"
+                      onChange={(event,newValue)=>{handleAutocompleteChange("position",newValue)}}
+                      renderInput={(params) => (
+                        <TextField {...params} 
+                        placeholder="Search Position"
+                        name="position" 
+                        onChange={handleSearchValueChange}
+                        />
+                      )}
+                    />
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={divisionList}
+                      sx={{ width: '20%' }}
+                      name="division"
+                      onChange={(event,newValue)=>{handleAutocompleteChange("division",newValue)}}
+                      renderInput={(params) => (
+                        <TextField {...params} 
+                        placeholder="Search Division"
+                        name="division" 
+                        onChange={handleSearchValueChange}
+                        />
+                      )}
+                    />
+                  </Box>
                   <List
                     sx={{
                       width: "60vw",
@@ -212,6 +356,7 @@ function Personnel() {
                     <div className="line"></div>
 
                     {personnel
+                    .filter((person) => { return searchFilter(person)})
                       .slice(
                         (currentPage - 1) * itemsPerPage,
                         currentPage * itemsPerPage
@@ -313,6 +458,18 @@ function Personnel() {
 
                   {/* เพิ่มบุคคล */}
                 </div>
+              ) : (
+                !loading && (
+                  <Box>
+                    <Typography
+                      className="flex-center"
+                      color="gray"
+                      variant="h6"
+                    >
+                      Personnel Data Not Found
+                    </Typography>
+                  </Box>
+                )
               )}
             </div>
           </Paper>
@@ -320,11 +477,10 @@ function Personnel() {
       </div>
 
       <PersonnelInfoDialog
-      personnel={selectedPersonnel}
-      open={openDialog}
-      setOpen={setOpenDialog}
+        personnel={selectedPersonnel}
+        open={openDialog}
+        setOpen={setOpenDialog}
       />
-
     </div>
   );
 }

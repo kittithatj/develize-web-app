@@ -38,7 +38,7 @@ function Skill() {
   const [selectedId, setSelectedId] = useState(0);
   const [selectedType, setSelectedType] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const itemsPerPage = 7; // เปลี่ยนจำนวนรายการต่อหน้าเป็น 7
 
@@ -163,7 +163,7 @@ function Skill() {
 
   return (
     <div className="main-content">
-      <Paper sx={{ padding: "30px" }}>
+      <Paper sx={{height: 'fit-content', padding: "30px" }}>
         <Box
           sx={{
             display: "flex",
@@ -175,6 +175,7 @@ function Skill() {
             sx={{
               display: "flex",
               width: "100%",
+              minWidth: "616px",
               alignItems: "center",
               justifyContent: "space-between",
             }}
@@ -265,7 +266,7 @@ function Skill() {
           {skill.length > 0 && !loading && (
             <List
               sx={{
-                width: "90vw",
+                width: "100%",
                 maxWidth: 615,
                 minWidth: 300,
                 bgcolor: "background.paper",
@@ -298,10 +299,10 @@ function Skill() {
                   </ListItem>
                 );
               })}
-              {currentItems.length === 0 && <SkillNotFound />}
+              {(currentItems.length  === 0) && <SkillNotFound />}
             </List>
           )}
-          {skill.length === 0 && (
+          {(skill.length === 0)&& !loading && (
             <List
               sx={{
                 width: "100%",

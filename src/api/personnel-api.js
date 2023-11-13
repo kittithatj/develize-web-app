@@ -38,6 +38,18 @@ export const PersonnelAPI = {
         })
     },
 
+    getDivisionList:async() => {
+        return fetch(Api.url + Api.division_list_get, {
+            method: 'GET',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
+
     createPersonnel: async (personnelForm) => {
         return fetch(Api.url + Api.personnel_create, {
             method: 'POST',
@@ -91,4 +103,5 @@ export const PersonnelAPI = {
             }
         })
     }
+
 }

@@ -236,7 +236,7 @@ export default function CreatePersonnel() {
                                 variant="h5"
                                 color="textSecondary"
                             >
-                                CreatePersonnel
+                                Create Personnel
                             </Typography>
                         </div>
                         <Box sx={{ width: '100%' }}>
@@ -574,7 +574,7 @@ export default function CreatePersonnel() {
                                     <DialogTitle id="alert-dialog-title">{"Confirmation"}</DialogTitle>
                                     <DialogContent>
                                         <Typography variant="body1">
-                                            Are you sure you want to create this personnel?
+                                            Do you want to create personnel Information?
                                         </Typography>
                                     </DialogContent>
                                     <DialogActions>
