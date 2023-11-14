@@ -30,19 +30,15 @@ import { Link } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 
-// import StorageIcon from "@mui/icons-material/Storage";
-// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-// import HandymaIconn from "@mui/icons-material/Handyman";
-// import MenuBookIcon from "@mui/icons-material/MenuBook";
-// import TerminalIcon from "@mui/icons-material/Terminal";
-// import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import { PersonnelAPI } from "../api/personnel-api";
+import { skillApi } from "../api/skill-api";
 
 function Personnel() {
   const [personnel, setPersonnel] = useState([]);
   const [positionList, setPositionList] = useState([]);
   const [divisionList, setDivisionList] = useState([]);
+  const [searchSkillList, setSearchSkillList] = useState([]);
   const [searchForm, setSearchForm] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -62,40 +58,64 @@ function Personnel() {
 
   const searchFilter = (person) => {
     if (searchForm?.name) {
-      if (!fullname(person).toLowerCase().includes(searchForm?.name.toLowerCase())) {
+      if (
+        !fullname(person).toLowerCase().includes(searchForm?.name.toLowerCase())
+      ) {
         return false;
       }
     }
-    if (searchForm?.skillName) {
-      if (!person.skills.some((skill) => skill.skillName.toLowerCase().includes(searchForm?.skillName.toLowerCase()))) {
+    if (searchForm?.skills?.length > 0) {
+      if (
+        !searchForm?.skills.every((skill) => {
+          const sList =
+            person?.skills?.map((s) => {
+              return s.skillName;
+            }) || [];
+          return sList.includes(skill);
+        })
+      ) {
         return false;
       }
     }
     if (searchForm?.position) {
-      if (!person.position.toLowerCase().includes(searchForm?.position.toLowerCase())) {
+      if (
+        !person.position
+          .toLowerCase()
+          .includes(searchForm?.position.toLowerCase())
+      ) {
         return false;
       }
     }
     if (searchForm?.division) {
-      if (!person.division.toLowerCase().includes(searchForm?.division.toLowerCase())) {
+      if (
+        !person.division
+          .toLowerCase()
+          .includes(searchForm?.division.toLowerCase())
+      ) {
         return false;
       }
     }
     return true;
   };
 
-  const fetchLoopUpData = () => {
+  const fetchLookUpData = () => {
     PersonnelAPI.getPositionList().then((data) => {
       setPositionList(data);
     });
     PersonnelAPI.getDivisionList().then((data) => {
       setDivisionList(data);
     });
+    skillApi.getAllSKills().then((data) => {
+      const list = data.map((s) => {
+        return s.skillName;
+      });
+      setSearchSkillList(list);
+    });
   };
 
   useEffect(() => {
     fetchPersonnelData();
-    fetchLoopUpData();
+    fetchLookUpData();
   }, []);
 
   const fullname = (p) => {
@@ -103,12 +123,14 @@ function Personnel() {
   };
 
   const handleSearchValueChange = (e) => {
+    setCurrentPage(1);
     const { name, value, outerText } = e.target;
-    const key = name
+    const key = name;
     setSearchForm({ ...searchForm, [key]: value || outerText });
   };
 
   const handleAutocompleteChange = (key, value) => {
+    setCurrentPage(1);
     setSearchForm({ ...searchForm, [key]: value });
   };
 
@@ -162,29 +184,11 @@ function Personnel() {
     setOpenDialog(true);
   };
 
-  // const handleCloseDialog = () => {
-  //   setSelectedPersonnel(null);
-  //   setOpenDialog(false);
-  // };
-
-  // const getSkillTypeIcon = (skillType) => {
-  //   switch (skillType) {
-  //     case "Database":
-  //       return <StorageIcon />;
-  //     case "Others":
-  //       return <MoreHorizIcon />;
-  //     case "Tool":
-  //       return <HandymaIconn />;
-  //     case "Library":
-  //       return <MenuBookIcon />;
-  //     case "Programming Language":
-  //       return <TerminalIcon />;
-  //     case "Framework":
-  //       return <IntegrationInstructionsIcon />;
-  //     default:
-  //       return <MoreHorizIcon />;
-  //   }
-  // };
+  const filteredPersonnel = () => {
+    return personnel.filter((person) => {
+      return searchFilter(person);
+    });
+  };
 
   return (
     <div className="main-content">
@@ -260,46 +264,35 @@ function Personnel() {
                         <SearchIcon />
                       </IconButton>
                     </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "30%",
-                        borderStyle: "solid",
-                        borderRadius: "5px",
-                        borderColor: "#F0f0f0",
-                        borderWidth: "2px",
-                        height: "58px",
+                    <Autocomplete
+                      multiple
+                      limitTags={2}
+                      disablePortal
+                      id="combo-box-demo"
+                      options={searchSkillList}
+                      sx={{ width: "30%" }}
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("skills", newValue);
                       }}
-                    >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Search Skill"
-                        inputProps={{ "aria-label": "search skill" }}
-                        value={searchForm?.skillName}
-                        name="skillName"
-                        onChange={handleSearchValueChange}
-                      />
-                      <IconButton
-                        type="button"
-                        sx={{ p: "10px" }}
-                        aria-label="search"
-                        disabled
-                      >
-                        <SearchIcon />
-                      </IconButton>
-                    </Box>
+                      renderInput={(params) => (
+                        <TextField {...params} placeholder="Search Skills" />
+                      )}
+                    />
                     <Autocomplete
                       disablePortal
                       id="combo-box-demo"
                       options={positionList}
-                      sx={{ width: '20%' }}
+                      sx={{ width: "20%" }}
                       name="position"
-                      onChange={(event,newValue)=>{handleAutocompleteChange("position",newValue)}}
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("position", newValue);
+                      }}
                       renderInput={(params) => (
-                        <TextField {...params} 
-                        placeholder="Search Position"
-                        name="position" 
-                        onChange={handleSearchValueChange}
+                        <TextField
+                          {...params}
+                          placeholder="Search Position"
+                          name="position"
+                          onChange={handleSearchValueChange}
                         />
                       )}
                     />
@@ -307,154 +300,189 @@ function Personnel() {
                       disablePortal
                       id="combo-box-demo"
                       options={divisionList}
-                      sx={{ width: '20%' }}
+                      sx={{ width: "20%" }}
                       name="division"
-                      onChange={(event,newValue)=>{handleAutocompleteChange("division",newValue)}}
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("division", newValue);
+                      }}
                       renderInput={(params) => (
-                        <TextField {...params} 
-                        placeholder="Search Division"
-                        name="division" 
-                        onChange={handleSearchValueChange}
+                        <TextField
+                          {...params}
+                          placeholder="Search Division"
+                          name="division"
+                          onChange={handleSearchValueChange}
                         />
                       )}
                     />
                   </Box>
-                  <List
-                    sx={{
-                      width: "60vw",
-                      minWidth: 500,
-                      bgcolor: "background.paper",
-                      zIndex: 200,
-                      padding: 0,
-                    }}
-                  >
-                    <ListItem>
-                      <Box
+                  {filteredPersonnel()?.length > 0 ? (
+                    <div>
+                      <List
                         sx={{
-                          width: "30%",
-                          marginLeft: "56px",
-                          fontWeight: "600",
+                          width: "60vw",
+                          minWidth: 500,
+                          bgcolor: "background.paper",
+                          zIndex: 200,
+                          padding: 0,
                         }}
                       >
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Information
-                        </Typography>
-                      </Box>
-                      <Box sx={{ width: "30%" }}>
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Status
-                        </Typography>
-                      </Box>
-                      <Box sx={{ width: "40%" }}>
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Skills
-                        </Typography>
-                      </Box>
-                      <ListItemText sx={{ width: "165px" }} />
-                    </ListItem>
-
-                    <div className="line"></div>
-
-                    {personnel
-                    .filter((person) => { return searchFilter(person)})
-                      .slice(
-                        (currentPage - 1) * itemsPerPage,
-                        currentPage * itemsPerPage
-                      )
-                      .map((person, i, array) => {
-                        return (
-                          <Box>
-                            <ListItemButton
+                        <ListItem>
+                          <Box
+                            sx={{
+                              width: "30%",
+                              marginLeft: "56px",
+                              fontWeight: "600",
+                            }}
+                          >
+                            <Typography
                               component="div"
-                              key={person.personnel_id}
-                              divider={i + 1 === array.length ? false : true}
-                              onClick={() => handleOpenDialog(person)}
+                              sx={{ fontWeight: "600" }}
                             >
-                              <ListItemAvatar>
-                                <ProfileAvatar
-                                  variant="circular"
-                                  name={fullname(person)}
-                                />
-                              </ListItemAvatar>
-                              <ListItemText
-                                sx={{ width: "30%" }}
-                                primary={fullname(person)}
-                                secondary={person.position}
-                              />
-                              <Box
-                                component="div"
-                                sx={{ display: "flex", width: "30%" }}
-                              >
-                                <Chip
-                                  label={status(person).status}
-                                  color={status(person).color}
-                                  sx={{
-                                    justifyContent: "center",
-                                    "& .MuiChip-label": {
-                                      margin: 0,
-                                    },
-                                  }}
-                                />
-                              </Box>
-                              <Box
-                                component="div"
-                                sx={{ display: "flex", width: "40%" }}
-                              >
-                                {person.skills.length > 0 && (
-                                  <AvatarGroup max={5}>
-                                    {person.skills.map((skill) => {
-                                      return (
-                                        <Tooltip
-                                          key={skill?.skill_id}
-                                          title={skill.skillName}
-                                        >
-                                          <div>
-                                            <SkillFroupAvatar
-                                              variant="circular"
-                                              name={skill.skillName}
-                                            />
-                                          </div>
-                                        </Tooltip>
-                                      );
-                                    })}
-                                  </AvatarGroup>
-                                )}
-                              </Box>
-                              <Link to={"edit/" + person.personnel_id}>
-                                <IconButton
-                                  sx={{ margin: 1, bgcolor: "white" }}
-                                  edge="end"
-                                  aria-label="edit"
-                                  size="large"
-                                >
-                                  <DriveFileRenameOutlineIcon />
-                                </IconButton>
-                              </Link>
-                              <Link to={"assess/" + person.personnel_id}>
-                                <IconButton
-                                  sx={{ margin: 1, bgcolor: "white" }}
-                                  edge="end"
-                                  aria-label="edit"
-                                  size="large"
-                                >
-                                  <AssignmentIcon />
-                                </IconButton>
-                              </Link>
-                            </ListItemButton>
+                              Information
+                            </Typography>
                           </Box>
-                        );
-                      })}
-                  </List>
+                          <Box sx={{ width: "30%" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Status
+                            </Typography>
+                          </Box>
+                          <Box sx={{ width: "40%" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Skills
+                            </Typography>
+                          </Box>
+                          <ListItemText sx={{ width: "165px" }} />
+                        </ListItem>
 
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 2 }}
-                  >
-                    <Pagination
-                      count={Math.ceil(personnel.length / itemsPerPage)}
-                      page={currentPage}
-                      onChange={(event, page) => setCurrentPage(page)}
-                    />
-                  </Box>
+                        <div className="line"></div>
+
+                        {filteredPersonnel()
+                          .slice(
+                            (currentPage - 1) * itemsPerPage,
+                            currentPage * itemsPerPage
+                          )
+                          .map((person, i, array) => {
+                            return (
+                              <Box>
+                                <ListItemButton
+                                  component="div"
+                                  key={person.personnel_id}
+                                  divider={
+                                    i + 1 === array.length ? false : true
+                                  }
+                                  onClick={() => handleOpenDialog(person)}
+                                >
+                                  <ListItemAvatar>
+                                    <ProfileAvatar
+                                      variant="circular"
+                                      name={fullname(person)}
+                                    />
+                                  </ListItemAvatar>
+                                  <ListItemText
+                                    sx={{ width: "30%" }}
+                                    primary={fullname(person)}
+                                    secondary={person.position}
+                                  />
+                                  <Box
+                                    component="div"
+                                    sx={{ display: "flex", width: "30%" }}
+                                  >
+                                    <Chip
+                                      label={status(person).status}
+                                      color={status(person).color}
+                                      sx={{
+                                        justifyContent: "center",
+                                        "& .MuiChip-label": {
+                                          margin: 0,
+                                        },
+                                      }}
+                                    />
+                                  </Box>
+                                  <Box
+                                    component="div"
+                                    sx={{ display: "flex", width: "40%" }}
+                                  >
+                                    {person.skills.length > 0 && (
+                                      <AvatarGroup max={5}>
+                                        {person.skills.map((skill) => {
+                                          return (
+                                            <Tooltip
+                                              key={skill?.skill_id}
+                                              title={skill.skillName}
+                                            >
+                                              <div>
+                                                <SkillFroupAvatar
+                                                  variant="circular"
+                                                  name={skill.skillName}
+                                                />
+                                              </div>
+                                            </Tooltip>
+                                          );
+                                        })}
+                                      </AvatarGroup>
+                                    )}
+                                  </Box>
+                                  <Link to={"edit/" + person.personnel_id}>
+                                    <IconButton
+                                      sx={{ margin: 1, bgcolor: "white" }}
+                                      edge="end"
+                                      aria-label="edit"
+                                      size="large"
+                                    >
+                                      <DriveFileRenameOutlineIcon />
+                                    </IconButton>
+                                  </Link>
+                                  <Link to={"assess/" + person.personnel_id}>
+                                    <IconButton
+                                      sx={{ margin: 1, bgcolor: "white" }}
+                                      edge="end"
+                                      aria-label="edit"
+                                      size="large"
+                                    >
+                                      <AssignmentIcon />
+                                    </IconButton>
+                                  </Link>
+                                </ListItemButton>
+                              </Box>
+                            );
+                          })}
+                      </List>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          mt: 2,
+                        }}
+                      >
+                        <Pagination
+                          count={Math.ceil(personnel.length / itemsPerPage)}
+                          page={currentPage}
+                          onChange={(event, page) => setCurrentPage(page)}
+                        />
+                      </Box>
+                    </div>
+                  ) : (
+                    <Box
+                    sx={{
+                      my: 5,
+                      width: "60vw",
+                    }}>
+                      <Typography
+                        className="flex-center"
+                        color="gray"
+                        variant="h6"
+                      >
+                        Personnel Data Not Found
+                      </Typography>
+                    </Box>
+                  )}
 
                   {/* เพิ่มบุคคล */}
                 </div>

@@ -142,11 +142,11 @@ function PersonnelAssessment() {
       return;
     }
     setOpenConfirm(true);
-  }
+  };
 
   const handleCloseConfirm = () => {
     setOpenConfirm(false);
-  }
+  };
 
   const submitAssessment = () => {
     let formData = {
@@ -176,7 +176,7 @@ function PersonnelAssessment() {
       openSnackbar({
         status: "success",
         message: "Assessed successfully!",
-      })
+      });
       window.history.back();
     });
   };
@@ -214,71 +214,73 @@ function PersonnelAssessment() {
 
           {/* -----Personnel Information----- */}
           <Box className="flex-center">
-            <Button
-              className="flex-center"
-              sx={{
-                borderRadius: "10px",
-                flexDirection: "column",
-                p: 2,
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.05)",
-                },
-              }}
-              onClick={handleOpenDialog}
-            >
-              <Box className="header" sx={{ marginBottom: "0.5rem" }}>
-                <Badge
-                  overlap="circular"
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  style={{ marginLeft: "-4px" }}
-                >
-                  <Avatar
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      backgroundColor: stringToColor(
-                        personnelInfo.firstName + " " + personnelInfo.lastName
-                      ),
+            {!loading && (
+              <Button
+                className="flex-center"
+                sx={{
+                  borderRadius: "10px",
+                  flexDirection: "column",
+                  p: 2,
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.05)",
+                  },
+                }}
+                onClick={handleOpenDialog}
+              >
+                <Box className="header" sx={{ marginBottom: "0.5rem" }}>
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
                     }}
+                    style={{ marginLeft: "-4px" }}
                   >
-                    <Typography
+                    <Avatar
                       sx={{
-                        fontSize: "2rem",
+                        width: 100,
+                        height: 100,
+                        backgroundColor: stringToColor(
+                          personnelInfo.firstName + " " + personnelInfo.lastName
+                        ),
                       }}
                     >
-                      {getAvatarText(
-                        personnelInfo.firstName,
-                        personnelInfo.lastName
-                      )}
-                    </Typography>
-                  </Avatar>
-                </Badge>
-              </Box>
-              <Typography
-                sx={{
-                  fontSize: "1.5rem",
-                  color: "black",
-                }}
-              >
-                {personnelInfo.firstName + " " + personnelInfo.lastName}
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "1rem",
-                  color: "gray",
-                }}
-              >
-                {personnelInfo.position}
-              </Typography>
-            </Button>
+                      <Typography
+                        sx={{
+                          fontSize: "2rem",
+                        }}
+                      >
+                        {getAvatarText(
+                          personnelInfo.firstName,
+                          personnelInfo.lastName
+                        )}
+                      </Typography>
+                    </Avatar>
+                  </Badge>
+                </Box>
+                <Typography
+                  sx={{
+                    fontSize: "1.5rem",
+                    color: "black",
+                  }}
+                >
+                  {personnelInfo.firstName + " " + personnelInfo.lastName}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "1rem",
+                    color: "gray",
+                  }}
+                >
+                  {personnelInfo.position}
+                </Typography>
+              </Button>
+            )}
           </Box>
 
           {/* -----Personnel Information----- */}
 
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{minWidth:"500px", display: "flex", justifyContent: "center" }}>
             <table>
               <tbody>
                 {loading && (
@@ -377,7 +379,9 @@ function PersonnelAssessment() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="error" onClick={handleCloseConfirm}>Cancel</Button>
+            <Button color="error" onClick={handleCloseConfirm}>
+              Cancel
+            </Button>
             <Button color="success" onClick={submitAssessment} autoFocus>
               Comfirm
             </Button>
@@ -385,9 +389,9 @@ function PersonnelAssessment() {
         </Dialog>
       </div>
       <PersonnelInfoDialog
-      personnel={personnelInfo}
-      open={openDialog}
-      setOpen={setOpenDialog}
+        personnel={personnelInfo}
+        open={openDialog}
+        setOpen={setOpenDialog}
       />
     </div>
   );

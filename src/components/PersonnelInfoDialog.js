@@ -10,6 +10,7 @@ import {
   Badge,
   Box,
   Chip,
+  CircularProgress,
   List,
   ListItemAvatar,
   ListItemButton,
@@ -22,9 +23,10 @@ import {
 import { stringToColor } from "../components/SkillGroupAvatar";
 import { PersonnelAPI } from "../api/personnel-api";
 import { Link } from "react-router-dom";
+import { getSkillTypeColor, getSkillTypeIcon } from "./util";
 
 //icon
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import FastForwardIcon from "@mui/icons-material/FastForward";
 import PauseIcon from "@mui/icons-material/Pause";
 import CheckIcon from "@mui/icons-material/Check";
@@ -36,7 +38,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReactApexChart from "react-apexcharts";
-
+import { set } from "react-hook-form";
 
 // Props:
 //     open: Boolean;
@@ -47,6 +49,7 @@ function PersonnelInfoDialog(props) {
   const [assessmentScore, setAssessmentScore] = React.useState({});
   const [chartData, setChartData] = React.useState();
   const [viewChart, setViewChart] = React.useState(true);
+  const [loading, setLoading] = React.useState(true);
 
   const handleClose = () => {
     props.setOpen(false);
@@ -59,27 +62,32 @@ function PersonnelInfoDialog(props) {
     return firstInitial + lastInitial;
   };
 
-  const getIconProjectStatus = (status) => { 
-    if (status === "On-going" || "On Going") return {
-      color: "#fbc02d",
-      icon:<FastForwardIcon />
-    };
-    if (status === "Completed") return {
-      color: "#64dd17",
-      icon:<CheckIcon />
-    };
-    if (status === "Holding") return {
-      color: "#c4c4c4",
-      icon:<PauseIcon />
-    };
-    if (status === "Cancelled") return {
-      color: "#e53e3e",
-      icon:<CloseIcon />
-    };
-    else return {
-      color: "#c4c4c4",
-      icon:<QuestionMarkIcon />
-    };
+  const getIconProjectStatus = (status) => {
+    if (status === "On-going" || "On Going")
+      return {
+        color: "#fbc02d",
+        icon: <FastForwardIcon />,
+      };
+    if (status === "Completed")
+      return {
+        color: "#64dd17",
+        icon: <CheckIcon />,
+      };
+    if (status === "Holding")
+      return {
+        color: "#c4c4c4",
+        icon: <PauseIcon />,
+      };
+    if (status === "Cancelled")
+      return {
+        color: "#e53e3e",
+        icon: <CloseIcon />,
+      };
+    else
+      return {
+        color: "#c4c4c4",
+        icon: <QuestionMarkIcon />,
+      };
   };
 
   const getDateFormatted = (date) => {
@@ -92,7 +100,7 @@ function PersonnelInfoDialog(props) {
   };
 
   const boxChart = () => {
-    return (
+    return !loading ? (
       <Box
         className="flex-center"
         sx={{ flexDirection: "column", justifyContent: "flex-start" }}
@@ -103,8 +111,8 @@ function PersonnelInfoDialog(props) {
             options={chartData.options}
             series={chartData.series}
             type="radar"
-            width={320}
-            height={300}
+            width="400px"
+            height="80%"
           />
         )}
         {chartData && (
@@ -136,6 +144,17 @@ function PersonnelInfoDialog(props) {
           </Box>
         )}
       </Box>
+    ) : (
+        <Box
+          className="flex-center"
+          sx={{
+            justifyContent: "center",
+            width: "400px",
+            height: "500px",
+          }}
+        >
+          <CircularProgress sx={{ my: 5 }} size={100} />
+        </Box>
     );
   };
 
@@ -146,39 +165,54 @@ function PersonnelInfoDialog(props) {
         sx={{
           flexDirection: "column",
           justifyContent: "flex-start",
-          minWidth: "320px",
+          minWidth: "400px",
         }}
       >
         <Typography fontSize={"1.3rem"}>Project Histories</Typography>
-
-        <List
-          sx={{ width: "100%", maxWidth: 360, maxHeight: 320, bgcolor: "background.paper", overflow: 'auto' }}
+        {personnel?.projectHistories?.length > 0 && (
+          <List
+          sx={{
+            width: "100%",
+            height: "100%",
+            bgcolor: "background.paper",
+            overflow: "auto",
+          }}
         >
           {personnel?.projectHistories?.map((project, index) => {
             return (
               <Box>
-              <ListItemButton>
-                <ListItemAvatar>
-                  <Avatar sx={{ backgroundColor: getIconProjectStatus(project?.projectStatus).color }}>
-                    {getIconProjectStatus(project?.projectStatus).icon}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText>
-                  <Typography>{project?.projectName}</Typography>
-                  <Typography fontSize="small" color="gray">
-                    {project?.projectType}
-                  </Typography>
-                  <Typography fontSize="small" color="skyblue">
-                    {getDateFormatted(project?.startDate)} -{" "}
-                    {getDateFormatted(project?.endDate)}
-                  </Typography>
-                </ListItemText>
-              </ListItemButton>
-              {(index!==personnel?.projectHistories.length-1) &&<div className="line"/>}
+                <ListItemButton>
+                  <ListItemAvatar>
+                    <Avatar
+                      sx={{
+                        backgroundColor: getIconProjectStatus(
+                          project?.projectStatus
+                        ).color,
+                      }}
+                    >
+                      {getIconProjectStatus(project?.projectStatus).icon}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText>
+                    <Typography>{project?.projectName}</Typography>
+                    <Typography fontSize="small" color="gray">
+                      {project?.projectType}
+                    </Typography>
+                    <Typography fontSize="small" color="skyblue">
+                      {getDateFormatted(project?.startDate)} -{" "}
+                      {getDateFormatted(project?.endDate)}
+                    </Typography>
+                  </ListItemText>
+                </ListItemButton>
+                {index !== personnel?.projectHistories.length - 1 && (
+                  <div className="line" />
+                )}
               </Box>
             );
           })}
         </List>
+        )}
+        
 
         {!personnel?.projectHistories?.length && (
           <Box
@@ -186,7 +220,8 @@ function PersonnelInfoDialog(props) {
             sx={{
               flexDirection: "column",
               justifyContent: "center",
-              height: "300px",
+              height: "100%",
+              width: "400px",
             }}
           >
             <Typography
@@ -195,7 +230,7 @@ function PersonnelInfoDialog(props) {
                 fontSize: "1rem",
                 textAlign: "center",
                 mt: "1rem",
-                width: "320px",
+                width: "280px",
               }}
             >
               This Personnel has not been assigned to any project
@@ -296,6 +331,8 @@ function PersonnelInfoDialog(props) {
   ];
 
   useEffect(() => {
+    setViewChart(true);
+    setLoading(true);
     setPersonnel(props.personnel);
     PersonnelAPI.getOverviewAccessScore(props.personnel?.personnel_id)
       .then((res) => {
@@ -359,8 +396,10 @@ function PersonnelInfoDialog(props) {
             },
           },
         });
+        setLoading(false)
       })
       .catch(() => {
+        setLoading(false);
         setChartData(null);
         setAssessmentScore(null);
       });
@@ -433,13 +472,11 @@ function PersonnelInfoDialog(props) {
                     <Tooltip placement="bottom-end" title={item.tooltip}>
                       <tr key={index}>
                         <td style={{ padding: "5px" }}>{item.icon}</td>
-
                         <td
                           style={{
                             wordWrap: "break-word",
-                            maxWidth: "250px",
+                            width: "280px",
                             whiteSpace: "normal",
-                            minWidth: "200px",
                           }}
                         >
                           {item.info}
@@ -449,10 +486,39 @@ function PersonnelInfoDialog(props) {
                   ))}
                 </tbody>
               </table>
+              <div
+                style={{
+                  border: "1px solid #ccc",
+                  borderRadius: "5px",
+                  padding: "8px",
+                  minHeight: "50px",
+                  maxHeight: "180px",
+                  height: "auto",
+                  width: "300px",
+                  marginTop: "1rem",
+                  overflowY: "auto",
+                }}
+              >
+                {personnel?.skills?.map((item) => (
+                  <Chip
+                    key={item.skill_id}
+                    sx={{
+                      m: 1,
+                      height: "40px",
+                    }}
+                    variant="outlined"
+                    color={getSkillTypeColor(item.skillType)}
+                    size="medium"
+                    label={item.skillName}
+                    icon={getSkillTypeIcon(item.skillType)}
+                  />
+                ))}
+              </div>
             </Box>
             <Box sx={{ borderLeft: "2px solid #dedede", mx: "1rem" }}></Box>
 
-            {viewChart ? boxChart() : boxProjectHistory()}
+            {(viewChart) ? boxChart() : boxProjectHistory()}
+            
           </Box>
         </DialogContent>
         <DialogActions>

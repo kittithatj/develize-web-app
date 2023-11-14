@@ -35,6 +35,7 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import Paper from "@mui/material/Paper";
 import StepLabel from "@mui/material/StepLabel";
+import { getSkillTypeColor, getSkillTypeIcon } from "../components/util";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -42,12 +43,6 @@ import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from "../api/personnel-api";
 
 // ICON
-import StorageIcon from "@mui/icons-material/Storage";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import HandymaIconn from "@mui/icons-material/Handyman";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import TerminalIcon from "@mui/icons-material/Terminal";
-import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import DnsIcon from "@mui/icons-material/Dns";
 import CheckIcon from "@mui/icons-material/Check";
 import TypeSpecimenIcon from "@mui/icons-material/TypeSpecimen";
@@ -56,11 +51,10 @@ import AddIcon from "@mui/icons-material/Add";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import SearchIcon from "@mui/icons-material/Search";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
 
-function Createproject() {
+function CreateProject() {
   const createProjectData = () => {
     const createProjectData = () => {
       if (
@@ -367,44 +361,7 @@ function Createproject() {
     return inputDate;
   };
 
-  const getSkillTypeIcon = (skillType) => {
-    switch (skillType) {
-      case "Database":
-        return <StorageIcon />;
-      case "Others":
-        return <MoreHorizIcon />;
-      case "Tool":
-        return <HandymaIconn />;
-      case "Library":
-        return <MenuBookIcon />;
-      case "Programming Language":
-        return <TerminalIcon />;
-      case "Framework":
-        return <IntegrationInstructionsIcon />;
-      default:
-        return <MoreHorizIcon />;
-    }
-  };
-
-  const getSkillTypeColor = (skillType) => {
-    switch (skillType) {
-      case "Database":
-        return "error";
-      case "Others":
-        return "default";
-      case "Tool":
-        return "secondary";
-      case "Library":
-        return "success";
-      case "Programming Language":
-        return "primary";
-      case "Framework":
-        return "warning";
-      default:
-        return "default";
-    }
-  };
-  const steps = ["Project Details", "Select Personnel", "Select Skills"];
+  const steps = ["Project Details","Skill Requirement", "Assign Member"];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -438,7 +395,7 @@ function Createproject() {
               flexDirection: "column",
               alignItems: "flex-start",
               justifyContent: "center",
-              padding: "15px",
+              padding: "30px",
             }}
           >
             {activeStep === 0 && (
@@ -456,11 +413,11 @@ function Createproject() {
                 >
                   Create New Project
                 </Typography>
-                <div>
+
                   <Stepper
                     activeStep={activeStep}
                     alternativeLabel
-                    style={{ marginTop: "30px" }}
+                    sx={{ my: "3rem" }}
                   >
                     {steps.map((label) => (
                       <Step key={label}>
@@ -468,75 +425,72 @@ function Createproject() {
                       </Step>
                     ))}
                   </Stepper>
-                </div>
-                <div>
-                  <span
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "600",
-                      marginBottom: "-20px",
-                      marginRight: "540px",
-                    }}
-                  >
-                    ProjectName
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "600",
-                      marginBottom: "-20px",
-                    }}
-                  >
-                    ProjectType
-                  </span>
-                </div>
                 <div
                   style={{
                     display: "flex",
                     flexDirection: "row",
-                    marginTop: "-10px",
                     width: "100%",
                   }}
                 >
-                  <TextField
-                    sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
-                    variant="outlined"
-                    value={formData.projectName}
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        projectName: event.target.value,
-                      })
-                    }
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <DnsIcon />
-                        </InputAdornment>
-                      ),
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                      marginRight: "10px",
                     }}
-                  />
-                  <Select
-                    sx={{ mt: 1, mb: 2, width: "50%", marginLeft: "10px" }}
-                    value={formData.projectType}
-                    startAdornment={
-                      <InputAdornment position="start">
-                        <TypeSpecimenIcon />
-                      </InputAdornment>
-                    }
-                    onChange={(event) =>
-                      setFormData({
-                        ...formData,
-                        projectType: event.target.value,
-                      })
-                    }
                   >
-                    {typeOptions.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {type}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                    <div style={{ fontSize: "15px" }}>Project Name</div>
+                    <TextField
+                      sx={{ mt: 1, mb: 2}}
+                      variant="outlined"
+                      value={formData.projectName}
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          projectName: event.target.value,
+                        })
+                      }
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <DnsIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                    }}
+                  >
+                    <div style={{ fontSize: "15px" }}>Project Type</div>
+                    <Select
+                      sx={{ mt: 1, mb: 2}}
+                      value={formData.projectType}
+                      startAdornment={
+                        <InputAdornment position="start">
+                          <TypeSpecimenIcon />
+                        </InputAdornment>
+                      }
+                      onChange={(event) =>
+                        setFormData({
+                          ...formData,
+                          projectType: event.target.value,
+                        })
+                      }
+                    >
+                      {typeOptions.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </div>
                 </div>
                 <div
                   style={{
@@ -545,10 +499,10 @@ function Createproject() {
                     width: "100%",
                   }}
                 >
-                  <span style={{ fontSize: "15px", fontWeight: "600" }}>
-                    Description
-                  </span>
+                  <div style={{ fontSize: "15px" }}>Project Description</div>
                   <TextField
+                    multiline
+                    minRows={3}
                     sx={{ mt: 1, mb: 2, width: "100%" }}
                     variant="outlined"
                     value={formData.projectDescription}
@@ -583,9 +537,7 @@ function Createproject() {
                       marginRight: "10px",
                     }}
                   >
-                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
-                      Start Date
-                    </span>
+                    <div style={{ fontSize: "15px" }}>Start Date</div>
                     <TextField
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
@@ -613,9 +565,7 @@ function Createproject() {
                       width: "50%",
                     }}
                   >
-                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
-                      End Date
-                    </span>
+                    <div style={{ fontSize: "15px" }}>End Date</div>
                     <TextField
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
@@ -644,10 +594,9 @@ function Createproject() {
                       marginLeft: "10px",
                     }}
                   >
-                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
-                      Budget
-                    </span>
+                    <div style={{ fontSize: "15px" }}>Budget</div>
                     <TextField
+                      type="number"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formData.budget}
@@ -682,9 +631,7 @@ function Createproject() {
                       width: "100%",
                     }}
                   >
-                    <span style={{ fontSize: "15px", fontWeight: "600" }}>
-                      Proejct Status
-                    </span>
+                    <div style={{ fontSize: "15px" }}>Project Status</div>
                     <Select
                       startAdornment={
                         <InputAdornment position="start">
@@ -1229,4 +1176,4 @@ function Createproject() {
   );
 }
 
-export default Createproject;
+export default CreateProject;
