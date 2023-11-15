@@ -1233,6 +1233,7 @@ function CreateProject() {
                       </DialogActions>
                     </Dialog>
                     <PersonnelInfoDialog
+                      hideEdit
                       personnel={selectedPersonnel}
                       open={openPersonnelInfoDialog}
                       setOpen={setOpenPersonnelInfoDialog}
