@@ -108,8 +108,8 @@ function Project() {
 
   return (
     <div className="main-content">
-      <div>
-        <Paper sx={{ padding: "30px" }}>
+      <div style={{display:'flex'}}>
+        <Paper sx={{ padding: "30px" ,maxWidth: "1750px",}}>
           <div
             style={{
               display: "flex",
@@ -117,6 +117,7 @@ function Project() {
               justifyContent: "space-between",
               marginBottom: "12px",
               minWidth: "60vw",
+              
             }}
           >
             <Typography
@@ -138,7 +139,7 @@ function Project() {
           </div>
           <Box
             container
-            justifyContent="space-evenly"
+            justifyContent="center"
             alignItems="stretch"
             flexWrap={"wrap"}
             spacing={2}
