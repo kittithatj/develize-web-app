@@ -20,6 +20,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Autocomplete,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -53,93 +54,15 @@ import SearchIcon from "@mui/icons-material/Search";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
+import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function CreateProject() {
-  const createProjectData = () => {
-    const createProjectData = () => {
-      if (
-        formData.projectName === "" ||
-        formData.projectType === "" ||
-        formData.projectDescription === "" ||
-        formData.startDate === "" ||
-        formData.endDate === "" ||
-        formData.budget === "" ||
-        skillSelect.length === 0 ||
-        formData.memberIdList.length === 0
-      ) {
-        openSnackbar({
-          status: "error",
-          message: "Field is empty",
-        });
-        return;
-      }
-      console.log("formData:", formData);
-      const skillIds = skillSelect.map((skill) => skill.skill_id);
-
-      const dataToSend = {
-        projectName: formData.projectName,
-        projectType: formData.projectType,
-        projectDescription: formData.projectDescription,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
-        memberIdList: formData.memberIdList.map((member) => ({
-          personnel_id: member.personnel_id,
-          role: member.role,
-        })),
-        budget: formData.budget,
-        projectStatus: formData.projectStatus,
-      };
-
-      ProjectAPI.createProject(dataToSend)
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          } else {
-            throw new Error(res.status);
-          }
-        })
-        .then(() => {
-          openSnackbar({
-            status: "success",
-            message: "Create Project Successfully",
-          });
-          navigate("../Project");
-        })
-        .catch(() => {
-          openSnackbar({
-            status: "error",
-            message: "Create Project Failed",
-          });
-        });
-    };
-    handleOpenDialog();
-  };
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
-
   const handleConfirm = () => {
-    // const createProjectData = () => {
-    if (
-      formData.projectName === "" ||
-      formData.projectType === "" ||
-      formData.projectDescription === "" ||
-      formData.startDate === "" ||
-      formData.endDate === "" ||
-      formData.budget === ""
-      // ||
-      // skillSelect.length === 0 ||
-      // formData.memberIdList.length === 0
-    ) {
-      openSnackbar({
-        status: "error",
-        message: "Field is empty",
-      });
-      return;
-    }
-    console.log("formData:", formData);
-    const skillIds = skillSelect.map((skill) => skill.skill_id);
+    //console.log("formData:", formData);
+    const skillReq = skillSelect.map((skill) => skill.skill_id);
 
     const dataToSend = {
       projectName: formData.projectName,
@@ -147,7 +70,7 @@ function CreateProject() {
       projectDescription: formData.projectDescription,
       startDate: formData.startDate,
       endDate: formData.endDate,
-      skillRequireIdList: skillSelect.map((skill) => skill.skill_id),
+      skillRequireIdList: skillReq,
       memberAssignment: formData.memberIdList.map((member) => ({
         personnel_id: member.personnel_id,
         role: member.role,
@@ -157,13 +80,6 @@ function CreateProject() {
     };
 
     ProjectAPI.createProject(dataToSend)
-      .then((res) => {
-        // if (res.status === 200) {
-        return res.json();
-        // } else {
-        //   throw new Error(res.status);
-        // }
-      })
       .then(() => {
         openSnackbar({
           status: "success",
@@ -177,7 +93,7 @@ function CreateProject() {
           message: "Create Project Failed",
         });
       });
-    // };
+
     handleCloseDialog();
   };
   const [activeStep, setActiveStep] = useState(0);
@@ -188,6 +104,7 @@ function CreateProject() {
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState("");
+  const [openPersonnelInfoDialog, setOpenPersonnelInfoDialog] = useState(false);
   const [page, setPage] = useState(1);
 
   const [displayedSkills, setDisplayedSkills] = useState([]);
@@ -200,7 +117,6 @@ function CreateProject() {
   const itemsPerPageSkill = 12;
 
   const handleOpenDialog = (person) => {
-    setSelectedPersonnel(person);
     setOpenDialog(true);
   };
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
@@ -226,12 +142,9 @@ function CreateProject() {
     }
   };
 
-  const handleRemoveRow = (index) => {
-    const updatedMembers = [...formData.memberIdList];
-    const updatedRoles = [...formData.role];
-    updatedMembers.splice(index, 1);
-    updatedRoles.splice(index, 1);
-    setFormData({ memberIdList: updatedMembers, role: updatedRoles });
+  const handleOpenPersonnelInfoDialog = (person) => {
+    setSelectedPersonnel(person);
+    setOpenPersonnelInfoDialog(true);
   };
 
   const fetchSkillData = () => {
@@ -253,18 +166,14 @@ function CreateProject() {
     setCurrentPageSkill(1);
   };
 
-  const [searchPositionValue, setSearchPositionValue] = useState("");
-  const handleSearchPositionValueChange = (event) => {
-    setSearchPositionValue(event.target.value);
-  };
-
-  const [loadingPerson, setLoadingPerson] = useState(false);
-  const [dataPersonnel, setDataPersonnel] = useState("");
+  const [loadingPerson, setLoadingPersonel] = useState(true);
+  const [dataPersonnel, setDataPersonnel] = useState([]);
 
   const fetchPersonnelData = () => {
-    setLoadingPerson(true);
+    setLoadingPersonel(true);
     PersonnelAPI.getAllPersonnel().then((data) => {
       setDataPersonnel(data);
+      setLoadingPersonel(false);
     });
   };
 
@@ -300,6 +209,7 @@ function CreateProject() {
   useEffect(() => {
     fetchSkillData();
     fetchPersonnelData();
+    fetchLookUpData();
   }, [currentType]);
 
   const addSkill = (item) => {
@@ -361,7 +271,7 @@ function CreateProject() {
     return inputDate;
   };
 
-  const steps = ["Project Details","Skill Requirement", "Assign Member"];
+  const steps = ["Project Details", "Skill Requirement", "Assign Member"];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -370,6 +280,96 @@ function CreateProject() {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+
+  //----block search personnel----
+  const [positionList, setPositionList] = useState([]);
+  const [divisionList, setDivisionList] = useState([]);
+  const [searchSkillList, setSearchSkillList] = useState([]);
+  const [searchForm, setSearchForm] = useState({});
+
+  const fetchLookUpData = () => {
+    PersonnelAPI.getPositionList().then((data) => {
+      setPositionList(data);
+    });
+    PersonnelAPI.getDivisionList().then((data) => {
+      setDivisionList(data);
+    });
+    skillApi.getAllSKills().then((data) => {
+      const list = data.map((s) => {
+        return s.skillName;
+      });
+      setSearchSkillList(list);
+    });
+  };
+
+  const handlePersonnelSearchValueChange = (e) => {
+    setCurrentPage(1);
+    const { name, value, outerText } = e.target;
+    const key = name;
+    setSearchForm({ ...searchForm, [key]: value || outerText });
+  };
+
+  const handleAutocompleteChange = (key, value) => {
+    setCurrentPage(1);
+    setSearchForm({ ...searchForm, [key]: value });
+  };
+
+  const searchFilter = (person) => {
+    if (searchForm?.name) {
+      if (
+        !fullname(person).toLowerCase().includes(searchForm?.name.toLowerCase())
+      ) {
+        return false;
+      }
+    }
+    if (searchForm?.skills?.length > 0) {
+      if (
+        !searchForm?.skills.every((skill) => {
+          const sList =
+            person?.skills?.map((s) => {
+              return s.skillName;
+            }) || [];
+          return sList.includes(skill);
+        })
+      ) {
+        return false;
+      }
+    }
+    if (searchForm?.position) {
+      if (
+        !person.position
+          .toLowerCase()
+          .includes(searchForm?.position.toLowerCase())
+      ) {
+        return false;
+      }
+    }
+    if (searchForm?.division) {
+      if (
+        !person.division
+          .toLowerCase()
+          .includes(searchForm?.division.toLowerCase())
+      ) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const filteredPersonnel = () => {
+    return dataPersonnel.filter((person) => {
+      return searchFilter(person);
+    });
+  };
+
+  //end----block search personnel----
+
+  //----block personnel assignment----
+
+  //end----block personnel assignment----
+  const assignPersonnel = (person) => () => {
+
+  }
 
   return (
     <div
@@ -414,17 +414,17 @@ function CreateProject() {
                   Create New Project
                 </Typography>
 
-                  <Stepper
-                    activeStep={activeStep}
-                    alternativeLabel
-                    sx={{ my: "3rem" }}
-                  >
-                    {steps.map((label) => (
-                      <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
+                <Stepper
+                  activeStep={activeStep}
+                  alternativeLabel
+                  sx={{ my: "3rem" }}
+                >
+                  {steps.map((label) => (
+                    <Step key={label}>
+                      <StepLabel>{label}</StepLabel>
+                    </Step>
+                  ))}
+                </Stepper>
                 <div
                   style={{
                     display: "flex",
@@ -442,7 +442,7 @@ function CreateProject() {
                   >
                     <div style={{ fontSize: "15px" }}>Project Name</div>
                     <TextField
-                      sx={{ mt: 1, mb: 2}}
+                      sx={{ mt: 1, mb: 2 }}
                       variant="outlined"
                       value={formData.projectName}
                       onChange={(event) =>
@@ -470,7 +470,7 @@ function CreateProject() {
                   >
                     <div style={{ fontSize: "15px" }}>Project Type</div>
                     <Select
-                      sx={{ mt: 1, mb: 2}}
+                      sx={{ mt: 1, mb: 2 }}
                       value={formData.projectType}
                       startAdornment={
                         <InputAdornment position="start">
@@ -664,7 +664,7 @@ function CreateProject() {
                     display: "flex",
                     justifyContent: "flex-end",
                   }}
-                  onClick={activeStep < 2 ? handleNext : createProjectData}
+                  onClick={activeStep < 2 ? handleNext : handleOpenDialog}
                 >
                   {activeStep < 2 ? "Next" : "Create Project"}
                 </Button>
@@ -732,56 +732,50 @@ function CreateProject() {
                     display: "flex",
                     alignItems: "center",
                     width: "100%",
-                    marginTop: "15px",
-                    marginLeft: "2vw",
                   }}
                 >
-                  <div style={{ flex: 1 }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        borderStyle: "solid",
-                        borderRadius: "5px",
-                        borderColor: "#F0f0f0",
-                        borderWidth: "2px",
-                      }}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      width: "100%",
+                      borderStyle: "solid",
+                      borderRadius: "5px",
+                      borderColor: "#F0f0f0",
+                      borderWidth: "2px",
+                    }}
+                  >
+                    <InputBase
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Search Skill"
+                      inputProps={{ "aria-label": "search skill" }}
+                      value={searchValue}
+                      onChange={handleSearchValueChange}
+                    />
+                    <IconButton
+                      type="button"
+                      sx={{ p: "10px" }}
+                      aria-label="search"
+                      disabled
                     >
-                      <InputBase
-                        sx={{ ml: 1, flex: 1 }}
-                        placeholder="Search Skill"
-                        inputProps={{ "aria-label": "search skill" }}
-                        value={searchValue}
-                        onChange={handleSearchValueChange}
-                      />
-                      <IconButton
-                        type="button"
-                        sx={{ p: "10px" }}
-                        aria-label="search"
-                        disabled
-                      >
-                        <SearchIcon />
-                      </IconButton>
-                    </Box>
-                  </div>
-                  <div style={{ marginLeft: "8px", flex: 1 }}>
-                    <TextField
-                      sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
-                      size="small"
-                      id="select-skill-type"
-                      select
-                      label="Select Skill Type"
-                      variant="standard"
-                      value={selectedType}
-                      onChange={handleSkillTypeChange}
-                    >
-                      {skillTypeList.map((type) => (
-                        <MenuItem key={type.label} value={type.value}>
-                          {type.label}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
+                      <SearchIcon />
+                    </IconButton>
+                  </Box>
+                  <TextField
+                    sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
+                    size="small"
+                    id="select-skill-type"
+                    select
+                    label="Select Skill Type"
+                    variant="standard"
+                    value={selectedType}
+                    onChange={handleSkillTypeChange}
+                  >
+                    {skillTypeList.map((type) => (
+                      <MenuItem key={type.label} value={type.value}>
+                        {type.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </div>
 
                 <div
@@ -844,6 +838,26 @@ function CreateProject() {
                         </ListItem>
                       </Box>
                     ))}
+                  {displayedSkills.filter(
+                    (s) =>
+                      s.skillName
+                        .toLowerCase()
+                        .includes(searchValue.toLowerCase()) &&
+                      (selectedType === "" || s.skillType === selectedType)
+                  ).length === 0 && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "60vw",
+                        mt: 2,
+                      }}
+                    >
+                      <Typography component="div" sx={{ fontWeight: "600" }}>
+                        Skill Not found
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       width: "100%",
@@ -888,7 +902,7 @@ function CreateProject() {
                     variant="contained"
                     color="success"
                     style={{ marginTop: "10px" }}
-                    onClick={activeStep < 2 ? handleNext : createProjectData}
+                    onClick={activeStep < 2 ? handleNext : handleOpenDialog}
                   >
                     {activeStep < 2 ? "Next" : "Create Project"}
                   </Button>
@@ -928,62 +942,97 @@ function CreateProject() {
                   ))}
                 </Stepper>
                 <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "100%",
-                      marginLeft: "2vw",
+                  {/* TODO: SearchPersonnel */}
+
+                  <Box
+                    className="flex-center"
+                    sx={{
+                      justifyContent: "space-between",
+                      my: 4,
+                      gap: "15px",
                     }}
                   >
-                    <div style={{ flex: 1 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          width: "100%",
-                          borderStyle: "solid",
-                          borderRadius: "5px",
-                          borderColor: "#F0f0f0",
-                          borderWidth: "2px",
-                        }}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "30%",
+                        borderStyle: "solid",
+                        borderRadius: "5px",
+                        borderColor: "#F0f0f0",
+                        borderWidth: "2px",
+                        height: "58px",
+                      }}
+                    >
+                      <InputBase
+                        sx={{ ml: 1, flex: 1 }}
+                        placeholder="Search Personnel Name"
+                        inputProps={{ "aria-label": "search skill" }}
+                        value={searchForm?.name}
+                        name="name"
+                        onChange={handlePersonnelSearchValueChange}
+                      />
+                      <IconButton
+                        type="button"
+                        sx={{ p: "10px" }}
+                        aria-label="search"
+                        disabled
                       >
-                        <InputBase
-                          sx={{ ml: 1, flex: 1 }}
+                        <SearchIcon />
+                      </IconButton>
+                    </Box>
+                    <Autocomplete
+                      multiple
+                      limitTags={2}
+                      disablePortal
+                      id="combo-box-demo"
+                      options={searchSkillList}
+                      sx={{ width: "30%" }}
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("skills", newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} placeholder="Search Skills" />
+                      )}
+                    />
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={positionList}
+                      sx={{ width: "20%" }}
+                      name="position"
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("position", newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
                           placeholder="Search Position"
-                          inputProps={{ "aria-label": "search position" }}
-                          value={searchValue}
-                          onChange={handleSearchValueChange}
+                          name="position"
+                          onChange={handlePersonnelSearchValueChange}
                         />
-                        <IconButton
-                          type="button"
-                          sx={{ p: "10px" }}
-                          aria-label="search"
-                          disabled
-                        >
-                          <SearchIcon />
-                        </IconButton>
-                      </Box>
-                    </div>
-                    <div style={{ marginLeft: "8px", flex: 1 }}>
-                      <TextField
-                        sx={{ mb: 2, mt: 2, ml: 2, width: 300, height: 50 }}
-                        size="small"
-                        id="select-skill-type"
-                        select
-                        label="Select Skill"
-                        variant="standard"
-                        value={selectedType}
-                        onChange={handleSkillTypeChange}
-                      >
-                        {skillTypeList.map((type) => (
-                          <MenuItem key={type.label} value={type.value}>
-                            {type.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </div>
-                  </div>
-                  {dataPersonnel.length > 0 && (
+                      )}
+                    />
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-demo"
+                      options={divisionList}
+                      sx={{ width: "20%" }}
+                      name="division"
+                      onChange={(event, newValue) => {
+                        handleAutocompleteChange("division", newValue);
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          placeholder="Search Division"
+                          name="division"
+                          onChange={handlePersonnelSearchValueChange}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  {filteredPersonnel().length > 0 && (
                     <ThemeProvider theme={theme}>
                       <List
                         sx={{
@@ -1028,77 +1077,93 @@ function CreateProject() {
                           <ListItemText sx={{ width: "128px" }} />
                         </ListItem>
 
+                        {/* Personnel List Block */}
                         <div className="line"></div>
-                        {dataPersonnel
+                        {filteredPersonnel()
                           .slice(
                             (currentPage - 1) * itemsPerPage,
                             currentPage * itemsPerPage
                           )
-                          .map((dataPersonnel, i, array) => {
+                          .map((p, i, array) => {
                             return (
-                              <Box>
-                                <ListItemButton
-                                  component="div"
-                                  key={dataPersonnel.personnel_id}
-                                  divider={
-                                    i + 1 === array.length ? false : true
-                                  }
-                                  onClick={() =>
-                                    handleOpenDialog(dataPersonnel)
-                                  }
+                              <div>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                  }}
                                 >
-                                  <ListItemAvatar>
-                                    <ProfileAvatar
-                                      variant="circular"
-                                      name={fullname(dataPersonnel)}
-                                    />
-                                  </ListItemAvatar>
-                                  <ListItemText
-                                    sx={{ width: "30%" }}
-                                    primary={fullname(dataPersonnel)}
-                                    secondary={dataPersonnel.position}
-                                  />
-                                  <Box
+                                  <ListItemButton
                                     component="div"
-                                    sx={{ display: "flex", width: "30%" }}
+                                    key={p.personnel_id}
+                                    onClick={() =>
+                                      handleOpenPersonnelInfoDialog(p)
+                                    }
                                   >
-                                    <Chip
-                                      label={status(dataPersonnel).status}
-                                      color={status(dataPersonnel).color}
-                                      sx={{
-                                        justifyContent: "center",
-                                        "& .MuiChip-label": {
-                                          margin: 0,
-                                        },
-                                      }}
+                                    <ListItemAvatar>
+                                      <ProfileAvatar
+                                        variant="circular"
+                                        name={fullname(p)}
+                                      />
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                      sx={{ width: "30%" }}
+                                      primary={fullname(p)}
+                                      secondary={p.position}
                                     />
-                                  </Box>
-                                  <Box
-                                    component="div"
-                                    sx={{ display: "flex", width: "40%" }}
+                                    <Box
+                                      component="div"
+                                      sx={{ display: "flex", width: "30%" }}
+                                    >
+                                      <Chip
+                                        label={status(p).status}
+                                        color={status(p).color}
+                                        sx={{
+                                          justifyContent: "center",
+                                          "& .MuiChip-label": {
+                                            margin: 0,
+                                          },
+                                        }}
+                                      />
+                                    </Box>
+                                    <Box
+                                      component="div"
+                                      sx={{ display: "flex", width: "40%" }}
+                                    >
+                                      {p.skills.length > 0 && (
+                                        <AvatarGroup max={5}>
+                                          {p.skills.map((skill) => {
+                                            return (
+                                              <Tooltip
+                                                key={skill?.skill_id}
+                                                title={skill.skillName}
+                                              >
+                                                <div>
+                                                  <SkillFroupAvatar
+                                                    variant="circular"
+                                                    name={skill.skillName}
+                                                  />
+                                                </div>
+                                              </Tooltip>
+                                            );
+                                          })}
+                                        </AvatarGroup>
+                                      )}
+                                    </Box>
+                                  </ListItemButton>
+                                  <IconButton
+                                    sx={{ margin: 2 }}
+                                    edge="end"
+                                    aria-label="edit"
+                                    size="large"
+                                    onClick={assignPersonnel(p)}
                                   >
-                                    {dataPersonnel.skills.length > 0 && (
-                                      <AvatarGroup max={5}>
-                                        {dataPersonnel.skills.map((skill) => {
-                                          return (
-                                            <Tooltip
-                                              key={skill?.skill_id}
-                                              title={skill.skillName}
-                                            >
-                                              <div>
-                                                <SkillFroupAvatar
-                                                  variant="circular"
-                                                  name={skill.skillName}
-                                                />
-                                              </div>
-                                            </Tooltip>
-                                          );
-                                        })}
-                                      </AvatarGroup>
-                                    )}
-                                  </Box>
-                                </ListItemButton>
-                              </Box>
+                                    <AddIcon />
+                                  </IconButton>
+                                </Box>
+                                <div className="line"></div>
+                              </div>
                             );
                           })}
                       </List>
@@ -1111,7 +1176,9 @@ function CreateProject() {
                         }}
                       >
                         <Pagination
-                          count={Math.ceil(dataPersonnel.length / itemsPerPage)}
+                          count={Math.ceil(
+                            filteredPersonnel().length / itemsPerPage
+                          )}
                           page={currentPage}
                           onChange={(event, page) => setCurrentPage(page)}
                         />
@@ -1147,7 +1214,7 @@ function CreateProject() {
                           formData.budget === "" ||
                           skillSelect.length === 0)
                       }
-                      onClick={createProjectData}
+                      onClick={handleOpenDialog}
                     >
                       Create Project
                     </Button>
@@ -1165,6 +1232,11 @@ function CreateProject() {
                         </Button>
                       </DialogActions>
                     </Dialog>
+                    <PersonnelInfoDialog
+                      personnel={selectedPersonnel}
+                      open={openPersonnelInfoDialog}
+                      setOpen={setOpenPersonnelInfoDialog}
+                    />
                   </div>
                 </div>
               </div>

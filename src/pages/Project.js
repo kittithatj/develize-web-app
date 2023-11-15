@@ -74,10 +74,10 @@ function Project() {
   const status = (projectData) => {
     if (projectData.projectStatus === "On-Going") {
       return { status: "On-Going", color: "warning" };
-    } else if (projectData.projectStatus === "On-Success") {
-      return { status: "On-Success", color: "success" };
-    } else if (projectData.projectStatus === "On-Holding") {
-      return { status: "On-Holding", color: "error" };
+    } else if (projectData.projectStatus === "Completed") {
+      return { status: "Completed", color: "success" };
+    } else if (projectData.projectStatus === "Holding") {
+      return { status: "Holding", color: "secondary" };
     }
   };
 
