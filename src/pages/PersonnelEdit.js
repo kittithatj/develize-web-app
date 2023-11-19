@@ -250,247 +250,6 @@ function PersonnelEdit() {
   return (
     <div className="main-content">
       <Grid container justifyContent="center" alignItems="stretch" spacing={2}>
-        {/* <Grid item xs={12} md={4}>
-          <Box
-            sx={{
-              width: "100%",
-              backgroundColor: "white",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "15px",
-            }}
-          >
-            <div className="header">
-              <Badge
-                overlap="circular"
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                style={{ marginLeft: "-4px" }}
-              >
-                <Avatar
-                  sx={{
-                    width: 100,
-                    height: 100,
-                    backgroundColor: "#3f51b5",
-                  }}
-                >
-                  {getInitials(dataPersonnel.firstName, dataPersonnel.lastName)}
-                </Avatar>
-              </Badge>
-            </div>
-            <Typography sx={{ mt: 1, mb: 2 }} variant="h6" component="div">
-              {dataPersonnel.firstName} {dataPersonnel.lastName}
-            </Typography>
-            <div className="header"></div>
-          </Box>
-
-          <Box
-            sx={{
-              width: "100%",
-              backgroundColor: "white",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              justifyContent: "center",
-              padding: "15px",
-              marginTop: "10px",
-            }}
-          >
-            <div className="header">
-              <Typography
-                sx={{ mt: 1, mb: 2, color: "black", textAlign: "left" }}
-                variant="h5"
-                color="textSecondary"
-              >
-                Project History
-              </Typography>
-            </div>
-            <Card
-              sx={{
-                width: "100%",
-                height: "100% ",
-                border: "1px solid #ccc",
-                marginTop: "10px",
-              }}
-            >
-              <CardContent>
-                <Typography
-                  variant="h5"
-                  component="div"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <div>
-                    <span>Develize-Appication</span>
-                    <p style={{ fontSize: "small", color: "green" }}>
-                      12/9/2023 - 24/12/2023
-                    </p>
-                  </div>
-                  <Box>
-                    <Chip
-                      label={status(dataPersonnel)?.status || "Not Assigned"}
-                      color={status(dataPersonnel)?.color || "success"}
-                      sx={{
-                        justifyContent: "center",
-                        "& .MuiChip-label": {
-                          margin: 0,
-                        },
-                      }}
-                    />
-                  </Box>
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Project to use your money exchange to Salt!
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" color="primary" onClick={handleClickOpen}>
-                  Detail
-                </Button>
-              </CardActions>
-            </Card>
-          </Box>
-        </Grid>
-
-        <Dialog open={open} onClose={handleClose}>
-          <DialogContent>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <Typography
-                  variant="h5"
-                  component="div"
-                  style={{
-                    fontWeight: "bold",
-                    color: "#3f51b5",
-                    marginBottom: "10px",
-                  }}
-                >
-                  Develize-Appication
-                </Typography>
-              </div>
-              <div>
-                <Chip
-                  label={status(dataPersonnel)?.status || "Not Assigned"}
-                  color={status(dataPersonnel)?.color || "success"}
-                  sx={{
-                    "& .MuiChip-label": {
-                      margin: 0,
-                    },
-                  }}
-                />
-              </div>
-            </div>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              style={{ marginBottom: "10px", fontWeight: "bold" }}
-            >
-              Project Type :
-              <span style={{ fontWeight: "bold", marginLeft: "4px" }}>
-                E-Commerce Webservice
-              </span>
-            </Typography>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              style={{ marginBottom: "20px" }}
-            >
-              <span style={{ fontWeight: "bold" }}>Description : </span>Websites
-              used for marketing are used to buy, sell, and send products that
-              can help buyers and sellers be more convenient. This will ensure
-              safety and prevent fraud through online shopping.
-            </Typography>
-            <Typography>
-              Skill Requirement
-              <div
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  padding: "8px",
-                  minHeight: "100px",
-                  height: "auto",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "16px",
-                  }}
-                >
-                  {skillPersonnel
-                    .sort((a, b) => a.skillName.localeCompare(b.skillName))
-                    .map((item) => (
-                      <Chip
-                        key={item.skill_id}
-                        sx={{
-                          backgroundColor: "transparent",
-                          color: "black",
-                          borderRadius: "16px",
-                          display: "flex",
-                          alignItems: "center",
-                          borderColor: "gray",
-                          borderWidth: "1px",
-                          borderStyle: "solid",
-                          margin: "3px",
-                          padding: "10px",
-                        }}
-                        icon={getSkillTypeIcon(item.skillType)}
-                        label={item.skillName}
-                      />
-                    ))}
-                </div>
-              </div>
-            </Typography>
-            <TextField
-              sx={{ mt: 1, mb: 2, width: "30%", marginTop: "20px" }}
-              variant="outlined"
-              label="Budget"
-              value="5,000,000"
-              disabled
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PermContactCalendarIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginTop: "20px",
-              }}
-            >
-              <span>Duration: 12/9/2023 - 24/12/2023</span>
-              <Button
-                size="small"
-                color="primary"
-                sx={{ borderRadius: "30px", width: "80px" }}
-              >
-                Edit
-              </Button>
-            </Typography>
-          </DialogContent>
-        </Dialog> */}
-
         <Grid
           item
           xs={12}
@@ -524,7 +283,7 @@ function PersonnelEdit() {
                 variant="h5"
                 color="textSecondary"
               >
-                Personnel Information
+                Personnel Edit
               </Typography>
               <Link to="/personnel">
                 <Button
@@ -537,129 +296,96 @@ function PersonnelEdit() {
               </Link>
             </div>
             <div className="content">
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
-                  variant="outlined"
-                  label="Firstname"
-                  name="firstName"
-                  value={formData?.firstName || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "100%" }}
-                  variant="outlined"
-                  label="Lastname"
-                  name="lastName"
-                  value={formData?.lastName || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PersonIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
+              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    Firstname
+                  </div>
+                  <TextField
+                    name="firstName"
+                    value={formData?.firstName || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    Lastname
+                  </div>
+                  <TextField
+                    name="lastName"
+                    value={formData?.lastName || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
-                  variant="outlined"
-                  label="Email"
-                  name="email"
-                  value={formData?.email || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <MailOutlineIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "50%" }}
-                  variant="outlined"
-                  label="PhoneNumber"
-                  name="phoneNumber"
-                  value={formData?.phoneNumber || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AddIcCallIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
+              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    Email
+                  </div>
+                  <TextField
+                    value={formData?.email || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    PhoneNumber
+                  </div>
+                  <TextField
+                    value={formData?.phoneNumber || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "50%", marginRight: 2 }}
-                  variant="outlined"
-                  label="Division"
-                  name="division"
-                  value={formData?.division || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SupervisedUserCircleIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
-                <TextField
-                  sx={{ mt: 1, mb: 2, width: "50%" }}
-                  variant="outlined"
-                  label="Position"
-                  name="position"
-                  value={formData?.position || ""}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PermContactCalendarIcon />
-                      </InputAdornment>
-                    ),
-                  }}
-                  onChange={onInputChange}
-                />
+              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    Division
+                  </div>
+                  <TextField
+                    value={formData?.division || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
+                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                    Position
+                  </div>
+                  <TextField
+                    value={formData?.position || ""}
+                    fullWidth
+                    margin="normal"
+                  />
+                </div>
               </div>
-              <div>
 
-
-
-
-
-
-                <Select
-                  sx={{ mt: 1, mb: 2, width: "100%" }}
-                  value={formData?.employmentStatus || ""}
-                  name="employmentStatus"
-                  onChange={onInputChange}
-                  startAdornment={
-                    <InputAdornment position="start"></InputAdornment>
-                  }
-                >
-                  {employmentStatus.map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-
-
-
-
-
+              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
+                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
+                  <div style={{ fontSize: "15px", }}>
+                    EmploymentStatus
+                  </div>
+                  <Select
+                    sx={{ mt: 1, mb: 2, width: "100%" }}
+                    value={formData?.employmentStatus || ""}
+                    name="employmentStatus"
+                    onChange={onInputChange}
+                    startAdornment={
+                      <InputAdornment position="start"></InputAdornment>
+                    }
+                  >
+                    {employmentStatus.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </div>
               </div>
             </div>
           </Box>

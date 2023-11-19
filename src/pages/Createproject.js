@@ -273,9 +273,6 @@ function CreateProject() {
 
   const steps = ["Project Details", "Skill Requirement", "Assign Member"];
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -371,6 +368,54 @@ function CreateProject() {
 
   }
 
+  //---------Validate Field-------------
+  const [formValidation, setFormValidation] = useState({
+    projectName: true,
+    projectType: true,
+    projectDescription: true,
+    startDate: true,
+    endDate: true,
+    budget: true,
+    projectStatus: true,
+  });
+
+  const handleNext = () => {
+    const isFormValid =
+      formData.projectName &&
+      formData.projectType &&
+      formData.projectDescription &&
+      formData.startDate &&
+      formData.endDate &&
+      formData.budget &&
+      formData.projectStatus;
+
+    if (isFormValid) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setFormValidation({
+        projectName: true,
+        projectType: true,
+        projectDescription: true,
+        startDate: true,
+        endDate: true,
+        budget: true,
+        projectStatus: true,
+      });
+    } else {
+      setFormValidation({
+        projectName: !!formData.projectName,
+        projectType: !!formData.projectType,
+        projectDescription: !!formData.projectDescription,
+        startDate: !!formData.startDate,
+        endDate: !!formData.endDate,
+        budget: !!formData.budget,
+        projectStatus: !!formData.projectStatus,
+      });
+    }
+  };
+
+
+
+
   return (
     <div
       className="main-content"
@@ -451,6 +496,8 @@ function CreateProject() {
                           projectName: event.target.value,
                         })
                       }
+                      error={!formValidation.projectName}
+                      helperText={!formValidation.projectName && "Project Name is required"}
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -472,6 +519,8 @@ function CreateProject() {
                     <Select
                       sx={{ mt: 1, mb: 2 }}
                       value={formData.projectType}
+                      error={!formValidation.projectType}
+                      helperText={!formValidation.projectType && "Project Type is required"}
                       startAdornment={
                         <InputAdornment position="start">
                           <TypeSpecimenIcon />
@@ -490,6 +539,7 @@ function CreateProject() {
                         </MenuItem>
                       ))}
                     </Select>
+
                   </div>
                 </div>
                 <div
@@ -506,6 +556,8 @@ function CreateProject() {
                     sx={{ mt: 1, mb: 2, width: "100%" }}
                     variant="outlined"
                     value={formData.projectDescription}
+                    error={!formValidation.projectDescription}
+                    helperText={!formValidation.projectDescription && "Project Description is required"}
                     onChange={(event) =>
                       setFormData({
                         ...formData,
@@ -543,6 +595,8 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formatDate(formData.startDate)}
+                      error={!formValidation.startDate}
+                      helperText={!formValidation.startDate && "Start Date Project is required"}
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -571,6 +625,8 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formatDate(formData.endDate)}
+                      error={!formValidation.endDate}
+                      helperText={!formValidation.endDate && "End Date Project is required"}
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -600,6 +656,8 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formData.budget}
+                      error={!formValidation.budget}
+                      helperText={!formValidation.budget && "Budget is required"}
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -640,6 +698,8 @@ function CreateProject() {
                       }
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       value={formData.projectStatus}
+                      error={!formValidation.projectStatus}
+                      helperText={!formValidation.projectStatus && "Project Status is required"}
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -845,19 +905,19 @@ function CreateProject() {
                         .includes(searchValue.toLowerCase()) &&
                       (selectedType === "" || s.skillType === selectedType)
                   ).length === 0 && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "60vw",
-                        mt: 2,
-                      }}
-                    >
-                      <Typography component="div" sx={{ fontWeight: "600" }}>
-                        Skill Not found
-                      </Typography>
-                    </Box>
-                  )}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "60vw",
+                          mt: 2,
+                        }}
+                      >
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Skill Not found
+                        </Typography>
+                      </Box>
+                    )}
                   <Box
                     sx={{
                       width: "100%",

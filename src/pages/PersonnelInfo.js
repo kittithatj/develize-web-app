@@ -352,7 +352,6 @@ function PersonnelEdit() {
                                 <TextField
                                     sx={{ mt: 1, mb: 2, width: "100%", marginRight: 2 }}
                                     variant="outlined"
-                                    label="Firstname"
                                     value={dataPersonnel.firstName}
                                     disabled
                                     InputProps={{
