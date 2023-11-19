@@ -23,7 +23,7 @@ export function stringToColor(string) {
 function stringToName(name) {
     if (name.includes(' ')) {
         return name.split(' ')[0][0] + name.split(' ')[1][0]
-    } else return name[0];
+    } else return name[0]+name[1];
 }
 
 function stringAvatar(name) {
@@ -32,6 +32,8 @@ function stringAvatar(name) {
     return {
         sx: {
             bgcolor: stringToColor(name),
+            borderColor: 'red',
+            borderWidth: '2px',
             ml: '-8px!important',
         },
         children: stringToName(name),
@@ -40,6 +42,6 @@ function stringAvatar(name) {
 
 export default function SkillFroupAvatar(props) {
     return (
-        <Avatar {...stringAvatar(props.name, props.group)} variant={props.variant}/>
+        <Avatar sx={{borderColor:'GrayText', borderWidth:'2px', borderStyle:'solid'}} {...stringAvatar(props.name, props.group)} variant={props.variant}/>
     );
 }
