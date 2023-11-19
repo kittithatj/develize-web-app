@@ -522,11 +522,15 @@ function PersonnelInfoDialog(props) {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Link to={"edit/" + personnel?.personnel_id}>
+          {
+            !props.hideEdit &&
+            <Link to={"edit/" + personnel?.personnel_id}>
             <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>
               Edit
             </Button>
           </Link>
+          }
+          
           {viewChart ? (
             <Button
               onClick={() => {

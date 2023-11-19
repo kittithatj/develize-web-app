@@ -105,18 +105,17 @@ function CreateProject() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [openPersonnelInfoDialog, setOpenPersonnelInfoDialog] = useState(false);
-  const [page, setPage] = useState(1);
 
   const [displayedSkills, setDisplayedSkills] = useState([]);
   const [currentType, setCurrentType] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 5;
 
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
   const itemsPerPageSkill = 12;
 
-  const handleOpenDialog = (person) => {
+  const handleOpenDialog = () => {
     setOpenDialog(true);
   };
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
@@ -364,7 +363,9 @@ function CreateProject() {
   //----block personnel assignment----
 
   //end----block personnel assignment----
+
   const assignPersonnel = (person) => () => {
+
 
   }
 
@@ -740,7 +741,7 @@ function CreateProject() {
                     marginBottom: "50px",
                   }}
                 >
-                  Skill Required
+                  Skill Requirement
                 </span>
                 <div>
                   <Stepper
@@ -845,6 +846,7 @@ function CreateProject() {
                     justifyContent: "flex-start",
                     alignItems: "center",
                     width: "100%",
+                    minWidth: "60vw",
                   }}
                 >
                   {displayedSkills
@@ -991,7 +993,7 @@ function CreateProject() {
                       marginBottom: "-20px",
                     }}
                   >
-                    Member List
+                    Member Assignment
                   </span>
                 </div>
                 <Stepper activeStep={activeStep} alternativeLabel>
@@ -1104,10 +1106,10 @@ function CreateProject() {
                         }}
                       >
                         <ListItem>
-                          <Box
+                        <Box
                             sx={{
                               width: "30%",
-                              paddingLeft: "56px",
+                              marginLeft: "56px",
                               fontWeight: "600",
                             }}
                           >
@@ -1118,7 +1120,7 @@ function CreateProject() {
                               Information
                             </Typography>
                           </Box>
-                          <Box sx={{ marginLeft: "7%" }}>
+                          <Box sx={{ width: "30%" }}>
                             <Typography
                               component="div"
                               sx={{ fontWeight: "600" }}
@@ -1126,7 +1128,7 @@ function CreateProject() {
                               Status
                             </Typography>
                           </Box>
-                          <Box sx={{ marginLeft: "20%" }}>
+                          <Box sx={{ width: "40%" }}>
                             <Typography
                               component="div"
                               sx={{ fontWeight: "600" }}
@@ -1134,7 +1136,7 @@ function CreateProject() {
                               Skills
                             </Typography>
                           </Box>
-                          <ListItemText sx={{ width: "128px" }} />
+                          <ListItemText sx={{ width: "100px" }} />
                         </ListItem>
 
                         {/* Personnel List Block */}
@@ -1293,6 +1295,7 @@ function CreateProject() {
                       </DialogActions>
                     </Dialog>
                     <PersonnelInfoDialog
+                      hideEdit
                       personnel={selectedPersonnel}
                       open={openPersonnelInfoDialog}
                       setOpen={setOpenPersonnelInfoDialog}
