@@ -26,6 +26,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Pagination from "@mui/material/Pagination";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -296,9 +298,24 @@ function PersonnelEdit() {
               </Link>
             </div>
             <div className="content">
-              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginRight: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     Firstname
                   </div>
                   <TextField
@@ -306,10 +323,18 @@ function PersonnelEdit() {
                     value={formData?.firstName || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     Lastname
                   </div>
                   <TextField
@@ -317,74 +342,147 @@ function PersonnelEdit() {
                     value={formData?.lastName || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginRight: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     Email
                   </div>
                   <TextField
+                    name="email"
                     value={formData?.email || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     PhoneNumber
                   </div>
                   <TextField
+                    type="number"
+                    name="phoneNumber"
                     value={formData?.phoneNumber || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginRight: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     Division
                   </div>
                   <TextField
+                    name="division"
                     value={formData?.division || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginLeft: '8px' }}>
-                  <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginLeft: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
                     Position
                   </div>
                   <TextField
+                    name="position"
                     value={formData?.position || ""}
                     fullWidth
                     margin="normal"
+                    onChange={onInputChange}
                   />
                 </div>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: '20px', marginBottom: '20px' }}>
-                <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
-                  <div style={{ fontSize: "15px", }}>
-                    EmploymentStatus
-                  </div>
-                  <Select
-                    sx={{ mt: 1, mb: 2, width: "100%" }}
-                    value={formData?.employmentStatus || ""}
-                    name="employmentStatus"
-                    onChange={onInputChange}
-                    startAdornment={
-                      <InputAdornment position="start"></InputAdornment>
-                    }
-                  >
-                    {employmentStatus.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {type}
-                      </MenuItem>
-                    ))}
-                  </Select>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "100%",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <div
+                  style={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    marginRight: "8px",
+                  }}
+                >
+                  <div style={{ fontSize: "15px" }}>EmploymentStatus</div>
+                  {/* เริ่มแก้ตามแบบนี้ */}
+                  <FormControl error={true}>
+                    <Select
+                      error={true}
+                      sx={{ mt: 1, mb: 2, width: "100%" }}
+                      value={formData?.employmentStatus || ""}
+                      name="employmentStatus"
+                      onChange={onInputChange}
+                      startAdornment={
+                        <InputAdornment position="start"></InputAdornment>
+                      }
+                    >
+                      {employmentStatus.map((type) => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>Test Error</FormHelperText>
+                  </FormControl>
+                  {/* เริ่มแก้ตามแบบนี้ */}
                 </div>
               </div>
             </div>
