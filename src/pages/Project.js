@@ -101,6 +101,13 @@ function Project() {
     },
   });
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  const indexOfLastProject = currentPage * itemsPerPage;
+  const indexOfFirstProject = indexOfLastProject - itemsPerPage;
+  const currentProjects = projectData.slice(indexOfFirstProject, indexOfLastProject);
+
   useEffect(() => {
     fetchProjectData();
     fetchPersonnelData();
@@ -108,8 +115,8 @@ function Project() {
 
   return (
     <div className="main-content">
-      <div style={{display:'flex'}}>
-        <Paper sx={{ padding: "30px" ,maxWidth: "1750px",}}>
+      <div style={{ display: 'flex' }}>
+        <Paper sx={{ padding: "30px", maxWidth: "1750px", }}>
           <div
             style={{
               display: "flex",
@@ -117,7 +124,7 @@ function Project() {
               justifyContent: "space-between",
               marginBottom: "12px",
               minWidth: "60vw",
-              
+
             }}
           >
             <Typography
@@ -156,107 +163,105 @@ function Project() {
                 <CircularProgress sx={{ my: 5 }} size={100} />
               </Box>
             )}
-            {projectData
-              .sort((a, b) => a.projectName.localeCompare(b.projectName))
-              .map((item) => (
-                <Box key={item.project_id}>
-                  <ThemeProvider theme={theme}>
-                    <Card
-                      variant="outlined"
+            {currentProjects.map((item) => (
+              <Box key={item.project_id}>
+                <ThemeProvider theme={theme}>
+                  <Card
+                    variant="outlined"
+                    style={{
+                      flex: "1",
+                      width: "400px",
+                      height: "450px",
+                      marginRight: "16px",
+                      marginTop: "15px",
+                    }}
+                  >
+                    <CardContent
                       style={{
-                        flex: "1",
-                        width: "400px",
-                        height: "450px",
-                        marginRight: "16px",
-                        marginTop: "15px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        height: "100%",
                       }}
                     >
-                      <CardContent
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          height: "100%",
-                        }}
-                      >
-                        <div>
-                          {item.projectType === "Web Development" && (
-                            <img
-                              src={WebDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                          {item.projectType === "Mobile App Development" && (
-                            <img
-                              src={MobileAppDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                          {item.projectType ===
-                            "Desktop Application Development" && (
+                      <div>
+                        {item.projectType === "Web Development" && (
+                          <img
+                            src={WebDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType === "Mobile App Development" && (
+                          <img
+                            src={MobileAppDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType ===
+                          "Desktop Application Development" && (
                             <img
                               src={DesktopApplicationDevelopment}
                               width="100%"
                               height="60%"
                             />
                           )}
-                          {item.projectType === "Game Development" && (
-                            <img
-                              src={GameDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                          {item.projectType ===
-                            "Embedded System Development" && (
+                        {item.projectType === "Game Development" && (
+                          <img
+                            src={GameDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType ===
+                          "Embedded System Development" && (
                             <img
                               src={EmbeddedSystemDevelopment}
                               width="100%"
                               height="60%"
                             />
                           )}
-                          {item.projectType ===
-                            "AI and Machine Learning Development" && (
+                        {item.projectType ===
+                          "AI and Machine Learning Development" && (
                             <img
                               src={AIandMachineLearningDevelopment}
                               width="100%"
                               height="60%"
                             />
                           )}
-                          {item.projectType ===
-                            "Database Management and System" && (
+                        {item.projectType ===
+                          "Database Management and System" && (
                             <img
                               src={DatabaseManagementandSystem}
                               width="100%"
                               height="60%"
                             />
                           )}
-                          {item.projectType === "DevOps and CI/CD" && (
-                            <img
-                              src={DevOpsandCICD}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                          {item.projectType === "Cloud-Based Development" && (
-                            <img
-                              src={CloudBasedDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                          {item.projectType ===
-                            "Security and Cybersecurity System" && (
+                        {item.projectType === "DevOps and CI/CD" && (
+                          <img
+                            src={DevOpsandCICD}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType === "Cloud-Based Development" && (
+                          <img
+                            src={CloudBasedDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType ===
+                          "Security and Cybersecurity System" && (
                             <img
                               src={SecurityandCybersecuritySystem}
                               width="100%"
                               height="60%"
                             />
                           )}
-                          {item.projectType ===
-                            "Artificial Reality (AR) and Virtual Reality (VR) Development" && (
+                        {item.projectType ===
+                          "Artificial Reality (AR) and Virtual Reality (VR) Development" && (
                             <img
                               src={
                                 ArtificialRealityandVirtualRealityDevelopment
@@ -265,59 +270,59 @@ function Project() {
                               height="60%"
                             />
                           )}
-                          <Typography
-                            variant="h5"
-                            component="div"
+                        <Typography
+                          variant="h5"
+                          component="div"
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            fontWeight: "bold",
+                            color: "#3f51b5",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <div>
+                            {item.projectName}
+                            <p style={{ fontSize: "small", color: "green" }}>
+                              {new Date(item.startDate).getDate()}{" "}
+                              {months[new Date(item.startDate).getMonth()]}{" "}
+                              {new Date(item.startDate).getFullYear()} -{" "}
+                              {new Date(item.endDate).getDate()}{" "}
+                              {months[new Date(item.endDate).getMonth()]}{" "}
+                              {new Date(item.endDate).getFullYear()}
+                            </p>
+                          </div>
+                          <Chip
+                            label={status(item)?.status || "On-going"}
+                            color={status(item)?.color || "warning"}
+                            sx={{
+                              "& .MuiChip-label": {
+                                margin: 0,
+                              },
+                            }}
+                          />
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          <p
                             style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
+                              fontSize: "small",
+                              color: "black",
                               fontWeight: "bold",
-                              color: "#3f51b5",
-                              marginBottom: "10px",
+                              display: "inline-flex",
+                              alignItems: "center",
                             }}
                           >
-                            <div>
-                              {item.projectName}
-                              <p style={{ fontSize: "small", color: "green" }}>
-                                {new Date(item.startDate).getDate()}{" "}
-                                {months[new Date(item.startDate).getMonth()]}{" "}
-                                {new Date(item.startDate).getFullYear()} -{" "}
-                                {new Date(item.endDate).getDate()}{" "}
-                                {months[new Date(item.endDate).getMonth()]}{" "}
-                                {new Date(item.endDate).getFullYear()}
-                              </p>
-                            </div>
-                            <Chip
-                              label={status(item)?.status || "On-going"}
-                              color={status(item)?.color || "warning"}
-                              sx={{
-                                "& .MuiChip-label": {
-                                  margin: 0,
-                                },
-                              }}
-                            />
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            <p
-                              style={{
-                                fontSize: "small",
-                                color: "black",
-                                fontWeight: "bold",
-                                display: "inline-flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              {item.projectType === "Web Development" && (
-                                <SettingsSuggestIcon
-                                  style={{
-                                    fontSize: "25px",
-                                    marginRight: "4px",
-                                  }}
-                                />
-                              )}
-                              {item.projectType ===
-                                "Mobile App Development" && (
+                            {item.projectType === "Web Development" && (
+                              <SettingsSuggestIcon
+                                style={{
+                                  fontSize: "25px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            )}
+                            {item.projectType ===
+                              "Mobile App Development" && (
                                 <AttachMoneyIcon
                                   style={{
                                     fontSize: "25px",
@@ -325,8 +330,8 @@ function Project() {
                                   }}
                                 />
                               )}
-                              {item.projectType ===
-                                "Desktop Application Development" && (
+                            {item.projectType ===
+                              "Desktop Application Development" && (
                                 <SupportAgentIcon
                                   style={{
                                     fontSize: "25px",
@@ -334,39 +339,40 @@ function Project() {
                                   }}
                                 />
                               )}
-                              {item.projectType}
-                            </p>
-                          </Typography>
-                          <Typography variant="body2" color="textSecondary">
-                            {item.projectDescription}
-                          </Typography>
-                        </div>
-                        <Link to={`/project/projectdetail/${item.project_id}`}>
-                          <Button
-                            color="primary"
-                            style={{
-                              alignSelf: "flex-end",
-                              margin: "8px 0",
-                              borderRadius: 0,
-                            }}
-                          >
-                            View Detail
-                          </Button>
-                        </Link>
-                      </CardContent>
-                    </Card>
-                  </ThemeProvider>
-                </Box>
-              ))}
+                            {item.projectType}
+                          </p>
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                          {item.projectDescription}
+                        </Typography>
+                      </div>
+                      <Link to={`/project/projectdetail/${item.project_id}`}>
+                        <Button
+                          color="primary"
+                          style={{
+                            alignSelf: "flex-end",
+                            margin: "8px 0",
+                            borderRadius: 0,
+                          }}
+                        >
+                          View Detail
+                        </Button>
+                      </Link>
+                    </CardContent>
+                  </Card>
+                </ThemeProvider>
+              </Box>
+            ))}
           </Box>
-
-        {/* เริ่มแก้ตรงนี้ Pagination */}
-        {!projectLoading && (
+          {!projectLoading && (
             <Box className="flex-center" sx={{ marginTop: "20px" }}>
-            <Pagination count={1} page={1} onChange={(event, page) => {}} />
-          </Box>
-        )}
-
+              <Pagination
+                count={Math.ceil(projectData.length / itemsPerPage)}
+                page={currentPage}
+                onChange={(event, page) => setCurrentPage(page)}
+              />
+            </Box>
+          )}
         </Paper>
       </div>
     </div>
