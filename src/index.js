@@ -22,9 +22,10 @@ import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
 import CreateProject from "./pages/Createproject";
 import ProjectDetail from "./pages/ProjectDetail";
+import ProjectEdit from "./pages/ProjectEdit"
 
 const AppLayout = () => {
-  
+
   //--------SnackBar---------
   const [isOpenSnackbar, setIsOpenSnackbar] = React.useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -33,26 +34,26 @@ const AppLayout = () => {
   });
 
   const openSnackbar = (snackbar) => {
-      setSnackbar({
-        status: snackbar.status,
-        message: snackbar.message
-      })
-      setIsOpenSnackbar(true);
+    setSnackbar({
+      status: snackbar.status,
+      message: snackbar.message
+    })
+    setIsOpenSnackbar(true);
   };
 
   const handleCloseSnackbar = (event, reason) => {
-      if (reason === 'clickaway') {
-          return;
-      }
-      setIsOpenSnackbar(false);
+    if (reason === 'clickaway') {
+      return;
+    }
+    setIsOpenSnackbar(false);
   };
 
-  const htmlSnackBar = <SnackbarComponent 
-  autoHideDuration={5000}
-  open={isOpenSnackbar} 
-  handleClose={handleCloseSnackbar} 
-  severity={snackbar.status} 
-  message={snackbar.message}
+  const htmlSnackBar = <SnackbarComponent
+    autoHideDuration={5000}
+    open={isOpenSnackbar}
+    handleClose={handleCloseSnackbar}
+    severity={snackbar.status}
+    message={snackbar.message}
   />
 
   //--------SnackBar---------
@@ -65,14 +66,14 @@ const AppLayout = () => {
     const token = localStorage.getItem('token');
     if (token) {
       return user
-    }else{
+    } else {
       return []
     }
   }
 
   useEffect(() => {
     localStorage?.getItem('user') && setUser(JSON.parse(localStorage.getItem('user')));
-  },[])
+  }, [])
 
   return <>
     <Navbar user={getUserIfTokenExist()} setUser={setUser} />
@@ -134,12 +135,16 @@ const router = createBrowserRouter([
       ,
       {
         path: "project/createproject",
-        element: <CreateProject/>,
+        element: <CreateProject />,
       },
       ,
       {
         path: "project/projectdetail/:id",
-        element: <ProjectDetail/>,
+        element: <ProjectDetail />,
+      },
+      {
+        path: "project/projectedit",
+        element: <ProjectEdit />,
       },
     ],
   },

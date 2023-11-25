@@ -37,6 +37,8 @@ import Step from "@mui/material/Step";
 import Paper from "@mui/material/Paper";
 import StepLabel from "@mui/material/StepLabel";
 import { getSkillTypeColor, getSkillTypeIcon } from "../components/util";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -535,32 +537,33 @@ function CreateProject() {
                     }}
                   >
                     <div style={{ fontSize: "15px" }}>Project Type</div>
-                    <Select
-                      sx={{ mt: 1, mb: 2 }}
-                      value={formData.projectType}
-                      error={!formValidation.projectType}
-                      helperText={
-                        !formValidation.projectType &&
-                        "Project Type is required"
-                      }
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <TypeSpecimenIcon />
-                        </InputAdornment>
-                      }
-                      onChange={(event) =>
-                        setFormData({
-                          ...formData,
-                          projectType: event.target.value,
-                        })
-                      }
-                    >
-                      {typeOptions.map((type) => (
-                        <MenuItem key={type} value={type}>
-                          {type}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    <FormControl error={!formValidation.projectType}>
+                      <Select
+                        sx={{ mt: 1, mb: 2, width: "100%" }}
+                        value={formatDate(formData.projectType)}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            projectType: formatDate(event.target.value),
+                          })
+                        }
+                        name="ProjectType"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <TypeSpecimenIcon />
+                          </InputAdornment>
+                        }
+                      >
+                        {typeOptions.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText sx={{ mt: -1 }}>{!formValidation.projectType && "Project Type is required"}</FormHelperText>
+                    </FormControl>
+
+
                   </div>
                 </div>
                 <div
@@ -577,11 +580,6 @@ function CreateProject() {
                     sx={{ mt: 1, mb: 2, width: "100%" }}
                     variant="outlined"
                     value={formData.projectDescription}
-                    error={!formValidation.projectDescription}
-                    helperText={
-                      !formValidation.projectDescription &&
-                      "Project Description is required"
-                    }
                     onChange={(event) =>
                       setFormData({
                         ...formData,
@@ -722,32 +720,60 @@ function CreateProject() {
                     }}
                   >
                     <div style={{ fontSize: "15px" }}>Project Status</div>
-                    <Select
-                      startAdornment={
-                        <InputAdornment position="start">
-                          <AutorenewIcon />
-                        </InputAdornment>
-                      }
-                      sx={{ mt: 1, mb: 2, width: "100%" }}
-                      value={formData.projectStatus}
-                      error={!formValidation.projectStatus}
-                      helperText={
-                        !formValidation.projectStatus &&
-                        "Project Status is required"
-                      }
-                      onChange={(event) =>
-                        setFormData({
-                          ...formData,
-                          projectStatus: event.target.value,
-                        })
-                      }
-                    >
-                      {statusOptions.map((type) => (
-                        <MenuItem key={type} value={type}>
-                          {type}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                    <FormControl error={!formValidation.projectStatus}>
+                      <Select
+                        sx={{ mt: 1, mb: 2, width: "100%" }}
+                        value={formatDate(formData.projectStatus)}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            projectStatus: formatDate(event.target.value),
+                          })
+                        }
+                        name="ProjectStatus"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AutorenewIcon />
+                          </InputAdornment>
+                        }
+                      >
+                        {statusOptions.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText sx={{ mt: -1 }}>{!formValidation.projectStatus && "Project Status is required"}</FormHelperText>
+                    </FormControl>
+
+
+                    {/* <FormControl error={!formValidation.projectStatus}>
+                      <Select
+                        error={true}
+                        sx={{ mt: 1, mb: 2, width: "100%" }}
+                        value={formatDate(formData.projectStatus)}
+                        helperText={!formValidation.projectStatus && "Start Date Project is required"}
+                        onChange={(event) =>
+                          setFormData({
+                            ...formData,
+                            projectStatus: formatDate(event.target.value),
+                          })
+                        }
+                        name="employmentStatus"
+                        startAdornment={
+                          <InputAdornment position="start">
+                            <AutorenewIcon />
+                          </InputAdornment>
+                        }
+                      >
+                        {statusOptions.map((type) => (
+                          <MenuItem key={type} value={type}>
+                            {type}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>{!formValidation.projectStatus && "Project Status is required"}</FormHelperText>
+                    </FormControl> */}
                   </div>
                 </div>
                 <Button
