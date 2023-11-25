@@ -55,6 +55,7 @@ import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
+import CloseIcon from "@mui/icons-material/Close";
 
 function CreateProject() {
   const handleCloseDialog = () => {
@@ -71,10 +72,12 @@ function CreateProject() {
       startDate: formData.startDate,
       endDate: formData.endDate,
       skillRequireIdList: skillReq,
-      memberAssignment: formData.memberIdList.map((member) => ({
-        personnel_id: member.personnel_id,
-        role: member.role,
-      })),
+      memberAssignment: memberList.map((member) => {
+        return {
+          personnel_id: member.personnel_id,
+          role: member.role,
+        };
+      }),
       budget: formData.budget,
       projectStatus: formData.projectStatus,
     };
@@ -201,7 +204,7 @@ function CreateProject() {
     skillRequireIdList: [],
     budget: "",
     projectStatus: "",
-    memberIdList: [],
+    memberAssignment: [],
     role: "",
   });
 
@@ -271,7 +274,6 @@ function CreateProject() {
   };
 
   const steps = ["Project Details", "Skill Requirement", "Assign Member"];
-
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -349,6 +351,9 @@ function CreateProject() {
         return false;
       }
     }
+    if (memberList.includes(person)) {
+      return false;
+    }
     return true;
   };
 
@@ -361,13 +366,26 @@ function CreateProject() {
   //end----block search personnel----
 
   //----block personnel assignment----
+  const [memberList, setMemberList] = useState([]);
+  const roleOptions = ["Project Owner", "Project Manager", "System Analysis","Bussiness Analysis","Full Stack Developer","Backend Developer", "Frontend Developer", "Tester", "UI/UX Designer", "Database Administrator","Supporter"];
+  const assignPersonnel = (person) => () => {
+    setMemberList((prevList) => [...prevList, person]);
+  };
+
+  const removePersonnel = (person) => () => {
+    setMemberList((prevList) =>
+      prevList.filter((p) => p.personnel_id !== person.personnel_id)
+    );
+  };
+
+  const handleRoleChange = (role,i)  => {
+    const newMemberList = [...memberList];
+    newMemberList[i].role = role;
+    setMemberList(newMemberList);
+    console.log(memberList);
+  }
 
   //end----block personnel assignment----
-
-  const assignPersonnel = (person) => () => {
-
-
-  }
 
   //---------Validate Field-------------
   const [formValidation, setFormValidation] = useState({
@@ -413,9 +431,6 @@ function CreateProject() {
       });
     }
   };
-
-
-
 
   return (
     <div
@@ -498,7 +513,10 @@ function CreateProject() {
                         })
                       }
                       error={!formValidation.projectName}
-                      helperText={!formValidation.projectName && "Project Name is required"}
+                      helperText={
+                        !formValidation.projectName &&
+                        "Project Name is required"
+                      }
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
@@ -521,7 +539,10 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2 }}
                       value={formData.projectType}
                       error={!formValidation.projectType}
-                      helperText={!formValidation.projectType && "Project Type is required"}
+                      helperText={
+                        !formValidation.projectType &&
+                        "Project Type is required"
+                      }
                       startAdornment={
                         <InputAdornment position="start">
                           <TypeSpecimenIcon />
@@ -540,7 +561,6 @@ function CreateProject() {
                         </MenuItem>
                       ))}
                     </Select>
-
                   </div>
                 </div>
                 <div
@@ -558,7 +578,10 @@ function CreateProject() {
                     variant="outlined"
                     value={formData.projectDescription}
                     error={!formValidation.projectDescription}
-                    helperText={!formValidation.projectDescription && "Project Description is required"}
+                    helperText={
+                      !formValidation.projectDescription &&
+                      "Project Description is required"
+                    }
                     onChange={(event) =>
                       setFormData({
                         ...formData,
@@ -597,7 +620,10 @@ function CreateProject() {
                       variant="outlined"
                       value={formatDate(formData.startDate)}
                       error={!formValidation.startDate}
-                      helperText={!formValidation.startDate && "Start Date Project is required"}
+                      helperText={
+                        !formValidation.startDate &&
+                        "Start Date Project is required"
+                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -627,7 +653,10 @@ function CreateProject() {
                       variant="outlined"
                       value={formatDate(formData.endDate)}
                       error={!formValidation.endDate}
-                      helperText={!formValidation.endDate && "End Date Project is required"}
+                      helperText={
+                        !formValidation.endDate &&
+                        "End Date Project is required"
+                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -658,7 +687,9 @@ function CreateProject() {
                       variant="outlined"
                       value={formData.budget}
                       error={!formValidation.budget}
-                      helperText={!formValidation.budget && "Budget is required"}
+                      helperText={
+                        !formValidation.budget && "Budget is required"
+                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -700,7 +731,10 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       value={formData.projectStatus}
                       error={!formValidation.projectStatus}
-                      helperText={!formValidation.projectStatus && "Project Status is required"}
+                      helperText={
+                        !formValidation.projectStatus &&
+                        "Project Status is required"
+                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -907,19 +941,19 @@ function CreateProject() {
                         .includes(searchValue.toLowerCase()) &&
                       (selectedType === "" || s.skillType === selectedType)
                   ).length === 0 && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          width: "60vw",
-                          mt: 2,
-                        }}
-                      >
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Skill Not found
-                        </Typography>
-                      </Box>
-                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "60vw",
+                        mt: 2,
+                      }}
+                    >
+                      <Typography component="div" sx={{ fontWeight: "600" }}>
+                        Skill Not found
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       width: "100%",
@@ -1003,9 +1037,67 @@ function CreateProject() {
                     </Step>
                   ))}
                 </Stepper>
+                <List
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {memberList.map((p, i, array) => {
+                    return (
+                      <div>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            width: "100%",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <ListItemButton
+                            component="div"
+                            key={p.personnel_id}
+                            onClick={() => handleOpenPersonnelInfoDialog(p)}
+                          >
+                            <ListItemAvatar>
+                              <ProfileAvatar
+                                variant="circular"
+                                name={fullname(p)}
+                              />
+                            </ListItemAvatar>
+                            <ListItemText
+                              sx={{ width: "30%" }}
+                              primary={fullname(p)}
+                              secondary={p.position}
+                            />
+                          </ListItemButton>
+                          <Box sx={{display:'flex',alignItems:'center'}}>
+                            <Autocomplete
+                            freeSolo
+                            options={roleOptions}
+                            sx={{ width: 300 }}
+                            onChange={(event, newValue) => {handleRoleChange(newValue,i)}}
+                            renderInput={(params) => (
+                              // eslint-disable-next-line no-restricted-globals
+                              <TextField {...params} label="Role" onChange={(event)=>handleRoleChange(event.target.value,i)} />
+                            )}
+                          />
+                          </Box>
+                          
+                          <IconButton
+                            sx={{ margin: 2 }}
+                            edge="end"
+                            aria-label="edit"
+                            size="large"
+                            onClick={removePersonnel(p)}
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Box>
+                        <div className="line"></div>
+                      </div>
+                    );
+                  })}
+                </List>
                 <div>
-                  {/* TODO: SearchPersonnel */}
-
                   <Box
                     className="flex-center"
                     sx={{
@@ -1046,6 +1138,7 @@ function CreateProject() {
                       multiple
                       limitTags={2}
                       disablePortal
+                      freeSolo
                       id="combo-box-demo"
                       options={searchSkillList}
                       sx={{ width: "30%" }}
@@ -1058,6 +1151,7 @@ function CreateProject() {
                     />
                     <Autocomplete
                       disablePortal
+                      freeSolo
                       id="combo-box-demo"
                       options={positionList}
                       sx={{ width: "20%" }}
@@ -1076,6 +1170,7 @@ function CreateProject() {
                     />
                     <Autocomplete
                       disablePortal
+                      freeSolo
                       id="combo-box-demo"
                       options={divisionList}
                       sx={{ width: "20%" }}
@@ -1106,7 +1201,7 @@ function CreateProject() {
                         }}
                       >
                         <ListItem>
-                        <Box
+                          <Box
                             sx={{
                               width: "30%",
                               marginLeft: "56px",
