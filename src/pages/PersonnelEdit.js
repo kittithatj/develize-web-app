@@ -1,7 +1,7 @@
 // SYSTEM
 import {
   Avatar,
-  Badge,
+  CircularProgress,
   Box,
   Typography,
   TextField,
@@ -30,17 +30,13 @@ import ListItemText from "@mui/material/ListItemText";
 import Pagination from "@mui/material/Pagination";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 // API
 import { skillApi } from "../api/skill-api";
 import { PersonnelAPI } from "../api/personnel-api";
 
 // ICON MUI
-import PersonIcon from "@mui/icons-material/Person";
-import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import AddIcCallIcon from "@mui/icons-material/AddIcCall";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import StorageIcon from "@mui/icons-material/Storage";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import HandymaIconn from "@mui/icons-material/Handyman";
@@ -49,22 +45,19 @@ import TerminalIcon from "@mui/icons-material/Terminal";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import CancelIcon from "@mui/icons-material/Cancel";
-import { color } from "framer-motion";
 import CheckIcon from "@mui/icons-material/Check";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 function PersonnelEdit() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [user, setUser, openSnackbar] = useOutletContext({});
 
-  const [open, setOpen] = React.useState(false);
+  //Dialog
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openSaveDialog, setOpenSaveDialog] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [tabValue, setTabValue] = useState(0);
 
   // Skill Management
   const [skillList, setSkillList] = useState([]);
@@ -74,6 +67,7 @@ function PersonnelEdit() {
   const [loadingSkill, setLoadingSkill] = useState(false);
 
   //edit
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({});
 
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
@@ -136,7 +130,7 @@ function PersonnelEdit() {
   };
 
   const handleSubmit = async () => {
-    setLoadingEditPerson(true);
+    setLoading(true);
 
     const personnelForm = {
       personnel_id: formData.personnel_id || "",
@@ -153,19 +147,19 @@ function PersonnelEdit() {
     try {
       const response = await PersonnelAPI.editPersonnel(personnelForm); // เรียกใช้ API ตัวนี้
       if (response.ok) {
-        const data = await response.json();
-        setLoadingEditPerson(false);
-        console.log("Updated Personnel Data:", data);
-        if (data && data.skills) {
-          console.log("Updated Skills:", data.skills);
-          setSkillPersonnel(data.skills);
-        }
-        window.location.href = "/Personnel/" + dataPersonnel.personnel_id;
+        openSnackbar({
+          status: "success",
+          message: "Edit Personnel Successfully",
+        });
+        navigate("../personnel");
       } else {
-        throw new Error("Failed to update personnel");
+        openSnackbar({
+          status: "error",
+          message: "Edit Personnel Failed",
+        });
       }
     } catch (error) {
-      setLoadingEditPerson(false);
+      setLoading(false);
       console.error("Error updating personnel:", error);
     }
   };
@@ -179,14 +173,12 @@ function PersonnelEdit() {
   };
 
   // PERSONNEL API / MANAGEMENT
-  const [loadingPerson, setLoadingPerson] = useState(false);
-  const [loadingEditPerson, setLoadingEditPerson] = useState(false);
   const [dataPersonnel, setDataPersonnel] = useState([]);
   const [editDataPersonnel, setEditDataPersonnel] = useState([]);
   const [skillPersonnel, setSkillPersonnel] = useState([]);
 
   const fetchPersonnelData = (id) => {
-    setLoadingPerson(true);
+    setLoading(true);
     PersonnelAPI.getPersonnelById(id).then((data) => {
       setDataPersonnel(data);
       setFormData(data);
@@ -195,6 +187,7 @@ function PersonnelEdit() {
         console.log("Skills:", data.skills);
         setSkillPersonnel(data.skills);
       }
+      setLoading(false);
     });
   };
 
@@ -240,8 +233,6 @@ function PersonnelEdit() {
     }
   };
 
-  const [currentTab, setCurrentTab] = useState(0);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -250,9 +241,28 @@ function PersonnelEdit() {
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
     };
   }
+
+  const handleDeletePersonnel = () => {
+    setLoading(true);
+    PersonnelAPI.deletePersonnel(id)
+      .then((res) => {
+        openSnackbar({
+          status: "success",
+          message: "Delete Personnel Successfully",
+        });
+        navigate("../personnel");
+      })
+      .catch(() => {
+        openSnackbar({
+          status: "error",
+          message: "Delete Personnel Failed",
+        });
+        setLoading(false);
+      });
+  };
 
   function CustomTabPanel({ children, value, index, ...other }) {
     return (
@@ -306,14 +316,18 @@ function PersonnelEdit() {
               padding: "15px",
             }}
           >
-            <Box sx={{ width: '100%' }}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label="Personnel Info" {...a11yProps(0)} />
-                  <Tab label="Skill" {...a11yProps(1)} />
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                >
+                  <Tab label="Personnel Info" onClick={()=>setTabValue(0)} />
+                  <Tab label="Skill" onClick={()=>setTabValue(1)} />
                 </Tabs>
               </Box>
-              <CustomTabPanel value={value} index={0}>
+              {tabValue === 0 && (
+                <div style={{padding:'24px'}}>
                 <div
                   className="header"
                   style={{
@@ -329,18 +343,26 @@ function PersonnelEdit() {
                   >
                     Personnel Edit
                   </Typography>
-
-                  <Link to="/personnel">
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      sx={{ borderRadius: "30px", width: "80px" }}
-                    >
-                      Back
-                    </Button>
-                  </Link>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    sx={{ borderRadius: "30px", width: "80px" }}
+                    onClick={() => setOpenDeleteDialog(true)}
+                  >
+                    Delete
+                  </Button>
                 </div>
-                <div className="content">
+                {loading ? (
+                  <Box
+                    className="flex-center"
+                    sx={{
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress sx={{ my: 5 }} size={100} />
+                  </Box>
+                ) : (
+                  <div className="content">
                   <div
                     style={{
                       display: "flex",
@@ -363,6 +385,7 @@ function PersonnelEdit() {
                       </div>
                       <TextField
                         name="firstName"
+                        key="firstName"
                         value={formData?.firstName || ""}
                         fullWidth
                         margin="normal"
@@ -382,6 +405,7 @@ function PersonnelEdit() {
                       </div>
                       <TextField
                         name="lastName"
+                        key="lastName"
                         value={formData?.lastName || ""}
                         fullWidth
                         margin="normal"
@@ -525,8 +549,35 @@ function PersonnelEdit() {
                     </div>
                   </div>
                 </div>
-              </CustomTabPanel>
+                )}
+                
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    sx={{mt: 2 }}
+                    onClick={() => navigate("../personnel")}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    sx={{ alignSelf: "flex-end", mt: 2 }}
+                    onClick={() => setOpenSaveDialog(true)}
+                  >
+                    Submit
+                  </Button>
+                </Box>
+                </div>)}
             </Box>
+            
             <CustomTabPanel value={value} index={1}>
               <Box
                 sx={{
@@ -546,6 +597,16 @@ function PersonnelEdit() {
                     Personnel Skills
                   </Typography>
                 </div>
+                {loading ? (
+                  <Box
+                    className="flex-center"
+                    sx={{
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CircularProgress sx={{ my: 5 }} size={100} />
+                  </Box>
+                ) : (
                 <div className="content">
                   <div
                     style={{
@@ -652,7 +713,8 @@ function PersonnelEdit() {
                             s.skillName
                               .toLowerCase()
                               .includes(searchValue.toLowerCase()) &&
-                            (selectedType === "" || s.skillType === selectedType)
+                            (selectedType === "" ||
+                              s.skillType === selectedType)
                         )
                         .slice(
                           (currentPageSkill - 1) * itemsPerPageSkill,
@@ -668,7 +730,9 @@ function PersonnelEdit() {
                               }}
                             >
                               <ListItemAvatar>
-                                <Avatar>{getSkillTypeIcon(item.skillType)}</Avatar>
+                                <Avatar>
+                                  {getSkillTypeIcon(item.skillType)}
+                                </Avatar>
                               </ListItemAvatar>
                               <ListItemText
                                 primary={item.skillName}
@@ -723,16 +787,52 @@ function PersonnelEdit() {
                     </div>
                   </div>
                 </div>
+                )}
               </Box>
-              <Button
-                variant="contained"
-                color="success"
-                sx={{ alignSelf: "flex-end", mt: 2 }}
-                onClick={handleSubmit}
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
               >
-                Submit
-              </Button>
+                <Button
+                    variant="outlined"
+                    color="error"
+                    sx={{alignSelf: "flex-start",mt: 2 }}
+                    onClick={() => navigate("../personnel")}
+                  >
+                    Back
+                  </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  sx={{ alignSelf: "flex-end", mt: 2 }}
+                  onClick={() => setOpenSaveDialog(true)}
+                >
+                  Submit
+                </Button>
+              </Box>
             </CustomTabPanel>
+            <ConfirmDialog
+              trigger={openDeleteDialog}
+              setTrigger={setOpenDeleteDialog}
+              confirm={handleDeletePersonnel}
+              id={id}
+              title="Delete Personnel"
+              description="Do you want to delete this personnel?"
+              comfirmText="Delete"
+            />
+            <ConfirmDialog
+              trigger={openSaveDialog}
+              setTrigger={setOpenSaveDialog}
+              confirm={handleSubmit}
+              id={id}
+              color="success"
+              title="Save Personnel Data"
+              description="Do you want to save the changes?"
+              comfirmText="Save"
+            />
           </Box>
         </Grid>
       </Grid>

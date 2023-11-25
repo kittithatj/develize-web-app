@@ -445,6 +445,11 @@ function Personnel() {
                                       aria-label="edit"
                                       size="large"
                                     >
+                                      {!person.hasAssessed && (
+                                        <div
+                                          className="notification-dot"
+                                        />
+                                      )}
                                       <AssignmentIcon />
                                     </IconButton>
                                   </Link>

@@ -51,7 +51,7 @@ function ConfirmDialog(props) {
                     <Button onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button color='error' onClick={handleDelete} autoFocus>
+                    <Button color={props.color || 'error'} onClick={handleDelete} autoFocus>
                         {props.comfirmText}
                     </Button>
                 </DialogActions>

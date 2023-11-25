@@ -29,4 +29,16 @@ export const ProjectAPI = {
             }
         })
     },     
+
+    deleteProject: async (id) => {
+        return fetch(Api.url + Api.project_delete + id, {
+            method: 'DELETE',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
 }

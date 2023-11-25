@@ -38,7 +38,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReactApexChart from "react-apexcharts";
-import { set } from "react-hook-form";
 
 // Props:
 //     open: Boolean;
@@ -166,6 +165,7 @@ function PersonnelInfoDialog(props) {
           flexDirection: "column",
           justifyContent: "flex-start",
           minWidth: "400px",
+          maxHeight: "500px",
         }}
       >
         <Typography fontSize={"1.3rem"}>Project Histories</Typography>
