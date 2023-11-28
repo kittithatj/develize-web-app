@@ -78,7 +78,6 @@ export default function Register() {
 
   return (
     <div className='main-content'>
-      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -106,74 +105,127 @@ export default function Register() {
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  required
-                  id='username'
-                  label='Username'
-                  name='username'
-                  autoFocus
-                  value={formData.username}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  required
-                  name='firstName'
-                  label='Firstname'
-                  type='text'
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  required
-                  name='lastName'
-                  label='Lastname'
-                  type='text'
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  required
-                  name='password'
-                  label='Password'
-                  type='password'
-                  value={formData.password}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  required
-                  name='confirmPassword'
-                  label='Confirm Password'
-                  type='password'
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel id='demo-simple-select-label'>Role</InputLabel>
-                <Select
-                  fullWidth
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={role}
-                  onChange={handleRoleChange}
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginRight: '8px',
+                  }}
                 >
-                  <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
-                  <MenuItem value={'PM'}>PM</MenuItem>
-                  <MenuItem value={'CEO'}>CEO</MenuItem>
-                </Select>
+                  <div style={{ fontSize: '15px' }}>Username</div>
+                  <TextField
+                    fullWidth
+                    required
+                    id='username'
+                    name='username'
+                    autoFocus
+                    value={formData.username}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginTop: '20px',
+                  }}
+                >
+                  <div style={{ fontSize: '15px' }}>Firstname</div>
+                  <TextField
+                    fullWidth
+                    required
+                    name='firstName'
+                    type='text'
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={6}>
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginTop: '20px',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <div style={{ fontSize: '15px' }}>Lastname</div>
+                  <TextField
+                    fullWidth
+                    required
+                    name='lastName'
+                    type='text'
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginRight: '8px',
+                  }}
+                >
+                  <div style={{ fontSize: '15px' }}>Password</div>
+                  <TextField
+                    fullWidth
+                    required
+                    name='password'
+                    type='password'
+                    value={formData.password}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginRight: '8px',
+                  }}
+                >
+                  <div style={{ fontSize: '15px' }}>Confirm Password</div>
+                  <TextField
+                    fullWidth
+                    required
+                    name='confirmPassword'
+                    type='password'
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <div
+                  style={{
+                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    marginRight: '8px',
+                  }}
+                >
+                  <div style={{ fontSize: '15px' }}>Role</div>
+                  <Select
+                    fullWidth
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={role}
+                    onChange={handleRoleChange}
+                  >
+                    <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
+                    <MenuItem value={'PM'}>PM</MenuItem>
+                    <MenuItem value={'CEO'}>CEO</MenuItem>
+                  </Select>
+                </div>
               </Grid>
             </Grid>
             <Button
@@ -186,7 +238,6 @@ export default function Register() {
             </Button>
           </form>
         </Box>
-      </Container>
     </div>
   );
 }
