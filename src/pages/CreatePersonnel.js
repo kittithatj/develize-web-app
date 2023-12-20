@@ -320,7 +320,7 @@ export default function CreatePersonnel() {
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%", marginBottom: '20px' }}>
                                         <div style={{ flex: 1, display: "flex", flexDirection: "column", marginRight: '8px' }}>
                                             <div style={{ fontSize: "15px", marginBottom: '-12px' }}>
-                                                PhoneNumber
+                                                Phone Number
                                             </div>
                                             <TextField
                                                 name="phoneNumber"
@@ -362,7 +362,7 @@ export default function CreatePersonnel() {
                                     <div style={{ display: "flex", flexDirection: "row", width: "100%", }}>
                                         <div style={{ flex: 1, display: "flex", flexDirection: "column", marginBottom: '20px' }}>
                                             <div style={{ fontSize: "15px", marginBottom: '0' }}>
-                                                EmploymentStatus
+                                                Employment Status
                                             </div>
                                             <Select
                                                 sx={{ mt: 1, mb: 2, width: "100%" }}
