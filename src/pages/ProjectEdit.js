@@ -34,13 +34,11 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import SkillFroupAvatar from "../components/SkillGroupAvatar";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
 import Paper from "@mui/material/Paper";
-import StepLabel from "@mui/material/StepLabel";
 import { getSkillTypeColor, getSkillTypeIcon } from "../components/util";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
+import { useParams } from "react-router-dom";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -61,11 +59,14 @@ import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function EditProject() {
+
+    const { id } = useParams();
+
     const handleCloseDialog = () => {
         setOpenDialog(false);
     };
     const handleConfirm = () => {
-        //console.log("formData:", formData);
+        console.log("formData:", formData);
         const skillReq = skillSelect.map((skill) => skill.skill_id);
 
         const dataToSend = {
@@ -100,6 +101,20 @@ function EditProject() {
 
         handleCloseDialog();
     };
+    const [projectName, setProjectName] = useState("");
+    const [projectDes, setProjectDes] = useState("");
+    const [projectStatus, setProjectStatus] = useState("");
+    const [projectType, setProjectType] = useState("");
+    const [projectStart, setProjectStart] = useState("");
+    const [projectEnd, setProjectEnd] = useState("");
+    const [projectBudget, setProjectBudget] = useState("");
+    const [projectLoading, setProjectLoading] = useState(false);
+    const [projectData, setProjectData] = useState([]);
+    const [memberFullName, setMemberFullName] = useState({});
+    const [skillsRequired, setSkillsRequired] = useState([]);
+    const [projectSkills, setProjectSkills] = useState([]);
+
+
     const [activeStep, setActiveStep] = useState(0);
     const navigate = useNavigate();
     const [user, setUser, openSnackbar] = useOutletContext({});
@@ -208,28 +223,6 @@ function EditProject() {
         role: "",
     });
 
-    useEffect(() => {
-        fetchSkillData();
-        fetchPersonnelData();
-        fetchLookUpData();
-    }, [currentType]);
-
-    const addSkill = (item) => {
-        if (
-            !skillSelect.some(
-                (selectedSkill) => selectedSkill.skill_id === item.skill_id
-            )
-        ) {
-            setSkillSelect((prevSkills) => [...prevSkills, item]);
-            setFormData((prevData) => {
-                const skillIds = Array.isArray(prevData.skillRequireIdList)
-                    ? [...prevData.skillRequireIdList, item.skill_id]
-                    : [item.skill_id];
-                return { ...prevData, skillRequireIdList: skillIds };
-            });
-        }
-    };
-
     const theme = createTheme({
         status: {
             danger: "#e53e3e",
@@ -250,24 +243,12 @@ function EditProject() {
         },
     });
 
-    const handleDeleteSkill = (item) => {
-        const updatedSkills = skillSelect.filter(
-            (selectedSkill) => selectedSkill.skill_id !== item.skill_id
-        );
-        setSkillSelect(updatedSkills);
-        setFormData((prevData) => {
-            const skillIds = Array.isArray(prevData.skillRequireIdList)
-                ? prevData.skillRequireIdList.filter((id) => id !== item.skill_id)
-                : [];
-            return { ...prevData, skillRequireIdList: skillIds };
-        });
-    };
 
     const formatDate = (inputDate) => {
         if (inputDate) {
             const parts = inputDate.split("-");
             if (parts.length === 3) {
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                return `${parts[0]}-${parts[1]}-${parts[2]}`;
             }
         }
         return inputDate;
@@ -425,6 +406,70 @@ function EditProject() {
     };
     const [value, setValue] = React.useState(0);
 
+    const fetchProjectData = (id) => {
+        setLoading(true);
+        ProjectAPI.getProjectById(id).then((data) => {
+            setProjectData(data);
+            setFormData(data);
+            console.log("Project", data);
+            if (data && data.skillsRequired) {
+                console.log("Skills:", data.skillsRequired);
+                setProjectName(data.projectName);
+                setProjectType(data.projectType);
+                setProjectDes(data.projectDescription);
+                setProjectStart(data.startDate);
+                setProjectEnd(data.endDate);
+                setProjectBudget(data.budget);
+                setProjectStatus(data.projectStatus);
+                setProjectSkills(data.skillsRequired);
+            }
+            setLoading(false);
+        });
+    };
+
+    const onInputChange = (event) => {
+        const { name, value } = event.target;
+        setFormData({ ...formData, [name]: value });
+      };
+
+    const addSkill = (item) => {
+        if (!skillSelect.some((s) => s.skill_id === item.skill_id)) {
+            setSkillSelect((prevArray) => [...prevArray, item]);
+        }
+    };
+
+    const handleDeleteSkill = (item) => {
+        setSkillSelect(skillSelect.filter((s) => s.skill_id !== item.skill_id));
+    };
+
+    useEffect(() => {
+        fetchProjectData(id);
+        fetchSkillData();
+        fetchPersonnelData();
+        fetchLookUpData();
+    }, [currentType]);
+
+    useEffect(() => {
+        if (projectSkills.length > 0) {
+            setSkillSelect([...skillSelect, ...projectSkills]);
+        }
+    }, [projectSkills]);
+
+    useEffect(() => {
+        setFormData((prevData) => ({
+            ...prevData,
+            projectName: projectData.projectName || "",
+            projectType: projectData.projectType || "",
+            projectDescription: projectData.projectDescription || "",
+            startDate: projectData.startDate || "",
+            endDate: projectData.endDate || "",
+            skillRequireIdList: projectData.skillRequireIdList || [],
+            budget: projectData.budget || "",
+            projectStatus: projectData.projectStatus || "",
+            memberIdList: projectData.memberAssignment || [],
+        }));
+    }, [projectData]);
+
     function CustomTabPanel({ children, value, index, ...other }) {
         return (
             <div
@@ -507,16 +552,11 @@ function EditProject() {
                                         }}
                                     >
                                         <div style={{ fontSize: "15px" }}>Project Name</div>
-                                        <TextField
-                                            sx={{ mt: 1, mb: 2 }}
+                                        {/* <TextField
+                                            fullWidth
                                             variant="outlined"
                                             value={formData.projectName}
-                                            onChange={(event) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    projectName: event.target.value,
-                                                })
-                                            }
+                                            onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
                                             error={!formValidation.projectName}
                                             helperText={!formValidation.projectName && "Project Name is required"}
                                             InputProps={{
@@ -526,6 +566,12 @@ function EditProject() {
                                                     </InputAdornment>
                                                 ),
                                             }}
+                                        /> */}
+                                        <TextField
+                                            fullWidth
+                                            variant="outlined"
+                                            value={formData?.projectName || ""}
+                                            onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
                                         />
                                     </div>
 
@@ -1244,7 +1290,7 @@ function EditProject() {
                                             }
                                             onClick={handleOpenDialog}
                                         >
-                                            Create Project
+                                            Save Change
                                         </Button>
                                         <Dialog open={openDialog} onClose={handleCloseDialog}>
                                             <DialogTitle>Confirm Project Creation</DialogTitle>

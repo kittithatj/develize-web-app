@@ -14,6 +14,30 @@ export const ProjectAPI = {
         })
     },
 
+    getProjectById:async(id) => {
+        return fetch(Api.url + '/project/'+id, {
+            method: 'GET',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
+
+    updateProject:async() => () => {
+        return fetch(Api.url + Api.project_update, {
+            method: 'GET',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
+
     createProject:async(form) => {
         return fetch(Api.url + Api.project_create, {
             method: 'POST',

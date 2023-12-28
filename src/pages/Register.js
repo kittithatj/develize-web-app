@@ -28,6 +28,7 @@ export default function Register() {
     lastName: '',
     password: '',
     confirmPassword: '',
+    email: '',
   });
 
   const handleRoleChange = (event) => {
@@ -113,12 +114,13 @@ export default function Register() {
                     marginRight: '8px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Username</div>
+                  <div style={{ fontSize: '15px' , marginBottom:'5px' }}>Username</div>
                   <TextField
                     fullWidth
                     required
                     id='username'
                     name='username'
+                    label="Username"
                     autoFocus
                     value={formData.username}
                     onChange={handleInputChange}
@@ -133,11 +135,12 @@ export default function Register() {
                     marginTop: '20px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Firstname</div>
+                  <div style={{ fontSize: '15px' , marginBottom:'5px'}}>Firstname</div>
                   <TextField
                     fullWidth
                     required
                     name='firstName'
+                    label="Firstname"
                     type='text'
                     value={formData.firstName}
                     onChange={handleInputChange}
@@ -153,11 +156,12 @@ export default function Register() {
                     marginBottom: '20px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Lastname</div>
+                  <div style={{ fontSize: '15px' , marginBottom:'5px'}}>Lastname</div>
                   <TextField
                     fullWidth
                     required
                     name='lastName'
+                    label="Lastname"
                     type='text'
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -173,12 +177,13 @@ export default function Register() {
                     marginRight: '8px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Password</div>
+                  <div style={{ fontSize: '15px' , marginBottom:'5px'}}>Password</div>
                   <TextField
                     fullWidth
                     required
                     name='password'
                     type='password'
+                    label="Password"
                     value={formData.password}
                     onChange={handleInputChange}
                   />
@@ -193,12 +198,13 @@ export default function Register() {
                     marginRight: '8px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Confirm Password</div>
+                  <div style={{ fontSize: '15px' , marginBottom:'5px'}}>Confirm Password</div>
                   <TextField
                     fullWidth
                     required
                     name='confirmPassword'
                     type='password'
+                    label="ConfirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                   />
@@ -213,18 +219,16 @@ export default function Register() {
                     marginRight: '8px',
                   }}
                 >
-                  <div style={{ fontSize: '15px' }}>Role</div>
-                  <Select
+                  <div style={{ fontSize: '15px' , marginBottom:'5px'}}>Email</div>
+                  <TextField
                     fullWidth
-                    labelId='demo-simple-select-label'
-                    id='demo-simple-select'
-                    value={role}
-                    onChange={handleRoleChange}
-                  >
-                    <MenuItem value={'ADMIN'}>ADMIN</MenuItem>
-                    <MenuItem value={'PM'}>PM</MenuItem>
-                    <MenuItem value={'CEO'}>CEO</MenuItem>
-                  </Select>
+                    required
+                    name='email'
+                    type='email'
+                    label="Email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
                 </div>
               </Grid>
             </Grid>
