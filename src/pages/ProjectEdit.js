@@ -332,6 +332,10 @@ function EditProject() {
         return false;
       }
     }
+    const ifContain = memberList.some(obj => obj.personnel_id === person.personnel_id);
+    if (ifContain) {
+        return false;
+    }
     return true;
   };
 
