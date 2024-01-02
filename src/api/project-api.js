@@ -26,14 +26,12 @@ export const ProjectAPI = {
         })
     },
 
-    updateProject:async() => () => {
+    editProject: async (dataToSend) => {
         return fetch(Api.url + Api.project_update, {
-            method: 'GET',
-        }).then((res) => {
-            if (res.status === 200) {
-                return res.json()
-            }else{
-                throw new Error(res.statusText);
+            method: 'PUT',
+            body: JSON.stringify(dataToSend),
+            headers: {
+                'Content-Type': 'application/json',
             }
         })
     },
