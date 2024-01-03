@@ -100,7 +100,8 @@ function EditProject() {
         });
         navigate("../Project");
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         openSnackbar({
           status: "error",
           message: "Edit Project Failed",
