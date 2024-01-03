@@ -65,4 +65,20 @@ export const ProjectAPI = {
             }
         })
     },
+
+    matchSkillProject:async(form) => {
+        return fetch(Api.url + Api.project_match, {
+            method: 'POST',
+            body: JSON.stringify(form),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    }, 
 }

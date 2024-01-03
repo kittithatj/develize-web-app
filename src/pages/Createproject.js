@@ -58,6 +58,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import CloseIcon from "@mui/icons-material/Close";
+import MatchProjectSkillDialogButton from "../components/MatchProjectSkillDialog";
 
 function CreateProject() {
   const handleCloseDialog = () => {
@@ -353,7 +354,10 @@ function CreateProject() {
         return false;
       }
     }
-    if (memberList.includes(person)) {
+    const ifContain = memberList.some(
+      (obj) => obj.personnel_id === person.personnel_id
+    );
+    if (ifContain) {
       return false;
     }
     return true;
@@ -369,7 +373,19 @@ function CreateProject() {
 
   //----block personnel assignment----
   const [memberList, setMemberList] = useState([]);
-  const roleOptions = ["Project Owner", "Project Manager", "System Analysis","Bussiness Analysis","Full Stack Developer","Backend Developer", "Frontend Developer", "Tester", "UI/UX Designer", "Database Administrator","Supporter"];
+  const roleOptions = [
+    "Project Owner",
+    "Project Manager",
+    "System Analysis",
+    "Bussiness Analysis",
+    "Full Stack Developer",
+    "Backend Developer",
+    "Frontend Developer",
+    "Tester",
+    "UI/UX Designer",
+    "Database Administrator",
+    "Supporter",
+  ];
   const assignPersonnel = (person) => () => {
     setMemberList((prevList) => [...prevList, person]);
   };
@@ -380,12 +396,17 @@ function CreateProject() {
     );
   };
 
-  const handleRoleChange = (role,i)  => {
+  const handleRoleChange = (role, i) => {
     const newMemberList = [...memberList];
     newMemberList[i].role = role;
     setMemberList(newMemberList);
     console.log(memberList);
-  }
+  };
+
+  const handleAutoAssign = (personnelList) => {
+    console.log("Hello from create project : ", personnelList);
+    setMemberList(personnelList);
+  };
 
   //end----block personnel assignment----
 
@@ -560,10 +581,11 @@ function CreateProject() {
                           </MenuItem>
                         ))}
                       </Select>
-                      <FormHelperText sx={{ mt: -1 }}>{!formValidation.projectType && "Project Type is required"}</FormHelperText>
+                      <FormHelperText sx={{ mt: -1 }}>
+                        {!formValidation.projectType &&
+                          "Project Type is required"}
+                      </FormHelperText>
                     </FormControl>
-
-
                   </div>
                 </div>
                 <div
@@ -743,9 +765,11 @@ function CreateProject() {
                           </MenuItem>
                         ))}
                       </Select>
-                      <FormHelperText sx={{ mt: -1 }}>{!formValidation.projectStatus && "Project Status is required"}</FormHelperText>
+                      <FormHelperText sx={{ mt: -1 }}>
+                        {!formValidation.projectStatus &&
+                          "Project Status is required"}
+                      </FormHelperText>
                     </FormControl>
-
 
                     {/* <FormControl error={!formValidation.projectStatus}>
                       <Select
@@ -1095,19 +1119,27 @@ function CreateProject() {
                               secondary={p.position}
                             />
                           </ListItemButton>
-                          <Box sx={{display:'flex',alignItems:'center'}}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
                             <Autocomplete
-                            freeSolo
-                            options={roleOptions}
-                            sx={{ width: 300 }}
-                            onChange={(event, newValue) => {handleRoleChange(newValue,i)}}
-                            renderInput={(params) => (
-                              // eslint-disable-next-line no-restricted-globals
-                              <TextField {...params} label="Role" onChange={(event)=>handleRoleChange(event.target.value,i)} />
-                            )}
-                          />
+                              freeSolo
+                              options={roleOptions}
+                              sx={{ width: 300 }}
+                              onChange={(event, newValue) => {
+                                handleRoleChange(newValue, i);
+                              }}
+                              renderInput={(params) => (
+                                // eslint-disable-next-line no-restricted-globals
+                                <TextField
+                                  {...params}
+                                  label="Role"
+                                  onChange={(event) =>
+                                    handleRoleChange(event.target.value, i)
+                                  }
+                                />
+                              )}
+                            />
                           </Box>
-                          
+
                           <IconButton
                             sx={{ margin: 2 }}
                             edge="end"
@@ -1257,6 +1289,14 @@ function CreateProject() {
                               Skills
                             </Typography>
                           </Box>
+                          <Box sx={{ width: "40%" }}>
+                            <Typography
+                              component="div"
+                              sx={{ fontWeight: "600" }}
+                            >
+                              Skills
+                            </Typography>
+                          </Box>
                           <ListItemText sx={{ width: "100px" }} />
                         </ListItem>
 
@@ -1350,7 +1390,6 @@ function CreateProject() {
                             );
                           })}
                       </List>
-
                       <Box
                         sx={{
                           display: "flex",
@@ -1375,53 +1414,83 @@ function CreateProject() {
                       marginTop: "10px",
                     }}
                   >
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
+                    <Box
+                      sx={{
+                        width: "170px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
                     >
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      style={{ marginTop: "10px", marginLeft: "auto" }}
-                      disabled={
-                        activeStep === 0 &&
-                        (formData.projectName === "" ||
-                          formData.projectType === "" ||
-                          formData.projectDescription === "" ||
-                          formData.startDate === "" ||
-                          formData.endDate === "" ||
-                          formData.budget === "" ||
-                          skillSelect.length === 0)
-                      }
-                      onClick={handleOpenDialog}
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                      >
+                        Back
+                      </Button>
+                    </Box>
+                    <Box
+                      sx={{
+                        width: "170px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      Create Project
-                    </Button>
-                    <Dialog open={openDialog} onClose={handleCloseDialog}>
-                      <DialogTitle>Confirm Project Creation</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>
-                          Are you sure you want to create this project?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={handleCloseDialog}>Cancel</Button>
-                        <Button onClick={handleConfirm} color="success">
-                          Confirm
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                    <PersonnelInfoDialog
-                      hideEdit
-                      personnel={selectedPersonnel}
-                      open={openPersonnelInfoDialog}
-                      setOpen={setOpenPersonnelInfoDialog}
-                    />
+                      <MatchProjectSkillDialogButton
+                        sx={{ mt: 2, mb: 2 }}
+                        skillIdList={skillSelect.map((s) => s.skill_id)}
+                        outputPersonelList={handleAutoAssign}
+                      />
+                    </Box>
+                    <Box
+                      sx={{
+                        width: "170px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        color="success"
+                        disabled={
+                          activeStep === 0 &&
+                          (formData.projectName === "" ||
+                            formData.projectType === "" ||
+                            formData.projectDescription === "" ||
+                            formData.startDate === "" ||
+                            formData.endDate === "" ||
+                            formData.budget === "" ||
+                            skillSelect.length === 0)
+                        }
+                        onClick={handleOpenDialog}
+                      >
+                        Create Project
+                      </Button>
+                    </Box>
                   </div>
+                  <Dialog open={openDialog} onClose={handleCloseDialog}>
+                    <DialogTitle>Confirm Project Creation</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to create this project?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseDialog}>Cancel</Button>
+                      <Button onClick={handleConfirm} color="success">
+                        Confirm
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                  <PersonnelInfoDialog
+                    hideEdit
+                    personnel={selectedPersonnel}
+                    open={openPersonnelInfoDialog}
+                    setOpen={setOpenPersonnelInfoDialog}
+                  />
                 </div>
               </div>
             )}

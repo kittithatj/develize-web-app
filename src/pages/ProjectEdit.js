@@ -58,6 +58,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import CloseIcon from "@mui/icons-material/Close";
+import MatchProjectSkillDialogButton from "../components/MatchProjectSkillDialog";
 
 function EditProject() {
   const { id } = useParams();
@@ -496,23 +497,10 @@ function EditProject() {
     }));
   }, [projectData]);
 
-  function CustomTabPanel({ children, value, index, ...other }) {
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
+  const handleAutoAssign = (personnelList) => {
+    console.log("Hello from create project : ", personnelList);
+    setMemberList(personnelList);
+  };
 
   return (
     <div
@@ -1395,6 +1383,14 @@ function EditProject() {
                       marginTop: "10px",
                     }}
                   >
+                    <Box>
+                      <MatchProjectSkillDialogButton
+                        sx={{ mt: 2, mb: 2 }}
+                        skillIdList={skillSelect.map((s) => s.skill_id)}
+                        outputPersonelList={handleAutoAssign}
+                      />
+                    </Box>
+                    <Box>
                     <Button
                       variant="contained"
                       color="success"
@@ -1403,13 +1399,14 @@ function EditProject() {
                     >
                       Save Change
                     </Button>
-                    <PersonnelInfoDialog
+                    </Box>
+                  </div>
+                  <PersonnelInfoDialog
                       hideEdit
                       personnel={selectedPersonnel}
                       open={openPersonnelInfoDialog}
                       setOpen={setOpenPersonnelInfoDialog}
                     />
-                  </div>
                 </div>
               </div>
             )}

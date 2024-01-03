@@ -26,4 +26,5 @@ export const Api = {
     project_create:'/project/create',
     project_update:'project/edit',
     project_delete:'/project/delete/',// + id
+    project_match:'/project/match-skill',
 }
