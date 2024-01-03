@@ -67,44 +67,49 @@ function EditProject() {
     setOpenDialog(false);
   };
   const handleConfirm = () => {
-    console.log("formData:", formData);
+    // console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
 
+    const projectId = parseInt(id, 10);
+
     const dataToSend = {
+      project_id: projectId,
       projectName: formData.projectName,
       projectType: formData.projectType,
       projectDescription: formData.projectDescription,
       startDate: formData.startDate,
       endDate: formData.endDate,
       skillRequireIdList: skillReq,
-      memberAssignment: formData.memberIdList.map((member) => ({
-        personnel_id: member.personnel_id,
-        role: member.role,
-      })),
+      memberAssignment: memberList.map((member) => {
+        return {
+          personnel_id: member.personnel_id,
+          role: member.role,
+        };
+      }),
       budget: formData.budget,
       projectStatus: formData.projectStatus,
     };
 
-    //log มาดูให้แน่ใจก่อนยิง ว่าตรงกับที่ต้องยิงใน postman ป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ แต่ถ้ายิงแล้วไม่ได้ ก็ต้องมาดูใหม่ ว่าตรงกับที่ต้องยิงใน postman หรือป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ แต่ถ้ายิงแล้วไม่ได้ ก็ต้องมาดูใหม่ ว่าตรงกับที่ต้องยิงใน postman หรือป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ แต่ถ้ายิงแล้วไม่ได้ ก็ต้องมาดูใหม่ ว่าตรงกับที่ต้องยิงใน postman หรือป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ แต่ถ้ายิงแล้วไม่ได้ ก็ต้องมาดูใหม่ ว่าตรงกับที่ต้องยิงใน postman หรือป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ แต่ถ้ายิงแล้วไม่ได้ ก็ต้องมาดูใหม่ ว่าตรงกับที่ต้องยิงใน postman หรือป่าว ถ้าไม่ตรงก็แก้ให้ตรง แล้วค่อยยิง ถ้าตรงก็ยิงได้เลย ไม่ต้องแก้ (AI เขียนให้)
     console.log(dataToSend);
 
-    // ProjectAPI.createProject(dataToSend)
-    //   .then(() => {
-    //     openSnackbar({
-    //       status: "success",
-    //       message: "Create Project Successfully",
-    //     });
-    //     navigate("../Project");
-    //   })
-    //   .catch(() => {
-    //     openSnackbar({
-    //       status: "error",
-    //       message: "Create Project Failed",
-    //     });
-    //   });
+    ProjectAPI.editProject(dataToSend)
+      .then(() => {
+        openSnackbar({
+          status: "success",
+          message: "Edit Project Successfully",
+        });
+        navigate("../Project");
+      })
+      .catch(() => {
+        openSnackbar({
+          status: "error",
+          message: "Edit Project Failed",
+        });
+      });
 
     handleCloseDialog();
   };
+
   const [projectName, setProjectName] = useState("");
   const [projectDes, setProjectDes] = useState("");
   const [projectStatus, setProjectStatus] = useState("");
@@ -335,7 +340,7 @@ function EditProject() {
     }
     const ifContain = memberList.some(obj => obj.personnel_id === person.personnel_id);
     if (ifContain) {
-        return false;
+      return false;
     }
     return true;
   };
@@ -997,19 +1002,19 @@ function EditProject() {
                         .includes(searchValue.toLowerCase()) &&
                       (selectedType === "" || s.skillType === selectedType)
                   ).length === 0 && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "60vw",
-                        mt: 2,
-                      }}
-                    >
-                      <Typography component="div" sx={{ fontWeight: "600" }}>
-                        Skill Not found
-                      </Typography>
-                    </Box>
-                  )}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "60vw",
+                          mt: 2,
+                        }}
+                      >
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Skill Not found
+                        </Typography>
+                      </Box>
+                    )}
                   <Box
                     sx={{
                       width: "100%",
@@ -1102,20 +1107,20 @@ function EditProject() {
                               secondary={p.position}
                             />
                           </ListItemButton>
-                          <Box sx={{display:'flex',alignItems:'center'}}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <Autocomplete
-                            freeSolo
-                            options={roleOptions}
-                            sx={{ width: 300 }}
-                            value={p.role}
-                            onChange={(event, newValue) => {handleRoleChange(newValue,i)}}
-                            renderInput={(params) => (
-                              // eslint-disable-next-line no-restricted-globals
-                              <TextField {...params} label="Role" onChange={(event)=>handleRoleChange(event.target.value,i)} />
-                            )}
-                          />
+                              freeSolo
+                              options={roleOptions}
+                              sx={{ width: 300 }}
+                              value={p.role}
+                              onChange={(event, newValue) => { handleRoleChange(newValue, i) }}
+                              renderInput={(params) => (
+                                // eslint-disable-next-line no-restricted-globals
+                                <TextField {...params} label="Role" onChange={(event) => handleRoleChange(event.target.value, i)} />
+                              )}
+                            />
                           </Box>
-                          
+
                           <IconButton
                             sx={{ margin: 2 }}
                             edge="end"
