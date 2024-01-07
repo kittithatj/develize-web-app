@@ -20,7 +20,7 @@ import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
 import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
-import CreateProject from "./pages/Createproject";
+import CreateProject from "./pages/CreateProject";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProjectEdit from "./pages/ProjectEdit"
 
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
         element: <ProjectDetail />,
       },
       {
-        path: "project/project/edit/:id",
+        path: "project/edit/:id",
         element: <ProjectEdit />,
       },
     ],

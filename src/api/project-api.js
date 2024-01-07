@@ -14,6 +14,34 @@ export const ProjectAPI = {
         })
     },
 
+    getProjectById:async(id) => {
+        return fetch(Api.url + '/project/'+id, {
+            method: 'GET',
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
+
+    editProject: async (dataToSend) => {
+        return fetch(Api.url + Api.project_update, {
+            method: 'PUT',
+            body: JSON.stringify(dataToSend),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    },
+
     createProject:async(form) => {
         return fetch(Api.url + Api.project_create, {
             method: 'POST',
@@ -41,4 +69,20 @@ export const ProjectAPI = {
             }
         })
     },
+
+    matchSkillProject:async(form) => {
+        return fetch(Api.url + Api.project_match, {
+            method: 'POST',
+            body: JSON.stringify(form),
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then((res) => {
+            if (res.status === 200) {
+                return res.json()
+            }else{
+                throw new Error(res.statusText);
+            }
+        })
+    }, 
 }

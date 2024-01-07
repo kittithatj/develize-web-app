@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Grid from "@mui/material/Grid";
 import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from "../api/personnel-api";
 import AddIcon from "@mui/icons-material/Add";
@@ -31,6 +30,8 @@ import DevOpsandCICD from "../components/image/DevOpsandCICD.png";
 import CloudBasedDevelopment from "../components/image/CloudBasedDevelopment.png";
 import SecurityandCybersecuritySystem from "../components/image/SecurityandCybersecuritySystem.png";
 import ArtificialRealityandVirtualRealityDevelopment from "../components/image/ArtificialRealityandVirtualRealityDevelopment.png";
+import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
+import ProjectInfoDialog from "../components/ProjectInfoDialog";
 
 function Project() {
   const months = [
@@ -107,6 +108,8 @@ function Project() {
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
   const currentProjects = projectData.slice(indexOfFirstProject, indexOfLastProject);
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const [openProjectInfoDialog, setOpenProjectlInfoDialog] = useState(false);
 
   useEffect(() => {
     fetchProjectData();
@@ -346,7 +349,6 @@ function Project() {
                           {item.projectDescription}
                         </Typography>
                       </div>
-                      <Link to={`/project/projectdetail/${item.project_id}`}>
                         <Button
                           color="primary"
                           style={{
@@ -354,10 +356,10 @@ function Project() {
                             margin: "8px 0",
                             borderRadius: 0,
                           }}
+                          onClick={() => {setOpenProjectlInfoDialog(true); setSelectedProjectId(item.project_id)}}
                         >
                           View Detail
                         </Button>
-                      </Link>
                     </CardContent>
                   </Card>
                 </ThemeProvider>
@@ -375,6 +377,11 @@ function Project() {
           )}
         </Paper>
       </div>
+      <ProjectInfoDialog
+      projectId={selectedProjectId}
+      open={openProjectInfoDialog}
+      setOpen={setOpenProjectlInfoDialog}
+      ></ProjectInfoDialog>
     </div>
   );
 }

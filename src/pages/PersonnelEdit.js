@@ -578,7 +578,8 @@ function PersonnelEdit() {
                 </div>)}
             </Box>
             
-            <CustomTabPanel value={value} index={1}>
+            {tabValue === 1 && (
+              <Box sx={{p:3}}>
               <Box
                 sx={{
                   width: "100%",
@@ -813,7 +814,9 @@ function PersonnelEdit() {
                   Submit
                 </Button>
               </Box>
-            </CustomTabPanel>
+              </Box>
+              )}
+              
             <ConfirmDialog
               trigger={openDeleteDialog}
               setTrigger={setOpenDeleteDialog}
