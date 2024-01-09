@@ -57,7 +57,6 @@ function Project() {
     ProjectAPI.getProject().then((data) => {
       setProjectData(data);
       setProjectLoading(false);
-      console.log("Project SP", data);
     });
   };
 
@@ -68,7 +67,6 @@ function Project() {
     setDataPersonnelLoading(true);
     PersonnelAPI.getAllPersonnel().then((data) => {
       setDataPersonnel(data);
-      console.log("Person", data);
     });
   };
 

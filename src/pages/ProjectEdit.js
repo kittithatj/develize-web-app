@@ -66,6 +66,16 @@ function EditProject() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialogPro = () => {
+    setOpenDialogPro(false);
+  };
+  const handleOpenDialogPro = () => {
+    setOpenDialogPro(true);
+  };
+
   const handleConfirm = () => {
     // console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
@@ -111,6 +121,25 @@ function EditProject() {
     handleCloseDialog();
   };
 
+  const handleDeleteProject = () => {
+    setLoading(true);
+    ProjectAPI.deleteProject(id)
+      .then((res) => {
+        openSnackbar({
+          status: "success",
+          message: "Delete Project Successfully",
+        });
+        navigate("../personnel");
+      })
+      .catch(() => {
+        openSnackbar({
+          status: "error",
+          message: "Delete Project Failed",
+        });
+        setLoading(false);
+      });
+  };
+
   const [projectName, setProjectName] = useState("");
   const [projectDes, setProjectDes] = useState("");
   const [projectStatus, setProjectStatus] = useState("");
@@ -143,12 +172,9 @@ function EditProject() {
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
   const itemsPerPageSkill = 12;
   const [tabValue, setTabValue] = useState(0);
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogPro, setOpenDialogPro] = useState(false);
 
   const fullname = (p) => {
     return p.firstName + " " + p.lastName;
@@ -535,6 +561,14 @@ function EditProject() {
               padding: "30px",
             }}
           >
+            <Button
+              variant="contained"
+              color="error"
+              style={{ marginTop: "10px", marginLeft: "auto" }}
+              onClick={handleOpenDialogPro}
+            >
+              Delete
+            </Button>
             <Tabs
               value={value}
               onChange={handleChange}
@@ -1427,6 +1461,21 @@ function EditProject() {
             <DialogActions>
               <Button onClick={handleCloseDialog}>Cancel</Button>
               <Button onClick={handleConfirm} color="success">
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog open={openDialogPro} onClose={handleCloseDialogPro}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete project ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialogPro}>Cancel</Button>
+              <Button onClick={handleDeleteProject} color="success">
                 Confirm
               </Button>
             </DialogActions>

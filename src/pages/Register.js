@@ -120,7 +120,6 @@ export default function Register() {
                     required
                     id='username'
                     name='username'
-                    label="Username"
                     autoFocus
                     value={formData.username}
                     onChange={handleInputChange}
@@ -140,7 +139,6 @@ export default function Register() {
                     fullWidth
                     required
                     name='firstName'
-                    label="Firstname"
                     type='text'
                     value={formData.firstName}
                     onChange={handleInputChange}
@@ -161,7 +159,6 @@ export default function Register() {
                     fullWidth
                     required
                     name='lastName'
-                    label="Lastname"
                     type='text'
                     value={formData.lastName}
                     onChange={handleInputChange}
@@ -183,7 +180,6 @@ export default function Register() {
                     required
                     name='password'
                     type='password'
-                    label="Password"
                     value={formData.password}
                     onChange={handleInputChange}
                   />
@@ -204,7 +200,6 @@ export default function Register() {
                     required
                     name='confirmPassword'
                     type='password'
-                    label="ConfirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                   />
@@ -225,7 +220,6 @@ export default function Register() {
                     required
                     name='email'
                     type='email'
-                    label="Email"
                     value={formData.email}
                     onChange={handleInputChange}
                   />
