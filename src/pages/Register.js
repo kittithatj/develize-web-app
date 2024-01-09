@@ -65,7 +65,7 @@ export default function Register() {
       .register(userToRegister)
       .then(() => {
         setLoading(false);
-        navigate('/login');
+        navigate('/register/success');
         openSnackbar({
           status: 'success',
           message: 'Register success',

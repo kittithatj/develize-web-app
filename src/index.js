@@ -23,6 +23,8 @@ import SnackbarComponent from "./components/SnackbarComponent";
 import CreateProject from "./pages/CreateProject";
 import ProjectDetail from "./pages/ProjectDetail";
 import ProjectEdit from "./pages/ProjectEdit"
+import RegisterSuccess from "./pages/RegisterSuccess";
+import UserManage from "./pages/UserManage";
 
 const AppLayout = () => {
 
@@ -127,6 +129,10 @@ const router = createBrowserRouter([
         path: "register",
         element: <Register />,
       },
+      {
+        path: "register/success",
+        element: <RegisterSuccess />,
+      },
       ,
       {
         path: "personnel/create",
@@ -145,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: "project/edit/:id",
         element: <ProjectEdit />,
+      },
+      {
+        path: "user/manage",
+        element: <UserManage />,
       },
     ],
   },

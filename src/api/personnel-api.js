@@ -109,7 +109,7 @@ export const PersonnelAPI = {
             method: 'DELETE',
         }).then((res) => {
             if (res.status === 200) {
-                return res
+                return res.json();
             }else{
                 throw new Error(res.statusText);
             }

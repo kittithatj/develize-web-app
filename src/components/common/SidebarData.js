@@ -28,4 +28,10 @@ export const SidebarData = [
     icon: <FaIcons.FaProjectDiagram />,
     cName: "nav-text",
   },
+  {
+    title: "User Management",
+    path: "/user/manage",
+    icon: <FaIcons.FaUserSecret />,
+    cName: "nav-text",
+  },
 ];

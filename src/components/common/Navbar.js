@@ -20,6 +20,24 @@ function Navbar(props) {
     window.location.href = '/login';
   }
 
+  const filterSidebarData = (u,item) => {
+    const user = JSON.parse(u);
+    if (user?.role === 'Administrator') {
+      return true;
+    } else {
+      if(user?.role === 'Personnel Manager') {
+        return item.title !== 'User Management' && item.title !== 'Project'
+      }
+      if(user?.role === 'Project Manager' || user?.role === 'Resource Manager') {
+        return item.title !== 'User Management'
+      }
+      if(user?.role === 'Assessor') {
+        return item.title !== 'User Management' && item.title !== 'Project' && item.title !== 'Skill'
+      }
+      return item.title !== 'User Management'
+    }
+  }
+
   return (
     <>
       <IconContext.Provider value={{ color: "undefined" }}>
@@ -71,12 +89,16 @@ function Navbar(props) {
                   return true
                 }
               })
+              .filter((item) => {
+                return filterSidebarData(localStorage.getItem('user'),item)
+              })
               .map((item, index) => {
+
                 return (
                   <li key={index} className={item.cName}>
                     <Link to={item.path}>
                       {item.icon}
-                      <span>{item.title}</span>
+                      <span style={{marginLeft:"5px"}}>{item.title}</span>
                     </Link>
                   </li>
                 );
