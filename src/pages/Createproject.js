@@ -1289,14 +1289,6 @@ function CreateProject() {
                               Skills
                             </Typography>
                           </Box>
-                          <Box sx={{ width: "40%" }}>
-                            <Typography
-                              component="div"
-                              sx={{ fontWeight: "600" }}
-                            >
-                              Skills
-                            </Typography>
-                          </Box>
                           <ListItemText sx={{ width: "100px" }} />
                         </ListItem>
 
@@ -1355,7 +1347,7 @@ function CreateProject() {
                                       sx={{ display: "flex", width: "40%" }}
                                     >
                                       {p.skills.length > 0 && (
-                                        <AvatarGroup max={5}>
+                                        <AvatarGroup max={7}>
                                           {p.skills.map((skill) => {
                                             return (
                                               <Tooltip

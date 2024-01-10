@@ -420,7 +420,7 @@ function Personnel() {
                                     sx={{ display: "flex", width: "40%" }}
                                   >
                                     {person.skills.length > 0 && (
-                                      <AvatarGroup max={5}>
+                                      <AvatarGroup max={7}>
                                         {person.skills.map((skill) => {
                                           return (
                                             <Tooltip
