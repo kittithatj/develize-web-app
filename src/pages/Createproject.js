@@ -21,6 +21,8 @@ import {
   DialogContentText,
   DialogTitle,
   Autocomplete,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -65,6 +67,7 @@ function CreateProject() {
     setOpenDialog(false);
   };
   const handleConfirm = () => {
+    setLoading(true);
     //console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
 
@@ -87,6 +90,7 @@ function CreateProject() {
 
     ProjectAPI.createProject(dataToSend)
       .then(() => {
+        setLoading(false);
         openSnackbar({
           status: "success",
           message: "Create Project Successfully",
@@ -94,6 +98,7 @@ function CreateProject() {
         navigate("../Project");
       })
       .catch(() => {
+        setLoading(false);
         openSnackbar({
           status: "error",
           message: "Create Project Failed",
@@ -153,11 +158,9 @@ function CreateProject() {
   };
 
   const fetchSkillData = () => {
-    setLoading(true);
     skillApi.getAllSKills().then((data) => {
       setSkillList(data);
       setDisplayedSkills(data);
-      setLoading(false);
       console.log("Skill SP", data);
     });
   };
@@ -1489,6 +1492,12 @@ function CreateProject() {
           </Paper>
         </Grid>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" size={100} />
+      </Backdrop>
     </div>
   );
 }

@@ -46,7 +46,6 @@ import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from "../api/personnel-api";
 
 // ICON
-import DnsIcon from "@mui/icons-material/Dns";
 import CheckIcon from "@mui/icons-material/Check";
 import TypeSpecimenIcon from "@mui/icons-material/TypeSpecimen";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -59,6 +58,8 @@ import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import CloseIcon from "@mui/icons-material/Close";
 import MatchProjectSkillDialogButton from "../components/MatchProjectSkillDialog";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EditProject() {
   const { id } = useParams();
@@ -77,6 +78,7 @@ function EditProject() {
   };
 
   const handleConfirm = () => {
+    setLoading(true);
     // console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
 
@@ -108,10 +110,12 @@ function EditProject() {
           status: "success",
           message: "Edit Project Successfully",
         });
+        setLoading(false);
         navigate("../Project");
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         openSnackbar({
           status: "error",
           message: "Edit Project Failed",
@@ -365,7 +369,9 @@ function EditProject() {
         return false;
       }
     }
-    const ifContain = memberList.some(obj => obj.personnel_id === person.personnel_id);
+    const ifContain = memberList.some(
+      (obj) => obj.personnel_id === person.personnel_id
+    );
     if (ifContain) {
       return false;
     }
@@ -1037,19 +1043,19 @@ function EditProject() {
                         .includes(searchValue.toLowerCase()) &&
                       (selectedType === "" || s.skillType === selectedType)
                   ).length === 0 && (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          width: "60vw",
-                          mt: 2,
-                        }}
-                      >
-                        <Typography component="div" sx={{ fontWeight: "600" }}>
-                          Skill Not found
-                        </Typography>
-                      </Box>
-                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "60vw",
+                        mt: 2,
+                      }}
+                    >
+                      <Typography component="div" sx={{ fontWeight: "600" }}>
+                        Skill Not found
+                      </Typography>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       width: "100%",
@@ -1142,16 +1148,24 @@ function EditProject() {
                               secondary={p.position}
                             />
                           </ListItemButton>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
                             <Autocomplete
                               freeSolo
                               options={roleOptions}
                               sx={{ width: 300 }}
                               value={p.role}
-                              onChange={(event, newValue) => { handleRoleChange(newValue, i) }}
+                              onChange={(event, newValue) => {
+                                handleRoleChange(newValue, i);
+                              }}
                               renderInput={(params) => (
                                 // eslint-disable-next-line no-restricted-globals
-                                <TextField {...params} label="Role" onChange={(event) => handleRoleChange(event.target.value, i)} />
+                                <TextField
+                                  {...params}
+                                  label="Role"
+                                  onChange={(event) =>
+                                    handleRoleChange(event.target.value, i)
+                                  }
+                                />
                               )}
                             />
                           </Box>
@@ -1431,22 +1445,22 @@ function EditProject() {
                       />
                     </Box>
                     <Box>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      style={{ marginTop: "10px", marginLeft: "auto" }}
-                      onClick={handleOpenDialog}
-                    >
-                      Save Change
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        style={{ marginTop: "10px", marginLeft: "auto" }}
+                        onClick={handleOpenDialog}
+                      >
+                        Save Change
+                      </Button>
                     </Box>
                   </div>
                   <PersonnelInfoDialog
-                      hideEdit
-                      personnel={selectedPersonnel}
-                      open={openPersonnelInfoDialog}
-                      setOpen={setOpenPersonnelInfoDialog}
-                    />
+                    hideEdit
+                    personnel={selectedPersonnel}
+                    open={openPersonnelInfoDialog}
+                    setOpen={setOpenPersonnelInfoDialog}
+                  />
                 </div>
               </div>
             )}
@@ -1481,6 +1495,12 @@ function EditProject() {
             </DialogActions>
           </Dialog>
         </Grid>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" size={100} />
+        </Backdrop>
       </Grid>
     </div>
   );

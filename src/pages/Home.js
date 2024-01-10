@@ -9,14 +9,19 @@ import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import { Link } from "react-router-dom";
 import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import WavingHandIcon from "@mui/icons-material/WavingHand";
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import WidgetsIcon from '@mui/icons-material/Widgets';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import WidgetsIcon from "@mui/icons-material/Widgets";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
 
-useEffect(() => {
+  useEffect(() => {
+    if (localStorage.getItem("token") == null) {
+      navigate("/login");
+    }
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
     setMenuState((prev) => {
@@ -27,7 +32,11 @@ useEffect(() => {
         newState[2].visible = true;
         newState[3].visible = true;
       } else {
-        if (user?.role === "Personnel Manager" || user?.role === "Project Manager" || user?.role === "Resource Manager") {
+        if (
+          user?.role === "Personnel Manager" ||
+          user?.role === "Project Manager" ||
+          user?.role === "Resource Manager"
+        ) {
           newState[0].visible = true;
           newState[1].visible = true;
           newState[2].visible = true;
@@ -35,7 +44,8 @@ useEffect(() => {
         }
         if (user?.role === "Assessor") {
           newState[0].title = "Personnel Assessment";
-          newState[0].description = "Assess and record personnel's soft skills. Provide radar chart reports for that useful for project management."; 
+          newState[0].description =
+            "Assess and record personnel's soft skills. Provide radar chart reports that useful for project management.";
           newState[0].visible = true;
           newState[1].visible = false;
           newState[2].visible = false;
@@ -44,7 +54,7 @@ useEffect(() => {
       }
       return newState;
     });
-}, []);
+  }, []);
 
   const [user, setUser] = React.useState({});
   const [menuState, setMenuState] = React.useState([
@@ -53,7 +63,7 @@ useEffect(() => {
       description:
         "Useful features for efficient personnel management. Able to associate specific skills with each person, providing a detailed profile of their technical expertise.",
       link: "/personnel",
-      icon: <PeopleAltIcon sx={{fontSize:70}}/>,
+      icon: <PeopleAltIcon sx={{ fontSize: 70 }} />,
       iconColor: "#30b5fc",
       visible: true,
     },
@@ -62,7 +72,7 @@ useEffect(() => {
       description:
         "Find, create, and delete various tech skills. Ensures your team's skill inventory is always accurate and reflective of the dynamic technological landscape.",
       link: "/skill",
-      icon: <MenuBookIcon sx={{fontSize:70}}/>,
+      icon: <MenuBookIcon sx={{ fontSize: 70 }} />,
       iconColor: "#edd011",
       visible: true,
     },
@@ -71,7 +81,7 @@ useEffect(() => {
       description:
         "Central hub for project management within organization. Building dynamic project teams that required specific skill sets for successful project execution.",
       link: "/project",
-      icon: <WidgetsIcon sx={{fontSize:70}} />,
+      icon: <WidgetsIcon sx={{ fontSize: 70 }} />,
       iconColor: "#ff3636",
       visible: true,
     },
@@ -80,7 +90,7 @@ useEffect(() => {
       description:
         "Manage user accounts and their permissions. Approve or reject requests for new account registerations.",
       link: "/user/manage",
-      icon: <ManageAccountsIcon sx={{fontSize:70}} />,
+      icon: <ManageAccountsIcon sx={{ fontSize: 70 }} />,
       iconColor: "#707070",
       visible: true,
     },
@@ -150,13 +160,26 @@ useEffect(() => {
                 maxWidth: "400px",
               }}
             >
-              <Avatar sx={{ bgcolor: menu.iconColor, height:"150px", width:"150px", mb:5,mt:1}}>
+              <Avatar
+                sx={{
+                  bgcolor: menu.iconColor,
+                  height: "150px",
+                  width: "150px",
+                  mb: 5,
+                  mt: 1,
+                }}
+              >
                 {menu.icon}
               </Avatar>
               <Typography variant="h5" component="div" gutterBottom>
                 {menu.title}
               </Typography>
-              <Typography variant="body1" component="div" gutterBottom sx={{minHeight: "120px",}}>
+              <Typography
+                variant="body1"
+                component="div"
+                gutterBottom
+                sx={{ minHeight: "120px" }}
+              >
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{menu.description}
               </Typography>
               <Link to={menu.link} underline="hover">

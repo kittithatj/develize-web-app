@@ -14,23 +14,19 @@ import {
   Select,
   Tab,
   Tabs,
+  Autocomplete,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import { skillTypeList } from "../config/skill-type-list";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import Pagination from "@mui/material/Pagination";
-import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { Backdrop } from "@mui/material";
 
 // API
 import { skillApi } from "../api/skill-api";
@@ -65,6 +61,8 @@ function PersonnelEdit() {
   const [searchValue, setSearchValue] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [loadingSkill, setLoadingSkill] = useState(false);
+  const [positionList, setPositionList] = useState([]);
+  const [divisionList, setDivisionList] = useState([]);
 
   //edit
   const [loading, setLoading] = useState(true);
@@ -182,7 +180,6 @@ function PersonnelEdit() {
     PersonnelAPI.getPersonnelById(id).then((data) => {
       setDataPersonnel(data);
       setFormData(data);
-      console.log("Person", data);
       if (data && data.skills) {
         console.log("Skills:", data.skills);
         setSkillPersonnel(data.skills);
@@ -238,6 +235,16 @@ function PersonnelEdit() {
   };
   const [value, setValue] = React.useState(0);
 
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+  const handleAutocompleteChange = (name, newValue) => {
+    if(isFirstLoad) setIsFirstLoad(false);
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: newValue || "",
+    }));
+  };
+
   function a11yProps(index) {
     return {
       id: `simple-tab-${index}`,
@@ -264,27 +271,16 @@ function PersonnelEdit() {
       });
   };
 
-  function CustomTabPanel({ children, value, index, ...other }) {
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
   useEffect(() => {
+    setLoading(true);
     fetchSkillData();
     fetchPersonnelData(id);
+    PersonnelAPI.getPositionList().then((data) => {
+      setPositionList(data);
+    });
+    PersonnelAPI.getDivisionList().then((data) => {
+      setDivisionList(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -318,239 +314,484 @@ function PersonnelEdit() {
           >
             <Box sx={{ width: "100%" }}>
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                >
-                  <Tab label="Personnel Info" onClick={()=>setTabValue(0)} />
-                  <Tab label="Skill" onClick={()=>setTabValue(1)} />
+                <Tabs value={value} onChange={handleChange}>
+                  <Tab label="Personnel Info" onClick={() => setTabValue(0)} />
+                  <Tab label="Skill" onClick={() => setTabValue(1)} />
                 </Tabs>
               </Box>
               {tabValue === 0 && (
-                <div style={{padding:'24px'}}>
-                <div
-                  className="header"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography
-                    sx={{ mt: 1, mb: 2, color: "black" }}
-                    variant="h5"
-                    color="textSecondary"
-                  >
-                    Personnel Edit
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    sx={{ borderRadius: "30px", width: "80px" }}
-                    onClick={() => setOpenDeleteDialog(true)}
-                  >
-                    Delete
-                  </Button>
-                </div>
-                {loading ? (
-                  <Box
-                    className="flex-center"
-                    sx={{
-                      justifyContent: "center",
+                <div style={{ padding: "24px" }}>
+                  <div
+                    className="header"
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    <CircularProgress sx={{ my: 5 }} size={100} />
-                  </Box>
-                ) : (
+                    <Typography
+                      sx={{ mt: 1, mb: 2, color: "black" }}
+                      variant="h5"
+                      color="textSecondary"
+                    >
+                      Personnel Edit
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      sx={{ borderRadius: "30px", width: "80px" }}
+                      onClick={() => setOpenDeleteDialog(true)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+
                   <div className="content">
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                    }}
-                  >
                     <div
                       style={{
-                        flex: 1,
                         display: "flex",
-                        flexDirection: "column",
-                        marginRight: "8px",
+                        flexDirection: "row",
+                        width: "100%",
+                        marginTop: "20px",
+                        marginBottom: "20px",
                       }}
                     >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        Firstname
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          marginRight: "8px",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "15px" }}
+                        >
+                          Firstname
+                        </div>
+                        <TextField
+                          name="firstName"
+                          key="firstName"
+                          value={formData?.firstName || ""}
+                          fullWidth
+                          margin="normal"
+                          onChange={onInputChange}
+                        />
                       </div>
-                      <TextField
-                        name="firstName"
-                        key="firstName"
-                        value={formData?.firstName || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
-                      />
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "15px" }}
+                        >
+                          Lastname
+                        </div>
+                        <TextField
+                          name="lastName"
+                          key="lastName"
+                          value={formData?.lastName || ""}
+                          fullWidth
+                          margin="normal"
+                          onChange={onInputChange}
+                        />
+                      </div>
                     </div>
                     <div
                       style={{
-                        flex: 1,
                         display: "flex",
-                        flexDirection: "column",
-                        marginLeft: "8px",
+                        flexDirection: "row",
+                        width: "100%",
+                        marginTop: "20px",
+                        marginBottom: "20px",
                       }}
                     >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        Lastname
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          marginRight: "8px",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "15px" }}
+                        >
+                          Email
+                        </div>
+                        <TextField
+                          name="email"
+                          value={formData?.email || ""}
+                          fullWidth
+                          margin="normal"
+                          onChange={onInputChange}
+                        />
                       </div>
-                      <TextField
-                        name="lastName"
-                        key="lastName"
-                        value={formData?.lastName || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
-                      />
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                          marginLeft: "8px",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "15px" }}
+                        >
+                          PhoneNumber
+                        </div>
+                        <TextField
+                          type="number"
+                          name="phoneNumber"
+                          value={formData?.phoneNumber || ""}
+                          fullWidth
+                          margin="normal"
+                          onChange={onInputChange}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                    }}
-                  >
+                    {(formData?.position || !isFirstLoad) &&(
+                      <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        width: "100%",
+                        marginTop: "20px",
+                        marginBottom: "20px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "15px",marginBottom:'1rem' }}
+                        >
+                          Position
+                        </div>
+                        <Autocomplete
+                          freeSolo
+                          value={formData.position}
+                          options={positionList}
+                          onChange={(event, newValue) => {
+                            handleAutocompleteChange("position", newValue);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              name="position"
+                              value={formData.position}
+                              onChange={onInputChange}
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                    )}
+                    {(formData?.division || !isFirstLoad) &&(
                     <div
                       style={{
                         flex: 1,
                         display: "flex",
                         flexDirection: "column",
-                        marginRight: "8px",
                       }}
                     >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        Email
-                      </div>
-                      <TextField
-                        name="email"
-                        value={formData?.email || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
+                      <div style={{ fontSize: "15px",marginBottom:'1rem' }}>Division</div>
+                      <Autocomplete
+                        freeSolo
+                        value={formData.division}
+                        options={divisionList}
+                        onChange={(event, newValue) => {
+                          handleAutocompleteChange("division", newValue);
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            name="division"
+                            value={formData.division}
+                            onChange={onInputChange}
+                          />
+                        )}
                       />
                     </div>
+                    )}
+                    
                     <div
                       style={{
-                        flex: 1,
                         display: "flex",
-                        flexDirection: "column",
-                        marginLeft: "8px",
+                        flexDirection: "row",
+                        width: "100%",
+                        marginTop: "20px",
+                        marginBottom: "20px",
                       }}
                     >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        PhoneNumber
+                      <div
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <div style={{ fontSize: "15px" }}>EmploymentStatus</div>
+                        <FormControl>
+                          <Select
+                            sx={{ mt: 2, mb: 2, width: "100%" }}
+                            value={formData?.employmentStatus || ""}
+                            name="employmentStatus"
+                            onChange={onInputChange}
+                            startAdornment={
+                              <InputAdornment position="start"></InputAdornment>
+                            }
+                          >
+                            {employmentStatus.map((type) => (
+                              <MenuItem key={type} value={type}>
+                                {type}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
                       </div>
-                      <TextField
-                        type="number"
-                        name="phoneNumber"
-                        value={formData?.phoneNumber || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
-                      />
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      width: "100%",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        marginRight: "8px",
-                      }}
-                    >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        Division
-                      </div>
-                      <TextField
-                        name="division"
-                        value={formData?.division || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      <div style={{ fontSize: "15px", marginBottom: "-12px" }}>
-                        Position
-                      </div>
-                      <TextField
-                        name="position"
-                        value={formData?.position || ""}
-                        fullWidth
-                        margin="normal"
-                        onChange={onInputChange}
-                      />
                     </div>
                   </div>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
+                  <Box
+                    sx={{
                       width: "100%",
-                      marginTop: "20px",
-                      marginBottom: "20px",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      sx={{ mt: 2 }}
+                      onClick={() => navigate("../personnel")}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{ alignSelf: "flex-end", mt: 2 }}
+                      onClick={() => setOpenSaveDialog(true)}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </div>
+              )}
+            </Box>
+
+            {tabValue === 1 && (
+              <Box sx={{ p: 3 }}>
+                <Box
+                  sx={{
+                    width: "100%",
+                    backgroundColor: "white",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div className="header">
+                    <Typography
+                      sx={{ mt: 1, mb: 2, color: "black" }}
+                      variant="h5"
+                      color="textSecondary"
+                    >
+                      Personnel Skills
+                    </Typography>
+                  </div>
+                  <div className="content">
                     <div
                       style={{
-                        flex: 1,
-                        display: "flex",
-                        flexDirection: "column",
-                        marginRight: "8px",
+                        border: "1px solid #ccc",
+                        borderRadius: "5px",
+                        padding: "8px",
+                        minHeight: "100px",
+                        height: "auto",
+                        width: "100%",
                       }}
                     >
-                      <div style={{ fontSize: "15px" }}>EmploymentStatus</div>
-                      <FormControl>
-                        <Select
-                          sx={{ mt: 1, mb: 2, width: "100%" }}
-                          value={formData?.employmentStatus || ""}
-                          name="employmentStatus"
-                          onChange={onInputChange}
-                          startAdornment={
-                            <InputAdornment position="start"></InputAdornment>
-                          }
+                      {skillSelect.map((item) => (
+                        <Chip
+                          key={item.skill_id}
+                          sx={{
+                            m: 1,
+                            height: "40px",
+                          }}
+                          variant="outlined"
+                          color={getSkillTypeColor(item.skillType)}
+                          size="medium"
+                          label={item.skillName}
+                          onDelete={() => handleDeleteSkill(item)}
+                          icon={getSkillTypeIcon(item.skillType)}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        width: "100%",
+                        marginTop: "10px",
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            width: "70%",
+                            borderStyle: "solid",
+                            borderRadius: "5px",
+                            borderColor: "#F0f0f0",
+                            borderWidth: "2px",
+                          }}
                         >
-                          {employmentStatus.map((type) => (
-                            <MenuItem key={type} value={type}>
-                              {type}
+                          <InputBase
+                            sx={{ ml: 1, flex: 1 }}
+                            placeholder="Search Skill"
+                            inputProps={{ "aria-label": "search skill" }}
+                            value={searchValue}
+                            onChange={handleSearchValueChange}
+                          />
+                          <IconButton
+                            type="button"
+                            sx={{ p: "10px" }}
+                            aria-label="search"
+                            disabled
+                          >
+                            <SearchIcon />
+                          </IconButton>
+                        </Box>
+                      </div>
+                      <div style={{ marginLeft: "8px" }}>
+                        <TextField
+                          sx={{ width: 250, height: 40 }}
+                          size="small"
+                          id="select-skill-type"
+                          select
+                          label="Select Skill Type"
+                          variant="filled"
+                          value={selectedType}
+                          onChange={handleSkillTypeChange}
+                        >
+                          {skillTypeList.map((type) => (
+                            <MenuItem key={type.label} value={type.value}>
+                              {type.label}
                             </MenuItem>
                           ))}
-                        </Select>
-                      </FormControl>
+                        </TextField>
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "8px",
+                        marginTop: "8px",
+                        maxWidth: "100%",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
+                        {skillList
+                          .filter(
+                            (s) =>
+                              s.skillName
+                                .toLowerCase()
+                                .includes(searchValue.toLowerCase()) &&
+                              (selectedType === "" ||
+                                s.skillType === selectedType)
+                          )
+                          .slice(
+                            (currentPageSkill - 1) * itemsPerPageSkill,
+                            currentPageSkill * itemsPerPageSkill
+                          )
+                          .map((item) => (
+                            <Box sx={{ width: "33.33%" }} padding="8px">
+                              <ListItem
+                                key={item.skill_id}
+                                sx={{
+                                  border: "1px solid #ccc",
+                                  borderRadius: "5px",
+                                }}
+                              >
+                                <ListItemAvatar>
+                                  <Avatar>
+                                    {getSkillTypeIcon(item.skillType)}
+                                  </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                  primary={item.skillName}
+                                  secondary={item.skillType}
+                                ></ListItemText>
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() => {
+                                    addSkill(item);
+                                  }}
+                                  disabled={skillSelect.some(
+                                    (selectedSkill) =>
+                                      selectedSkill.skill_id === item.skill_id
+                                  )}
+                                >
+                                  {skillSelect.some(
+                                    (selectedSkill) =>
+                                      selectedSkill.skill_id === item.skill_id
+                                  ) ? (
+                                    <CheckIcon />
+                                  ) : (
+                                    <AddIcon />
+                                  )}
+                                </IconButton>
+                              </ListItem>
+                            </Box>
+                          ))}
+                        <Box
+                          sx={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            mt: 2,
+                          }}
+                        >
+                          <Pagination
+                            count={Math.ceil(
+                              skillList.filter(
+                                (s) =>
+                                  s.skillName
+                                    .toLowerCase()
+                                    .includes(searchValue.toLowerCase()) &&
+                                  (selectedType === "" ||
+                                    s.skillType === selectedType)
+                              ).length / itemsPerPageSkill
+                            )}
+                            page={currentPageSkill}
+                            onChange={(event, page) =>
+                              setCurrentPageSkill(page)
+                            }
+                          />
+                        </Box>
+                      </div>
                     </div>
                   </div>
-                </div>
-                )}
-                
+                </Box>
                 <Box
                   sx={{
                     width: "100%",
@@ -561,7 +802,7 @@ function PersonnelEdit() {
                   <Button
                     variant="outlined"
                     color="error"
-                    sx={{mt: 2 }}
+                    sx={{ alignSelf: "flex-start", mt: 2 }}
                     onClick={() => navigate("../personnel")}
                   >
                     Back
@@ -575,248 +816,9 @@ function PersonnelEdit() {
                     Submit
                   </Button>
                 </Box>
-                </div>)}
-            </Box>
-            
-            {tabValue === 1 && (
-              <Box sx={{p:3}}>
-              <Box
-                sx={{
-                  width: "100%",
-                  backgroundColor: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <div className="header">
-                  <Typography
-                    sx={{ mt: 1, mb: 2, color: "black" }}
-                    variant="h5"
-                    color="textSecondary"
-                  >
-                    Personnel Skills
-                  </Typography>
-                </div>
-                {loading ? (
-                  <Box
-                    className="flex-center"
-                    sx={{
-                      justifyContent: "center",
-                    }}
-                  >
-                    <CircularProgress sx={{ my: 5 }} size={100} />
-                  </Box>
-                ) : (
-                <div className="content">
-                  <div
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "5px",
-                      padding: "8px",
-                      minHeight: "100px",
-                      height: "auto",
-                      width: "100%",
-                    }}
-                  >
-                    {skillSelect.map((item) => (
-                      <Chip
-                        key={item.skill_id}
-                        sx={{
-                          m: 1,
-                          height: "40px",
-                        }}
-                        variant="outlined"
-                        color={getSkillTypeColor(item.skillType)}
-                        size="medium"
-                        label={item.skillName}
-                        onDelete={() => handleDeleteSkill(item)}
-                        icon={getSkillTypeIcon(item.skillType)}
-                      />
-                    ))}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      width: "100%",
-                      marginTop: "10px",
-                    }}
-                  >
-                    <div style={{ flex: 1 }}>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          width: "70%",
-                          borderStyle: "solid",
-                          borderRadius: "5px",
-                          borderColor: "#F0f0f0",
-                          borderWidth: "2px",
-                        }}
-                      >
-                        <InputBase
-                          sx={{ ml: 1, flex: 1 }}
-                          placeholder="Search Skill"
-                          inputProps={{ "aria-label": "search skill" }}
-                          value={searchValue}
-                          onChange={handleSearchValueChange}
-                        />
-                        <IconButton
-                          type="button"
-                          sx={{ p: "10px" }}
-                          aria-label="search"
-                          disabled
-                        >
-                          <SearchIcon />
-                        </IconButton>
-                      </Box>
-                    </div>
-                    <div style={{ marginLeft: "8px" }}>
-                      <TextField
-                        sx={{ width: 250, height: 40 }}
-                        size="small"
-                        id="select-skill-type"
-                        select
-                        label="Select Skill Type"
-                        variant="filled"
-                        value={selectedType}
-                        onChange={handleSkillTypeChange}
-                      >
-                        {skillTypeList.map((type) => (
-                          <MenuItem key={type.label} value={type.value}>
-                            {type.label}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: "8px",
-                      marginTop: "8px",
-                      maxWidth: "100%",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "flex-start",
-                        alignItems: "center",
-                        width: "100%",
-                      }}
-                    >
-                      {skillList
-                        .filter(
-                          (s) =>
-                            s.skillName
-                              .toLowerCase()
-                              .includes(searchValue.toLowerCase()) &&
-                            (selectedType === "" ||
-                              s.skillType === selectedType)
-                        )
-                        .slice(
-                          (currentPageSkill - 1) * itemsPerPageSkill,
-                          currentPageSkill * itemsPerPageSkill
-                        )
-                        .map((item) => (
-                          <Box sx={{ width: "33.33%" }} padding="8px">
-                            <ListItem
-                              key={item.skill_id}
-                              sx={{
-                                border: "1px solid #ccc",
-                                borderRadius: "5px",
-                              }}
-                            >
-                              <ListItemAvatar>
-                                <Avatar>
-                                  {getSkillTypeIcon(item.skillType)}
-                                </Avatar>
-                              </ListItemAvatar>
-                              <ListItemText
-                                primary={item.skillName}
-                                secondary={item.skillType}
-                              ></ListItemText>
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() => {
-                                  addSkill(item);
-                                }}
-                                disabled={skillSelect.some(
-                                  (selectedSkill) =>
-                                    selectedSkill.skill_id === item.skill_id
-                                )}
-                              >
-                                {skillSelect.some(
-                                  (selectedSkill) =>
-                                    selectedSkill.skill_id === item.skill_id
-                                ) ? (
-                                  <CheckIcon />
-                                ) : (
-                                  <AddIcon />
-                                )}
-                              </IconButton>
-                            </ListItem>
-                          </Box>
-                        ))}
-                      <Box
-                        sx={{
-                          width: "100%",
-                          display: "flex",
-                          justifyContent: "center",
-                          mt: 2,
-                        }}
-                      >
-                        <Pagination
-                          count={Math.ceil(
-                            skillList.filter(
-                              (s) =>
-                                s.skillName
-                                  .toLowerCase()
-                                  .includes(searchValue.toLowerCase()) &&
-                                (selectedType === "" ||
-                                  s.skillType === selectedType)
-                            ).length / itemsPerPageSkill
-                          )}
-                          page={currentPageSkill}
-                          onChange={(event, page) => setCurrentPageSkill(page)}
-                        />
-                      </Box>
-                    </div>
-                  </div>
-                </div>
-                )}
               </Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Button
-                    variant="outlined"
-                    color="error"
-                    sx={{alignSelf: "flex-start",mt: 2 }}
-                    onClick={() => navigate("../personnel")}
-                  >
-                    Back
-                  </Button>
-                <Button
-                  variant="contained"
-                  color="success"
-                  sx={{ alignSelf: "flex-end", mt: 2 }}
-                  onClick={() => setOpenSaveDialog(true)}
-                >
-                  Submit
-                </Button>
-              </Box>
-              </Box>
-              )}
-              
+            )}
+
             <ConfirmDialog
               trigger={openDeleteDialog}
               setTrigger={setOpenDeleteDialog}
@@ -839,6 +841,12 @@ function PersonnelEdit() {
           </Box>
         </Grid>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" size={100} />
+      </Backdrop>
     </div>
   );
 }

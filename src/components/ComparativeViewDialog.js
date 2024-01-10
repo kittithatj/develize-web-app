@@ -36,10 +36,10 @@ function ComparativeViewDialog(props) {
           </Box>
         </DialogTitle>
         <DialogContent>
-
+            Test
         </DialogContent>
         <DialogActions>
-
+            Actions
         </DialogActions>
       </Dialog>
     </div>

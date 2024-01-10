@@ -439,7 +439,7 @@ function Personnel() {
                                       </AvatarGroup>
                                     )}
                                   </Box>
-                                  {personnelPermission && (
+                                  {personnelPermission ? (
                                     <Link to={"edit/" + person.personnel_id}>
                                     <IconButton
                                       sx={{ margin: 1, bgcolor: "white" }}
@@ -450,6 +450,8 @@ function Personnel() {
                                       <DriveFileRenameOutlineIcon />
                                     </IconButton>
                                   </Link>
+                                  ) : (
+                                    <div style={{ width: "75px" }} />
                                   )}
                                   <Link to={"assess/" + person.personnel_id}>
                                     <IconButton

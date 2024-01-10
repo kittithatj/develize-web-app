@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import {
-  Box, Typography, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, ListItemButton, InputAdornment, TextField, createTheme, ThemeProvider
+  Box,
+  Typography,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  ListItemButton,
+  InputAdornment,
+  TextField,
+  createTheme,
+  ThemeProvider,
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
@@ -30,11 +42,11 @@ import ArtificialRealityandVirtualRealityDevelopment from "../components/image/A
 //icon
 import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
-import DescriptionIcon from '@mui/icons-material/Description';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import PaidIcon from '@mui/icons-material/Paid';
+import DescriptionIcon from "@mui/icons-material/Description";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import PaidIcon from "@mui/icons-material/Paid";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import DnsIcon from '@mui/icons-material/Dns';
+import DnsIcon from "@mui/icons-material/Dns";
 
 function ProjectInfoDialog(props) {
   const [project, setProject] = React.useState({});
@@ -51,7 +63,6 @@ function ProjectInfoDialog(props) {
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
   const [openPersonnelInfoDialog, setOpenPersonnelInfoDialog] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
-
 
   const fullname = (p) => {
     return p.firstName + " " + p.lastName;
@@ -73,7 +84,8 @@ function ProjectInfoDialog(props) {
     "DevOps and CI/CD": DevOpsandCICD,
     "Cloud-Based Development": CloudBasedDevelopment,
     "Security and Cybersecurity System": SecurityandCybersecuritySystem,
-    "Artificial Reality (AR) and Virtual Reality (VR) Development": ArtificialRealityandVirtualRealityDevelopment,
+    "Artificial Reality (AR) and Virtual Reality (VR) Development":
+      ArtificialRealityandVirtualRealityDevelopment,
   };
 
   const handleClose = () => {
@@ -123,7 +135,6 @@ function ProjectInfoDialog(props) {
     }
   }, [projectSkills]);
 
-
   const theme = createTheme({
     status: {
       danger: "#e53e3e",
@@ -147,7 +158,7 @@ function ProjectInfoDialog(props) {
   //--------------------DATA API----------------------------------------
 
   const fetchProjectData = (projectId) => {
-    setProjectLoading(true); 
+    setProjectLoading(true);
     setLoading(true);
     ProjectAPI.getProjectById(projectId)
       .then((data) => {
@@ -156,30 +167,34 @@ function ProjectInfoDialog(props) {
         setMemberList(data.projectMember);
       })
       .finally(() => {
-        setProjectLoading(false); 
+        setProjectLoading(false);
         setLoading(false);
       });
   };
-  
+
   const fetchSkillData = () => {
     setLoading(true);
-    skillApi.getAllSKills().then((data) => {
-      setSkillList(data);
-      setDisplayedSkills(data);
-    }).finally(() => {
-      setLoading(false);
-    });
-  };
-  
-  const fetchPersonnelData = () => {
-    setLoadingPersonel(true);
-    PersonnelAPI.getAllPersonnel().then((data) => {
-      setDataPersonnel(data);
-    }).finally(() => {
-      setLoadingPersonel(false);
-    });
+    skillApi
+      .getAllSKills()
+      .then((data) => {
+        setSkillList(data);
+        setDisplayedSkills(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
+  const fetchPersonnelData = () => {
+    setLoadingPersonel(true);
+    PersonnelAPI.getAllPersonnel()
+      .then((data) => {
+        setDataPersonnel(data);
+      })
+      .finally(() => {
+        setLoadingPersonel(false);
+      });
+  };
 
   const fetchData = async () => {
     setProjectLoading(true);
@@ -196,7 +211,7 @@ function ProjectInfoDialog(props) {
   };
 
   return (
-    <div>
+    <ThemeProvider theme={theme}>
       <Dialog open={props.open} onClose={handleClose} maxWidth={"lg"}>
         <DialogTitle>
           <Box
@@ -225,7 +240,7 @@ function ProjectInfoDialog(props) {
                   {project.projectType && (
                     <img
                       src={imageMap[project.projectType]}
-                      style={{ width: '100%', height: 'auto' }}
+                      style={{ width: "100%", height: "auto" }}
                       alt={project.projectType}
                     />
                   )}
@@ -241,11 +256,11 @@ function ProjectInfoDialog(props) {
                     padding: "8px",
                     minHeight: "100px",
                     height: "auto",
-                    marginBottom: '1vw',
+                    marginBottom: "1vw",
                   }}
                 >
                   <div>
-                    <div style={{ marginBottom: '3%' }}>
+                    <div style={{ marginBottom: "3%" }}>
                       <TextField
                         id="outlined-read-only-input"
                         label="Name"
@@ -261,7 +276,7 @@ function ProjectInfoDialog(props) {
                         }}
                       />
                     </div>
-                    <div style={{ marginBottom: '3%' }}>
+                    <div style={{ marginBottom: "3%" }}>
                       <TextField
                         id="outlined-read-only-input"
                         label="Type"
@@ -278,7 +293,7 @@ function ProjectInfoDialog(props) {
                       />
                     </div>
                   </div>
-                  <div style={{ marginBottom: '3%' }}>
+                  <div style={{ marginBottom: "3%" }}>
                     <TextField
                       id="outlined-read-only-input"
                       label="Type"
@@ -294,13 +309,17 @@ function ProjectInfoDialog(props) {
                       }}
                     />
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <div style={{ marginBottom: '3%', width: '48%' }}>
+                  <div
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <div style={{ marginBottom: "3%", width: "48%" }}>
                       <TextField
                         id="outlined-read-only-input"
                         label="Project Start"
                         fullWidth
-                        defaultValue={new Date(project.startDate).toLocaleDateString()}
+                        defaultValue={new Date(
+                          project.startDate
+                        ).toLocaleDateString()}
                         InputProps={{
                           readOnly: true,
                           startAdornment: (
@@ -311,12 +330,14 @@ function ProjectInfoDialog(props) {
                         }}
                       />
                     </div>
-                    <div style={{ width: '48%' }}>
+                    <div style={{ width: "48%" }}>
                       <TextField
                         id="outlined-read-only-input"
                         label="Project End"
                         fullWidth
-                        defaultValue={new Date(project.endDate).toLocaleDateString()}
+                        defaultValue={new Date(
+                          project.endDate
+                        ).toLocaleDateString()}
                         InputProps={{
                           readOnly: true,
                           startAdornment: (
@@ -328,8 +349,14 @@ function ProjectInfoDialog(props) {
                       />
                     </div>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ marginBottom: '3%', width: '48%' }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ marginBottom: "3%", width: "48%" }}>
                       <TextField
                         id="outlined-read-only-input"
                         label="Budget"
@@ -345,7 +372,14 @@ function ProjectInfoDialog(props) {
                         }}
                       />
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '50%' }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "50%",
+                      }}
+                    >
                       <Chip
                         label={getStatus(project)?.status || "On-going"}
                         color={getStatus(project)?.color || "warning"}
@@ -353,13 +387,12 @@ function ProjectInfoDialog(props) {
                           "& .MuiChip-label": {
                             margin: 0,
                           },
-                          width: '80%',
-                          height: '35px',
-                          marginBottom: '5%'
+                          width: "80%",
+                          height: "35px",
+                          marginBottom: "5%",
                         }}
                       />
                     </div>
-
                   </div>
                 </Box>
               </Box>
@@ -374,8 +407,8 @@ function ProjectInfoDialog(props) {
                     minHeight: "100px",
                     height: "auto",
                     width: "100%",
-                    marginBottom: '1vw',
-                    minWidth: '30vw'
+                    marginBottom: "1vw",
+                    minWidth: "30vw",
                   }}
                 >
                   {skillSelect.map((item) => (
@@ -427,7 +460,7 @@ function ProjectInfoDialog(props) {
                           <ListItemText
                             sx={{ width: "30%" }}
                             primary={fullname(p)}
-                            secondary={p.position}
+                            secondary={p.role}
                           />
                         </ListItemButton>
 
@@ -438,9 +471,10 @@ function ProjectInfoDialog(props) {
                           setOpen={setOpenPersonnelInfoDialog}
                         />
                       </Box>
-                    )
+                    );
                   })}
                 </div>
+                ทำให้แสดง text ที่ไม่มีข้อมูลด้วย ถ้ามีข้อมูลเยอะ ให้ scroll ลงมาได้
               </div>
             </Box>
           </DialogContent>
@@ -469,7 +503,7 @@ function ProjectInfoDialog(props) {
           </DialogActions>
         )}
       </Dialog>
-    </div>
+    </ThemeProvider>
   );
 }
 

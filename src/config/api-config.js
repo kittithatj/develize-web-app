@@ -1,7 +1,7 @@
 export const Api = {
-    // url: 'http://localhost:8080',
+    url: 'http://localhost:8080',
     //url: '*Online URL*',
-    url:'https://develize-api.azurewebsites.net',
+    //url:'https://develize-api.azurewebsites.net',
     skill_get: '/skill/get-list',
     skill_delete: '/skill/delete/',// + id
     skill_create: '/skill/create',
