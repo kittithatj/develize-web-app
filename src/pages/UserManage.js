@@ -48,7 +48,7 @@ export default function UserManage() {
         console.log(res);
         setUserListRequest(res?.notApproved);
         setUserList(
-          res?.approved.filter((user) => user.role !== "Administrator")
+          res?.approved.filter((user) => user.username !== (JSON.parse(localStorage.getItem("user"))?.username))
         );
         setLoading(false);
       })
