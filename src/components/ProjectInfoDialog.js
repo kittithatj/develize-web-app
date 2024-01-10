@@ -459,7 +459,7 @@ function ProjectInfoDialog(props) {
             )}
           </div>
         )}
-        {!loading && (
+        {!loading && !props?.hideEdit && (
           <DialogActions>
             <Link to={"edit/" + project?.project_id}>
               <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>

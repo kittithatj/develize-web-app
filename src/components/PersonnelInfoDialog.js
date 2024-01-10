@@ -43,6 +43,7 @@ import ReactApexChart from "react-apexcharts";
 //     open: Boolean;
 //     SetOpen: Function;
 //     personnel: Object;
+//     hideEdit: Boolean;
 function PersonnelInfoDialog(props) {
   const [personnel, setPersonnel] = React.useState({});
   const [assessmentScore, setAssessmentScore] = React.useState({});

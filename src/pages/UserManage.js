@@ -118,6 +118,8 @@ export default function UserManage() {
         status: "success",
         message: "User has been Edited",
       });
+      fetchUserData();
+      setRowModesModel({});
     })
     .catch((err) => {
       openSnackbar({

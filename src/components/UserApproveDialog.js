@@ -19,7 +19,7 @@ import { userApi } from "../api/user-api";
 //userId: Number;
 function UserApproveDialog(props) {
   const [loading, setLoading] = React.useState(false);
-  const [role, setRole] = React.useState("Not-Assigned");
+  const [role, setRole] = React.useState("Assessor");
 
   const [user, setUser, openSnackbar] = useOutletContext({});
 
@@ -38,7 +38,7 @@ function UserApproveDialog(props) {
       .approve(dataToSend)
       .then((res) => {
         setLoading(false);
-        setRole("Not-Assigned");
+        setRole("Assessor");
         props.setOpen(false);
         openSnackbar({
           status: "success",
@@ -53,7 +53,7 @@ function UserApproveDialog(props) {
         });
         props.setOpen(false);
         setLoading(false);
-        setRole("Not-Assigned");
+        setRole("Assessor");
       });
   };
 
@@ -86,9 +86,6 @@ function UserApproveDialog(props) {
                 Select Role
             </Typography>
             <Select value={role} onChange={handleRoleChange} displayEmpty>
-              <MenuItem value="Not-Assigned">
-                <em>Not-Assigned</em>
-              </MenuItem>
               <MenuItem value={"Assessor"}>Assessor</MenuItem>
               <MenuItem value={"Personnel Manager"}>Personnel Manager</MenuItem>
               <MenuItem value={"Project Manager"}>Project Manager</MenuItem>

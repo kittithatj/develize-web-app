@@ -62,6 +62,7 @@ function Project() {
 
   const [dataPersonnel, setDataPersonnel] = useState([]);
   const [DataPersonnelLoading, setDataPersonnelLoading] = useState(false);
+  const [projectPermission, setProjectPermission] = useState(false);
 
   const fetchPersonnelData = () => {
     setDataPersonnelLoading(true);
@@ -105,19 +106,30 @@ function Project() {
 
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
-  const currentProjects = projectData.slice(indexOfFirstProject, indexOfLastProject);
+  const currentProjects = projectData.slice(
+    indexOfFirstProject,
+    indexOfLastProject
+  );
   const [selectedProjectId, setSelectedProjectId] = useState(null);
   const [openProjectInfoDialog, setOpenProjectlInfoDialog] = useState(false);
 
   useEffect(() => {
     fetchProjectData();
     fetchPersonnelData();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (
+      user.role === "Administrator" ||
+      user.role === "Project Manager" ||
+      user.role === "Resource Manager"
+    ) {
+      setProjectPermission(true);
+    }
   }, []);
 
   return (
     <div className="main-content">
-      <div style={{ display: 'flex' }}>
-        <Paper sx={{ padding: "30px", maxWidth: "1750px", }}>
+      <div style={{ display: "flex" }}>
+        <Paper sx={{ padding: "30px", maxWidth: "1750px" }}>
           <div
             style={{
               display: "flex",
@@ -125,7 +137,6 @@ function Project() {
               justifyContent: "space-between",
               marginBottom: "12px",
               minWidth: "60vw",
-
             }}
           >
             <Typography
@@ -139,11 +150,13 @@ function Project() {
             >
               Project Management
             </Typography>
-            <Link to={"/project/createproject"}>
-              <Button variant="contained" startIcon={<AddIcon />}>
-                Create Project
-              </Button>
-            </Link>
+            {projectPermission && (
+              <Link to={"/project/createproject"}>
+                <Button variant="contained" startIcon={<AddIcon />}>
+                  Create Project
+                </Button>
+              </Link>
+            )}
           </div>
           <Box
             container
@@ -187,11 +200,7 @@ function Project() {
                     >
                       <div>
                         {item.projectType === "Web Development" && (
-                          <img
-                            src={WebDevelopment}
-                            width="100%"
-                            height="60%"
-                          />
+                          <img src={WebDevelopment} width="100%" height="60%" />
                         )}
                         {item.projectType === "Mobile App Development" && (
                           <img
@@ -202,12 +211,12 @@ function Project() {
                         )}
                         {item.projectType ===
                           "Desktop Application Development" && (
-                            <img
-                              src={DesktopApplicationDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
+                          <img
+                            src={DesktopApplicationDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
                         {item.projectType === "Game Development" && (
                           <img
                             src={GameDevelopment}
@@ -215,36 +224,31 @@ function Project() {
                             height="60%"
                           />
                         )}
-                        {item.projectType ===
-                          "Embedded System Development" && (
-                            <img
-                              src={EmbeddedSystemDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                        {item.projectType ===
-                          "AI and Machine Learning Development" && (
-                            <img
-                              src={AIandMachineLearningDevelopment}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                        {item.projectType ===
-                          "Database Management and System" && (
-                            <img
-                              src={DatabaseManagementandSystem}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
-                        {item.projectType === "DevOps and CI/CD" && (
+                        {item.projectType === "Embedded System Development" && (
                           <img
-                            src={DevOpsandCICD}
+                            src={EmbeddedSystemDevelopment}
                             width="100%"
                             height="60%"
                           />
+                        )}
+                        {item.projectType ===
+                          "AI and Machine Learning Development" && (
+                          <img
+                            src={AIandMachineLearningDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType ===
+                          "Database Management and System" && (
+                          <img
+                            src={DatabaseManagementandSystem}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
+                        {item.projectType === "DevOps and CI/CD" && (
+                          <img src={DevOpsandCICD} width="100%" height="60%" />
                         )}
                         {item.projectType === "Cloud-Based Development" && (
                           <img
@@ -255,22 +259,20 @@ function Project() {
                         )}
                         {item.projectType ===
                           "Security and Cybersecurity System" && (
-                            <img
-                              src={SecurityandCybersecuritySystem}
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
+                          <img
+                            src={SecurityandCybersecuritySystem}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
                         {item.projectType ===
                           "Artificial Reality (AR) and Virtual Reality (VR) Development" && (
-                            <img
-                              src={
-                                ArtificialRealityandVirtualRealityDevelopment
-                              }
-                              width="100%"
-                              height="60%"
-                            />
-                          )}
+                          <img
+                            src={ArtificialRealityandVirtualRealityDevelopment}
+                            width="100%"
+                            height="60%"
+                          />
+                        )}
                         <Typography
                           variant="h5"
                           component="div"
@@ -322,24 +324,23 @@ function Project() {
                                 }}
                               />
                             )}
-                            {item.projectType ===
-                              "Mobile App Development" && (
-                                <AttachMoneyIcon
-                                  style={{
-                                    fontSize: "25px",
-                                    marginRight: "4px",
-                                  }}
-                                />
-                              )}
+                            {item.projectType === "Mobile App Development" && (
+                              <AttachMoneyIcon
+                                style={{
+                                  fontSize: "25px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            )}
                             {item.projectType ===
                               "Desktop Application Development" && (
-                                <SupportAgentIcon
-                                  style={{
-                                    fontSize: "25px",
-                                    marginRight: "4px",
-                                  }}
-                                />
-                              )}
+                              <SupportAgentIcon
+                                style={{
+                                  fontSize: "25px",
+                                  marginRight: "4px",
+                                }}
+                              />
+                            )}
                             {item.projectType}
                           </p>
                         </Typography>
@@ -347,17 +348,20 @@ function Project() {
                           {item.projectDescription}
                         </Typography>
                       </div>
-                        <Button
-                          color="primary"
-                          style={{
-                            alignSelf: "flex-end",
-                            margin: "8px 0",
-                            borderRadius: 0,
-                          }}
-                          onClick={() => {setOpenProjectlInfoDialog(true); setSelectedProjectId(item.project_id)}}
-                        >
-                          View Detail
-                        </Button>
+                      <Button
+                        color="primary"
+                        style={{
+                          alignSelf: "flex-end",
+                          margin: "8px 0",
+                          borderRadius: 0,
+                        }}
+                        onClick={() => {
+                          setOpenProjectlInfoDialog(true);
+                          setSelectedProjectId(item.project_id);
+                        }}
+                      >
+                        View Detail
+                      </Button>
                     </CardContent>
                   </Card>
                 </ThemeProvider>
@@ -376,9 +380,10 @@ function Project() {
         </Paper>
       </div>
       <ProjectInfoDialog
-      projectId={selectedProjectId}
-      open={openProjectInfoDialog}
-      setOpen={setOpenProjectlInfoDialog}
+        projectId={selectedProjectId}
+        open={openProjectInfoDialog}
+        setOpen={setOpenProjectlInfoDialog}
+        hideEdit={!projectPermission}
       ></ProjectInfoDialog>
     </div>
   );
