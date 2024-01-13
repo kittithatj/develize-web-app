@@ -174,15 +174,12 @@ function ProjectInfoDialog(props) {
 
   const fetchSkillData = () => {
     setLoading(true);
-    skillApi
-      .getAllSKills()
-      .then((data) => {
-        setSkillList(data);
-        setDisplayedSkills(data);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    skillApi.getAllSKills().then((data) => {
+      setSkillList(data);
+      setDisplayedSkills(data);
+    }).finally(() => {
+      setLoading(false);
+    });
   };
 
   const fetchPersonnelData = () => {
@@ -296,9 +293,11 @@ function ProjectInfoDialog(props) {
                   <div style={{ marginBottom: "3%" }}>
                     <TextField
                       id="outlined-read-only-input"
-                      label="Type"
+                      label="Descrption"
                       fullWidth
                       defaultValue={project.projectDescription}
+                      multiline
+                      rows={2}
                       InputProps={{
                         readOnly: true,
                         startAdornment: (
@@ -307,6 +306,7 @@ function ProjectInfoDialog(props) {
                           </InputAdornment>
                         ),
                       }}
+                      variant="outlined"
                     />
                   </div>
                   <div
@@ -398,7 +398,13 @@ function ProjectInfoDialog(props) {
               </Box>
               <Box sx={{ borderLeft: "2px solid #dedede", mx: "1rem" }}></Box>
               <div>
-                <Typography>Skill Required</Typography>
+                <Typography
+                  variant="h6"
+                  style={{
+                    fontWeight: "bold",
+                  }}
+                >Skill Required
+                </Typography>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -426,7 +432,12 @@ function ProjectInfoDialog(props) {
                     />
                   ))}
                 </div>
-                <Typography>Team Member</Typography>
+                <Typography
+                  variant="h6"
+                  style={{
+                    fontWeight: "bold",
+                  }}
+                >Team Member</Typography>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -437,42 +448,45 @@ function ProjectInfoDialog(props) {
                     width: "100%",
                   }}
                 >
-                  {memberList.map((p, i, array) => {
-                    return (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          width: "100%",
-                          justifyContent: "space-between",
-                        }}
+                  {memberList.map((p, i, array) => (
+                    <Box
+                      key={p.personnel_id}
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between",
+                        borderBottom: i < array.length - 1 ? "1px solid #ccc" : "none",
+                      }}
+                    >
+                      <ListItemButton
+                        component="div"
+                        onClick={() => handleOpenPersonnelInfoDialog(p)}
                       >
-                        <ListItemButton
-                          component="div"
-                          key={p.personnel_id}
-                          onClick={() => handleOpenPersonnelInfoDialog(p)}
-                        >
-                          <ListItemAvatar>
-                            <ProfileAvatar
-                              variant="circular"
-                              name={fullname(p)}
-                            />
-                          </ListItemAvatar>
-                          <ListItemText
-                            sx={{ width: "30%" }}
-                            primary={fullname(p)}
-                            secondary={p.role}
+                        <ListItemAvatar>
+                          <ProfileAvatar
+                            variant="circular"
+                            name={fullname(p)}
                           />
-                        </ListItemButton>
-
-                        <PersonnelInfoDialog
-                          hideEdit
-                          personnel={selectedPersonnel}
-                          open={openPersonnelInfoDialog}
-                          setOpen={setOpenPersonnelInfoDialog}
+                        </ListItemAvatar>
+                        <ListItemText
+                          sx={{
+                            width: "30%",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                          primary={fullname(p)}
+                          secondary={<span>{p.role}</span>}
                         />
-                      </Box>
-                    );
-                  })}
+                      </ListItemButton>
+
+                      <PersonnelInfoDialog
+                        hideEdit
+                        personnel={selectedPersonnel}
+                        open={openPersonnelInfoDialog}
+                        setOpen={setOpenPersonnelInfoDialog}
+                      />
+                    </Box>
+                  ))}
                 </div>
                 ทำให้แสดง text ที่ไม่มีข้อมูลด้วย ถ้ามีข้อมูลเยอะ ให้ scroll ลงมาได้
               </div>

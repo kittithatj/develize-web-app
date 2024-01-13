@@ -133,7 +133,7 @@ function EditProject() {
           status: "success",
           message: "Delete Project Successfully",
         });
-        navigate("../personnel");
+        navigate("../project");
       })
       .catch(() => {
         openSnackbar({
@@ -567,6 +567,14 @@ function EditProject() {
               padding: "30px",
             }}
           >
+            <Typography
+              variant="h5"
+              style={{
+                fontWeight: "bold",
+              }}
+            >
+              Edit Project
+            </Typography>
             <Button
               variant="contained"
               color="error"
@@ -594,7 +602,7 @@ function EditProject() {
                       fontWeight: "bold",
                     }}
                   >
-                    Edit Project Information
+                    Information
                   </Typography>
                 </Box>
 
