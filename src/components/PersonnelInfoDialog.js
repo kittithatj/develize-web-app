@@ -111,7 +111,7 @@ function PersonnelInfoDialog(props) {
       >
         <ComparativeViewDialog open={openComparativeView} setOpen={setOpenComparativeView} personnelId={personnel?.personnel_id} />
         <Typography fontSize={"1.3rem"}>Assessments Overview</Typography>
-        {!isChartEmpty && (
+        {chartData && !isChartEmpty && (
           <ReactApexChart
             options={chartData.options}
             series={chartData.series}
@@ -120,7 +120,7 @@ function PersonnelInfoDialog(props) {
             height="80%"
           />
         )}
-        {!isChartEmpty && (
+        {chartData && !isChartEmpty && (
           <Box>
             Average Score :{" "}
             {assessmentScore?.overviewScore?.jobPerformance.toFixed(2)}
@@ -404,7 +404,6 @@ function PersonnelInfoDialog(props) {
             },
           },
         });
-        console.log(chartData)
         setLoading(false)
               })
       .catch(() => {
