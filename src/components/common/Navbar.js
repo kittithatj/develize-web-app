@@ -56,6 +56,7 @@ function Navbar(props) {
           newState[3].visible = false;
           newState[4].visible = false;
         }
+        newState[0].visible = true;
       }
       return newState;
     });

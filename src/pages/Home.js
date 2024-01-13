@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
 import { Container, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
-import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
-import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import { Link } from "react-router-dom";
-import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import WavingHandIcon from "@mui/icons-material/WavingHand";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
@@ -19,9 +15,9 @@ function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("token") == null) {
-      navigate("/login");
-    }
+    // if (localStorage.getItem("token") == null) {
+    //   navigate("/login");
+    // }
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
     setMenuState((prev) => {
