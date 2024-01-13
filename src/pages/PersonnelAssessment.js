@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Badge,
   Box,
@@ -20,6 +23,7 @@ import { useOutletContext } from "react-router-dom";
 import { PersonnelAPI } from "../api/personnel-api";
 import HelpIcon from "@mui/icons-material/Help";
 import { stringToColor } from "../components/SkillGroupAvatar";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function PersonnelAssessment() {
@@ -280,70 +284,31 @@ function PersonnelAssessment() {
 
           {/* -----Personnel Information----- */}
 
-          <Box sx={{minWidth:"500px", display: "flex", justifyContent: "center" }}>
-            <table>
-              <tbody>
-                {loading && (
-                  <Box sx={{ margin: "2rem" }}>
-                    <CircularProgress size={100} />
+          <Box sx={{ minWidth: "500px", display: "flex", justifyContent: "center" }}>
+            {assessForm.map((item, index) => (
+              <Accordion key={index}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel${index + 1}-content`}
+                  id={`panel${index + 1}-header`}
+                >
+                  <Typography>{item.title}</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box>
+                    <Typography>{item.tooltip}</Typography>
+                    <Rating
+                      name={item.keyName}
+                      max={10}
+                      defaultValue={item.score}
+                      onChange={(event, newValue) => {
+                        setAssessValue(item.title, newValue);
+                      }}
+                    />
                   </Box>
-                )}
-                {!loading &&
-                  assessForm.map((item, index) => {
-                    return (
-                      <tr>
-                        <td key={index + 1}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: 0,
-                              marginY: 2,
-                              marginRight: 1,
-                            }}
-                          >
-                            <Box
-                              sx={{ fontSize: "1.2rem", marginRight: "10px" }}
-                            >
-                              {item.title}
-                            </Box>
-                            <Tooltip
-                              title={item.tooltip}
-                              placement="bottom-start"
-                            >
-                              <HelpIcon
-                                fontSize="medium"
-                                color="disabled"
-                              ></HelpIcon>
-                            </Tooltip>
-                          </Box>
-                        </td>
-                        <td>
-                          <Box
-                            key={index + 1}
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: 0,
-                              marginY: 2,
-                              marginRight: 1,
-                            }}
-                          >
-                            <Rating
-                              name={item.keyName}
-                              max={10}
-                              defaultValue={item.score}
-                              onChange={(event, newValue) => {
-                                setAssessValue(item.title, newValue);
-                              }}
-                            />
-                          </Box>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+                </AccordionDetails>
+              </Accordion>
+            ))}
           </Box>
           <Box
             sx={{

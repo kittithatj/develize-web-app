@@ -129,7 +129,7 @@ function EditProject() {
           status: "success",
           message: "Delete Project Successfully",
         });
-        navigate("../personnel");
+        navigate("../project");
       })
       .catch(() => {
         openSnackbar({
@@ -561,6 +561,14 @@ function EditProject() {
               padding: "30px",
             }}
           >
+            <Typography
+              variant="h5"
+              style={{
+                fontWeight: "bold",
+              }}
+            >
+              Edit Project
+            </Typography>
             <Button
               variant="contained"
               color="error"
@@ -588,7 +596,7 @@ function EditProject() {
                       fontWeight: "bold",
                     }}
                   >
-                    Edit Project Information
+                    Information
                   </Typography>
                 </Box>
 
@@ -1431,22 +1439,22 @@ function EditProject() {
                       />
                     </Box>
                     <Box>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      style={{ marginTop: "10px", marginLeft: "auto" }}
-                      onClick={handleOpenDialog}
-                    >
-                      Save Change
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        style={{ marginTop: "10px", marginLeft: "auto" }}
+                        onClick={handleOpenDialog}
+                      >
+                        Save Change
+                      </Button>
                     </Box>
                   </div>
                   <PersonnelInfoDialog
-                      hideEdit
-                      personnel={selectedPersonnel}
-                      open={openPersonnelInfoDialog}
-                      setOpen={setOpenPersonnelInfoDialog}
-                    />
+                    hideEdit
+                    personnel={selectedPersonnel}
+                    open={openPersonnelInfoDialog}
+                    setOpen={setOpenPersonnelInfoDialog}
+                  />
                 </div>
               </div>
             )}
