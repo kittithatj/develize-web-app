@@ -141,7 +141,7 @@ function Home() {
   }
   return (
     <div className="main-content">
-      <Box className="flex-center">
+      <Box className="flex-center" sx={{flexWrap: "wrap",}}>
         {menuState.map((menu) => {
           if (!menu.visible) {
             return null;

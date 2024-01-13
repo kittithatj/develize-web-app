@@ -113,6 +113,9 @@ export default function Login() {
             </p>
           </Box>
         </Box>
+        <span style={{fontSize:20, color:"GrayText"}}>
+        username : test_user | password : p@ssword
+        </span>
       </Container>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
