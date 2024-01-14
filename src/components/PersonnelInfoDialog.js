@@ -533,7 +533,7 @@ function PersonnelInfoDialog(props) {
           {
             !props.hideEdit &&
             <Link to={"edit/" + personnel?.personnel_id}>
-            <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>
+            <Button variant="contained" color="warning" sx={{ mr: 1 }} onClick={handleClose}>
               Edit
             </Button>
           </Link>

@@ -284,28 +284,28 @@ function PersonnelAssessment() {
 
           {/* -----Personnel Information----- */}
 
-          <Box sx={{ minWidth: "500px", display: "flex", justifyContent: "center" }}>
+          <Box sx={{ minWidth: "500px", display: "flex", flexDirection: "column", alignItems: "center" }}>
             {assessForm.map((item, index) => (
-              <Accordion key={index}>
+              <Accordion key={index} sx={{ width: "100%" }}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls={`panel${index + 1}-content`}
                   id={`panel${index + 1}-header`}
+                  sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}
                 >
-                  <Typography>{item.title}</Typography>
+                  <Typography style={{ marginRight: '2%' }}>{item.title}</Typography>
+                  <Rating
+                    name={item.keyName}
+                    max={10}
+                    defaultValue={item.score}
+                    onChange={(event, newValue) => {
+                      setAssessValue(item.title, newValue);
+                    }}
+                  />
+                  <Typography sx={{ color: 'gray', marginLeft: '0.5rem' }}>{item.score}</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Box>
-                    <Typography>{item.tooltip}</Typography>
-                    <Rating
-                      name={item.keyName}
-                      max={10}
-                      defaultValue={item.score}
-                      onChange={(event, newValue) => {
-                        setAssessValue(item.title, newValue);
-                      }}
-                    />
-                  </Box>
+                  <Typography>{item.tooltip}</Typography>
                 </AccordionDetails>
               </Accordion>
             ))}

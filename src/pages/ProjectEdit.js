@@ -76,7 +76,6 @@ function EditProject() {
   const handleOpenDialogPro = () => {
     setOpenDialogPro(true);
   };
-
   const handleConfirm = () => {
     setLoading(true);
     // console.log("formData:", formData);
@@ -179,6 +178,10 @@ function EditProject() {
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [openDialogPro, setOpenDialogPro] = useState(false);
+
+  const handleback = () => {
+    navigate("../project");
+  };
 
   const fullname = (p) => {
     return p.firstName + " " + p.lastName;
@@ -882,6 +885,14 @@ function EditProject() {
                 >
                   <Button
                     variant="contained"
+                    color="warning"
+                    style={{ marginTop: "10px" }}
+                    onClick={handleback}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
                     color="success"
                     style={{ marginTop: "10px", marginLeft: "auto" }}
                     onClick={handleOpenDialog}
@@ -1051,19 +1062,19 @@ function EditProject() {
                         .includes(searchValue.toLowerCase()) &&
                       (selectedType === "" || s.skillType === selectedType)
                   ).length === 0 && (
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "60vw",
-                        mt: 2,
-                      }}
-                    >
-                      <Typography component="div" sx={{ fontWeight: "600" }}>
-                        Skill Not found
-                      </Typography>
-                    </Box>
-                  )}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          width: "60vw",
+                          mt: 2,
+                        }}
+                      >
+                        <Typography component="div" sx={{ fontWeight: "600" }}>
+                          Skill Not found
+                        </Typography>
+                      </Box>
+                    )}
                   <Box
                     sx={{
                       width: "100%",
@@ -1099,12 +1110,21 @@ function EditProject() {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
+                    marginTop: "10px",
                   }}
                 >
                   <Button
                     variant="contained"
+                    color="warning"
+                    style={{ marginTop: "10px" }}
+                    onClick={handleback}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
                     color="success"
-                    style={{ marginLeft: "auto" }}
+                    style={{ marginTop: "10px", marginLeft: "auto" }}
                     onClick={handleOpenDialog}
                   >
                     Save Change

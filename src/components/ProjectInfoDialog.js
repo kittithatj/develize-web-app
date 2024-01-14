@@ -403,7 +403,8 @@ function ProjectInfoDialog(props) {
                   style={{
                     fontWeight: "bold",
                   }}
-                >Skill Required
+                >
+                  Skill Required
                 </Typography>
                 <div
                   style={{
@@ -417,27 +418,33 @@ function ProjectInfoDialog(props) {
                     minWidth: "30vw",
                   }}
                 >
-                  {skillSelect.map((item) => (
-                    <Chip
-                      key={item.skill_id}
-                      sx={{
-                        m: 1,
-                        height: "40px",
-                      }}
-                      variant="outlined"
-                      color={getSkillTypeColor(item.skillType)}
-                      size="medium"
-                      label={item.skillName}
-                      icon={getSkillTypeIcon(item.skillType)}
-                    />
-                  ))}
+                  {skillSelect.length > 0 ? (
+                    skillSelect.map((item) => (
+                      <Chip
+                        key={item.skill_id}
+                        sx={{
+                          m: 1,
+                          height: "40px",
+                        }}
+                        variant="outlined"
+                        color={getSkillTypeColor(item.skillType)}
+                        size="medium"
+                        label={item.skillName}
+                        icon={getSkillTypeIcon(item.skillType)}
+                      />
+                    ))
+                  ) : (
+                    <Typography style={{ color: "#808080" }}>Not Found Data</Typography>
+                  )}
                 </div>
                 <Typography
                   variant="h6"
                   style={{
                     fontWeight: "bold",
                   }}
-                >Team Member</Typography>
+                >
+                  Team Member
+                </Typography>
                 <div
                   style={{
                     border: "1px solid #ccc",
@@ -448,47 +455,50 @@ function ProjectInfoDialog(props) {
                     width: "100%",
                   }}
                 >
-                  {memberList.map((p, i, array) => (
-                    <Box
-                      key={p.personnel_id}
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        justifyContent: "space-between",
-                        borderBottom: i < array.length - 1 ? "1px solid #ccc" : "none",
-                      }}
-                    >
-                      <ListItemButton
-                        component="div"
-                        onClick={() => handleOpenPersonnelInfoDialog(p)}
+                  {memberList.length > 0 ? (
+                    memberList.map((p, i, array) => (
+                      <Box
+                        key={p.personnel_id}
+                        sx={{
+                          display: "flex",
+                          width: "100%",
+                          justifyContent: "space-between",
+                          borderBottom: i < array.length - 1 ? "1px solid #ccc" : "none",
+                        }}
                       >
-                        <ListItemAvatar>
-                          <ProfileAvatar
-                            variant="circular"
-                            name={fullname(p)}
+                        <ListItemButton
+                          component="div"
+                          onClick={() => handleOpenPersonnelInfoDialog(p)}
+                        >
+                          <ListItemAvatar>
+                            <ProfileAvatar
+                              variant="circular"
+                              name={fullname(p)}
+                            />
+                          </ListItemAvatar>
+                          <ListItemText
+                            sx={{
+                              width: "30%",
+                              display: "flex",
+                              flexDirection: "column",
+                            }}
+                            primary={fullname(p)}
+                            secondary={<span>{p.role}</span>}
                           />
-                        </ListItemAvatar>
-                        <ListItemText
-                          sx={{
-                            width: "30%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                          primary={fullname(p)}
-                          secondary={<span>{p.role}</span>}
-                        />
-                      </ListItemButton>
+                        </ListItemButton>
 
-                      <PersonnelInfoDialog
-                        hideEdit
-                        personnel={selectedPersonnel}
-                        open={openPersonnelInfoDialog}
-                        setOpen={setOpenPersonnelInfoDialog}
-                      />
-                    </Box>
-                  ))}
+                        <PersonnelInfoDialog
+                          hideEdit
+                          personnel={selectedPersonnel}
+                          open={openPersonnelInfoDialog}
+                          setOpen={setOpenPersonnelInfoDialog}
+                        />
+                      </Box>
+                    ))
+                  ) : (
+                    <Typography style={{ color: "#808080" }}>Not Found Data</Typography>
+                  )}
                 </div>
-                ทำให้แสดง text ที่ไม่มีข้อมูลด้วย ถ้ามีข้อมูลเยอะ ให้ scroll ลงมาได้
               </div>
             </Box>
           </DialogContent>
@@ -510,7 +520,7 @@ function ProjectInfoDialog(props) {
         {!loading && !props?.hideEdit && (
           <DialogActions>
             <Link to={"edit/" + project?.project_id}>
-              <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>
+              <Button variant="contained" color="warning" sx={{ mr: 1 }} onClick={handleClose}>
                 Edit
               </Button>
             </Link>
