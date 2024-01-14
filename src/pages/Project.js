@@ -71,13 +71,15 @@ function Project() {
     });
   };
 
-  const status = (projectData) => {
-    if (projectData.projectStatus === "On-Going") {
+  const getStatus = (project) => {
+    if (project.projectStatus === "On-going") {
       return { status: "On-Going", color: "warning" };
-    } else if (projectData.projectStatus === "Completed") {
+    } else if (project.projectStatus === "Completed") {
       return { status: "Completed", color: "success" };
-    } else if (projectData.projectStatus === "Holding") {
+    } else if (project.projectStatus === "Holding") {
       return { status: "Holding", color: "secondary" };
+    } else if (project.projectStatus === "Canceled") {
+      return { status: "Canceled", color: "default" };
     }
   };
 
@@ -102,7 +104,7 @@ function Project() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
 
   const indexOfLastProject = currentPage * itemsPerPage;
   const indexOfFirstProject = indexOfLastProject - itemsPerPage;
@@ -128,8 +130,8 @@ function Project() {
 
   return (
     <div className="main-content">
-      <div style={{ display: "flex" }}>
-        <Paper sx={{ padding: "30px", maxWidth: "1750px" }}>
+      <div>
+        <Paper sx={{ padding: "30px", maxWidth: "1350px" }}>
           <div
             style={{
               display: "flex",
@@ -159,9 +161,7 @@ function Project() {
             )}
           </div>
           <Box
-            container
             justifyContent="center"
-            alignItems="stretch"
             flexWrap={"wrap"}
             spacing={2}
             sx={{ display: "flex", flexDirection: "row" }}
@@ -171,7 +171,6 @@ function Project() {
                 className="flex-center"
                 sx={{
                   width: "100%",
-                  height: "100%",
                 }}
               >
                 <CircularProgress sx={{ my: 5 }} size={100} />
@@ -297,8 +296,8 @@ function Project() {
                             </p>
                           </div>
                           <Chip
-                            label={status(item)?.status || "On-going"}
-                            color={status(item)?.color || "warning"}
+                            label={getStatus(item)?.status || "-"}
+                            color={getStatus(item)?.color || "default"}
                             sx={{
                               "& .MuiChip-label": {
                                 margin: 0,

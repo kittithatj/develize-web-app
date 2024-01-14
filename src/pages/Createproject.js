@@ -420,7 +420,6 @@ function CreateProject() {
     projectDescription: true,
     startDate: true,
     endDate: true,
-    budget: true,
     projectStatus: true,
   });
 
@@ -428,10 +427,8 @@ function CreateProject() {
     const isFormValid =
       formData.projectName &&
       formData.projectType &&
-      formData.projectDescription &&
       formData.startDate &&
       formData.endDate &&
-      formData.budget &&
       formData.projectStatus;
 
     if (isFormValid) {
@@ -439,20 +436,16 @@ function CreateProject() {
       setFormValidation({
         projectName: true,
         projectType: true,
-        projectDescription: true,
         startDate: true,
         endDate: true,
-        budget: true,
         projectStatus: true,
       });
     } else {
       setFormValidation({
         projectName: !!formData.projectName,
         projectType: !!formData.projectType,
-        projectDescription: !!formData.projectDescription,
         startDate: !!formData.startDate,
         endDate: !!formData.endDate,
-        budget: !!formData.budget,
         projectStatus: !!formData.projectStatus,
       });
     }
@@ -709,10 +702,6 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formData.budget}
-                      error={!formValidation.budget}
-                      helperText={
-                        !formValidation.budget && "Budget is required"
-                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,

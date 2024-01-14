@@ -48,6 +48,16 @@ export default function Register() {
   const registerSubmit = () => {
     setLoading(true);
 
+    if (formData.password.length < 6) {
+      openSnackbar({
+        status: "warning",
+        message: "Password must be at least 6 characters",
+      });
+
+      setLoading(false);
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       openSnackbar({
         status: "error",

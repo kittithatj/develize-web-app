@@ -93,12 +93,14 @@ function ProjectInfoDialog(props) {
   };
 
   const getStatus = (project) => {
-    if (project.projectStatus === "On-Going") {
+    if (project.projectStatus === "On-going") {
       return { status: "On-Going", color: "warning" };
     } else if (project.projectStatus === "Completed") {
       return { status: "Completed", color: "success" };
     } else if (project.projectStatus === "Holding") {
       return { status: "Holding", color: "secondary" };
+    } else if (project.projectStatus === "Canceled") {
+      return { status: "Canceled", color: "default" };
     }
   };
 
@@ -382,7 +384,7 @@ function ProjectInfoDialog(props) {
                     >
                       <Chip
                         label={getStatus(project)?.status || "On-going"}
-                        color={getStatus(project)?.color || "warning"}
+                        color={getStatus(project)?.color || "info"}
                         sx={{
                           "& .MuiChip-label": {
                             margin: 0,
@@ -434,7 +436,7 @@ function ProjectInfoDialog(props) {
                       />
                     ))
                   ) : (
-                    <Typography style={{ color: "#808080" }}>Not Found Data</Typography>
+                    <Typography style={{ color: "#808080" }}>No data</Typography>
                   )}
                 </div>
                 <Typography
@@ -496,7 +498,7 @@ function ProjectInfoDialog(props) {
                       </Box>
                     ))
                   ) : (
-                    <Typography style={{ color: "#808080" }}>Not Found Data</Typography>
+                    <Typography style={{ color: "#808080" }}>No data</Typography>
                   )}
                 </div>
               </div>
@@ -508,8 +510,8 @@ function ProjectInfoDialog(props) {
               <Box
                 className="flex-center"
                 sx={{
-                  width: "100%",
-                  height: "100%",
+                  px: "300px",
+                  py: "100px",
                 }}
               >
                 <CircularProgress sx={{ my: 5 }} size={100} />
@@ -520,7 +522,7 @@ function ProjectInfoDialog(props) {
         {!loading && !props?.hideEdit && (
           <DialogActions>
             <Link to={"edit/" + project?.project_id}>
-              <Button variant="contained" color="warning" sx={{ mr: 1 }} onClick={handleClose}>
+              <Button color="warning" sx={{ m: 1 }} onClick={handleClose}>
                 Edit
               </Button>
             </Link>

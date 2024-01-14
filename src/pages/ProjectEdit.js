@@ -88,8 +88,8 @@ function EditProject() {
       projectName: formData.projectName,
       projectType: formData.projectType,
       projectDescription: formData.projectDescription,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      startDate: formatDate(formData.startDate),
+      endDate: formatDate(formData.endDate),
       skillRequireIdList: skillReq,
       memberAssignment: memberList.map((member) => {
         return {
@@ -290,6 +290,17 @@ function EditProject() {
     if (inputDate) {
       const parts = inputDate.split("-");
       if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+    }
+    return inputDate;
+  };
+
+  const formatDateInit = (inputDate) => {
+    console.log("inputDate", inputDate);
+    if (inputDate) {
+      const parts = inputDate.split("-");
+      if (parts.length === 3) {
         return `${parts[0]}-${parts[1]}-${parts[2]}`;
       }
     }
@@ -485,8 +496,8 @@ function EditProject() {
       setProjectName(data.projectName);
       setProjectType(data.projectType);
       setProjectDes(data.projectDescription);
-      setProjectStart(data.startDate);
-      setProjectEnd(data.endDate);
+      setProjectStart(formatDateInit(data.startDate));
+      setProjectEnd(formatDateInit(data.endDate));
       setProjectBudget(data.budget);
       setProjectStatus(data.projectStatus);
       setProjectSkills(data.skillsRequired);
@@ -742,7 +753,7 @@ function EditProject() {
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
-                      value={formatDate(formData.startDate)}
+                      value={formData.startDate}
                       error={!formValidation.startDate}
                       helperText={
                         !formValidation.startDate &&
@@ -751,7 +762,7 @@ function EditProject() {
                       onChange={(event) =>
                         setFormData({
                           ...formData,
-                          startDate: formatDate(event.target.value),
+                          startDate: event.target.value,
                         })
                       }
                       InputProps={{
@@ -775,7 +786,7 @@ function EditProject() {
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
-                      value={formatDate(formData.endDate)}
+                      value={formData.endDate}
                       error={!formValidation.endDate}
                       helperText={
                         !formValidation.endDate &&
@@ -784,7 +795,7 @@ function EditProject() {
                       onChange={(event) =>
                         setFormData({
                           ...formData,
-                          endDate: formatDate(event.target.value),
+                          endDate: event.target.value,
                         })
                       }
                       InputProps={{
@@ -884,8 +895,8 @@ function EditProject() {
                   }}
                 >
                   <Button
-                    variant="contained"
-                    color="warning"
+                  variant="outlined"
+                    color="error"
                     style={{ marginTop: "10px" }}
                     onClick={handleback}
                   >
