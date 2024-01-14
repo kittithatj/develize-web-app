@@ -67,7 +67,7 @@ function PersonnelInfoDialog(props) {
   };
 
   const getIconProjectStatus = (status) => {
-    if (status === "On-going" || "On Going")
+    if (status === "On-going")
       return {
         color: "#fbc02d",
         icon: <FastForwardIcon />,
@@ -82,7 +82,7 @@ function PersonnelInfoDialog(props) {
         color: "#c4c4c4",
         icon: <PauseIcon />,
       };
-    if (status === "Cancelled")
+    if (status === "Canceled")
       return {
         color: "#e53e3e",
         icon: <CloseIcon />,
