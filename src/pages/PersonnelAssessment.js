@@ -1,4 +1,7 @@
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Badge,
   Box,
@@ -20,6 +23,7 @@ import { useOutletContext } from "react-router-dom";
 import { PersonnelAPI } from "../api/personnel-api";
 import HelpIcon from "@mui/icons-material/Help";
 import { stringToColor } from "../components/SkillGroupAvatar";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 
 function PersonnelAssessment() {
@@ -73,14 +77,14 @@ function PersonnelAssessment() {
       {
         title: "Teamwork",
         tooltip:
-          "Collaborates with internal and external teams across positions, proactively helps others, puts team targets higher than personal achievements, contributes and takes initiative to social activities",
+          "Collaborates with internal and external teams across positions, proactively helps others, puts team targets higher than personal achievements, contributes and takes initiative to social activities.",
         keyName: "teamwork",
         score: 0,
       },
       {
         title: "Innovation",
         tooltip:
-          "Propose/use digital technologies to change internal processes,  generates ideas and gives input that makes our product more efficient ",
+          "Propose/use digital technologies to change internal processes,  generates ideas and gives input that makes our product more efficient.",
         keyName: "innovation",
         score: 0,
       },
@@ -148,6 +152,15 @@ function PersonnelAssessment() {
     setOpenConfirm(false);
   };
 
+  const getScoreColor = (score) => {
+    if (score === 0) return "#7a7a7a";
+    if (score <= 3) return "#b52a2a";
+    if (score <= 6) return "#d6651e";
+    if (score <= 8) return "#a1d921";
+    if (score >= 9) return "#2ab52e";
+    return "#7a7a7a"
+  };
+
   const submitAssessment = () => {
     let formData = {
       personnel_id: parseInt(id),
@@ -171,12 +184,15 @@ function PersonnelAssessment() {
   };
 
   const saveAssessment = (formData) => {
+    setLoading(true);
+    setOpenConfirm(false);
     PersonnelAPI.assessPersonnel(formData).then((res) => {
       console.log(res);
       openSnackbar({
         status: "success",
         message: "Assessed successfully!",
       });
+      setLoading(false);
       window.history.back();
     });
   };
@@ -199,7 +215,7 @@ function PersonnelAssessment() {
   return (
     <div className="main-content">
       <div className="top-content">
-        <Paper sx={{ padding: "30px" }}>
+        <Paper sx={{ padding: "50px" }}>
           <Typography
             sx={{
               mt: 1,
@@ -213,7 +229,7 @@ function PersonnelAssessment() {
           </Typography>
 
           {/* -----Personnel Information----- */}
-          <Box className="flex-center">
+          <Box className="flex-center" sx={{ my: 3 }}>
             {!loading && (
               <Button
                 className="flex-center"
@@ -279,71 +295,85 @@ function PersonnelAssessment() {
           </Box>
 
           {/* -----Personnel Information----- */}
-
-          <Box sx={{minWidth:"500px", display: "flex", justifyContent: "center" }}>
-            <table>
-              <tbody>
-                {loading && (
-                  <Box sx={{ margin: "2rem" }}>
-                    <CircularProgress size={100} />
-                  </Box>
-                )}
-                {!loading &&
-                  assessForm.map((item, index) => {
-                    return (
-                      <tr>
-                        <td key={index + 1}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: 0,
-                              marginY: 2,
-                              marginRight: 1,
-                            }}
+          {loading && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                m: 5,
+                px: "250px",
+              }}
+            >
+              <CircularProgress sx={{ my: 5 }} size={100} />
+            </Box>
+          )}
+          <Box
+            sx={{
+              minWidth: "500px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {!loading && (
+              <table>
+                {assessForm.map((item, index) => (
+                  <tr>
+                    <td>
+                      <Accordion
+                        variant="outlined"
+                        key={index}
+                        sx={{ width: "330px" }}
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            width: "100%",
+                          }}
+                        >
+                          <Typography
+                            style={{ fontWeight: "bold", marginRight: "2%" }}
                           >
-                            <Box
-                              sx={{ fontSize: "1.2rem", marginRight: "10px" }}
-                            >
-                              {item.title}
-                            </Box>
-                            <Tooltip
-                              title={item.tooltip}
-                              placement="bottom-start"
-                            >
-                              <HelpIcon
-                                fontSize="medium"
-                                color="disabled"
-                              ></HelpIcon>
-                            </Tooltip>
-                          </Box>
-                        </td>
-                        <td>
-                          <Box
-                            key={index + 1}
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              padding: 0,
-                              marginY: 2,
-                              marginRight: 1,
-                            }}
-                          >
-                            <Rating
-                              name={item.keyName}
-                              max={10}
-                              defaultValue={item.score}
-                              onChange={(event, newValue) => {
-                                setAssessValue(item.title, newValue);
-                              }}
-                            />
-                          </Box>
-                        </td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table>
+                            {item.title}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography sx={{ color: "GrayText" }}>
+                            {item.tooltip}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </td>
+                    <td
+                      style={{
+                        verticalAlign: "top",
+                        padding: "0rem 2rem 0rem 2rem",
+                      }}
+                    >
+                      <Rating
+                        sx={{ paddingBottom: "1rem" }}
+                        name={item.keyName}
+                        max={10}
+                        defaultValue={item.score}
+                        onChange={(event, newValue) => {
+                          setAssessValue(item.title, newValue);
+                        }}
+                      />
+                    </td>
+                    <td style={{ verticalAlign: "top" }}>
+                      <Box className="circle-container" sx={{ mt:2 , backgroundColor:getScoreColor(item.score)}}>
+                        <Typography sx={{fontWeight:'bold'}}>
+                          {item.score === 0 || !item?.score ? "-" : item.score}
+                        </Typography>
+                      </Box>
+                    </td>
+                  </tr>
+                ))}
+              </table>
+            )}
           </Box>
           <Box
             sx={{

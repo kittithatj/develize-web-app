@@ -38,17 +38,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import ReactApexChart from "react-apexcharts";
+import ComparativeViewDialog from "./ComparativeViewDialog";
+import QueryStatsIcon from '@mui/icons-material/QueryStats';
 
 // Props:
 //     open: Boolean;
 //     SetOpen: Function;
 //     personnel: Object;
+//     hideEdit: Boolean;
 function PersonnelInfoDialog(props) {
   const [personnel, setPersonnel] = React.useState({});
   const [assessmentScore, setAssessmentScore] = React.useState({});
   const [chartData, setChartData] = React.useState();
   const [viewChart, setViewChart] = React.useState(true);
   const [loading, setLoading] = React.useState(true);
+  const [openComparativeView, setOpenComparativeView] = React.useState(false);
+  const [isChartEmpty, setIsChartEmpty] = React.useState(false);
 
   const handleClose = () => {
     props.setOpen(false);
@@ -62,7 +67,7 @@ function PersonnelInfoDialog(props) {
   };
 
   const getIconProjectStatus = (status) => {
-    if (status === "On-going" || "On Going")
+    if (status === "On-going")
       return {
         color: "#fbc02d",
         icon: <FastForwardIcon />,
@@ -77,7 +82,7 @@ function PersonnelInfoDialog(props) {
         color: "#c4c4c4",
         icon: <PauseIcon />,
       };
-    if (status === "Cancelled")
+    if (status === "Canceled")
       return {
         color: "#e53e3e",
         icon: <CloseIcon />,
@@ -104,8 +109,9 @@ function PersonnelInfoDialog(props) {
         className="flex-center"
         sx={{ flexDirection: "column", justifyContent: "flex-start" }}
       >
+        <ComparativeViewDialog open={openComparativeView} setOpen={setOpenComparativeView} personnelId={personnel?.personnel_id} />
         <Typography fontSize={"1.3rem"}>Assessments Overview</Typography>
-        {chartData && (
+        {chartData && !isChartEmpty && (
           <ReactApexChart
             options={chartData.options}
             series={chartData.series}
@@ -114,13 +120,13 @@ function PersonnelInfoDialog(props) {
             height="80%"
           />
         )}
-        {chartData && (
+        {chartData && !isChartEmpty && (
           <Box>
             Average Score :{" "}
             {assessmentScore?.overviewScore?.jobPerformance.toFixed(2)}
           </Box>
         )}
-        {!chartData && (
+        {isChartEmpty && (
           <Box
             className="flex-center"
             sx={{
@@ -142,6 +148,7 @@ function PersonnelInfoDialog(props) {
             </Typography>
           </Box>
         )}
+        <Button sx={{m:2}} startIcon={<QueryStatsIcon></QueryStatsIcon>} onClick={() => {setOpenComparativeView(true);}}>Comparative View</Button>
       </Box>
     ) : (
         <Box
@@ -337,34 +344,35 @@ function PersonnelInfoDialog(props) {
     PersonnelAPI.getOverviewAccessScore(props.personnel?.personnel_id)
       .then((res) => {
         setAssessmentScore(res);
-        console.log(res);
-        let overviewScore = [
+        let overviewScore = res?.overviewScore ? [
           res?.overviewScore?.jobKnowledge.toFixed(2),
           res?.overviewScore?.innovation.toFixed(2),
           res?.overviewScore?.teamwork.toFixed(2),
           res?.overviewScore?.deliverableQuality.toFixed(2),
           res?.overviewScore?.attitude.toFixed(2),
           res?.overviewScore?.attendance.toFixed(2),
-        ];
-        let userScore = [
+        ] : [];
+        let userScore = res?.userScore ? [
           res?.userScore?.jobKnowledge.toFixed(2),
           res?.userScore?.innovation.toFixed(2),
           res?.userScore?.teamwork.toFixed(2),
           res?.userScore?.deliverableQuality.toFixed(2),
           res?.userScore?.attitude.toFixed(2),
           res?.userScore?.attendance.toFixed(2),
-        ];
+        ] : [];
         let scoreSeries = [];
-        overviewScore &&
           scoreSeries.push({
-            name: "Average Score",
+            name: res?.overviewScore?"Average Score":"Average Score (No Data)",
             data: overviewScore,
           });
-        if (userScore != null) {
           scoreSeries.push({
-            name: "Your Score",
+            name: res?.userScore?"User Score":"User Score (No Data)",
             data: userScore,
           });
+        if (overviewScore.length === 0 && userScore.length === 0) {
+          setIsChartEmpty(true);
+        }else{
+          setIsChartEmpty(false);
         }
         setChartData({
           series: scoreSeries,
@@ -397,7 +405,7 @@ function PersonnelInfoDialog(props) {
           },
         });
         setLoading(false)
-      })
+              })
       .catch(() => {
         setLoading(false);
         setChartData(null);
@@ -525,7 +533,7 @@ function PersonnelInfoDialog(props) {
           {
             !props.hideEdit &&
             <Link to={"edit/" + personnel?.personnel_id}>
-            <Button color="warning" sx={{ mr: 1 }} onClick={handleClose}>
+            <Button color="warning" sx={{ m: 1 }} onClick={handleClose}>
               Edit
             </Button>
           </Link>

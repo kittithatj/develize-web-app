@@ -46,7 +46,6 @@ import { ProjectAPI } from "../api/project-api";
 import { PersonnelAPI } from "../api/personnel-api";
 
 // ICON
-import DnsIcon from "@mui/icons-material/Dns";
 import CheckIcon from "@mui/icons-material/Check";
 import TypeSpecimenIcon from "@mui/icons-material/TypeSpecimen";
 import DescriptionIcon from "@mui/icons-material/Description";
@@ -59,6 +58,8 @@ import ProfileAvatar from "../components/ProfileAvatar";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import CloseIcon from "@mui/icons-material/Close";
 import MatchProjectSkillDialogButton from "../components/MatchProjectSkillDialog";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EditProject() {
   const { id } = useParams();
@@ -66,7 +67,17 @@ function EditProject() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+  const handleCloseDialogPro = () => {
+    setOpenDialogPro(false);
+  };
+  const handleOpenDialogPro = () => {
+    setOpenDialogPro(true);
+  };
   const handleConfirm = () => {
+    setLoading(true);
     // console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
 
@@ -77,8 +88,8 @@ function EditProject() {
       projectName: formData.projectName,
       projectType: formData.projectType,
       projectDescription: formData.projectDescription,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      startDate: formatDate(formData.startDate),
+      endDate: formatDate(formData.endDate),
       skillRequireIdList: skillReq,
       memberAssignment: memberList.map((member) => {
         return {
@@ -98,10 +109,12 @@ function EditProject() {
           status: "success",
           message: "Edit Project Successfully",
         });
+        setLoading(false);
         navigate("../Project");
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
         openSnackbar({
           status: "error",
           message: "Edit Project Failed",
@@ -109,6 +122,25 @@ function EditProject() {
       });
 
     handleCloseDialog();
+  };
+
+  const handleDeleteProject = () => {
+    setLoading(true);
+    ProjectAPI.deleteProject(id)
+      .then((res) => {
+        openSnackbar({
+          status: "success",
+          message: "Delete Project Successfully",
+        });
+        navigate("../project");
+      })
+      .catch(() => {
+        openSnackbar({
+          status: "error",
+          message: "Delete Project Failed",
+        });
+        setLoading(false);
+      });
   };
 
   const [projectName, setProjectName] = useState("");
@@ -143,12 +175,13 @@ function EditProject() {
   const [currentPageSkill, setCurrentPageSkill] = useState(1);
   const itemsPerPageSkill = 12;
   const [tabValue, setTabValue] = useState(0);
-
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
-  };
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogPro, setOpenDialogPro] = useState(false);
+
+  const handleback = () => {
+    navigate("../project");
+  };
 
   const fullname = (p) => {
     return p.firstName + " " + p.lastName;
@@ -257,6 +290,17 @@ function EditProject() {
     if (inputDate) {
       const parts = inputDate.split("-");
       if (parts.length === 3) {
+        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+      }
+    }
+    return inputDate;
+  };
+
+  const formatDateInit = (inputDate) => {
+    console.log("inputDate", inputDate);
+    if (inputDate) {
+      const parts = inputDate.split("-");
+      if (parts.length === 3) {
         return `${parts[0]}-${parts[1]}-${parts[2]}`;
       }
     }
@@ -339,7 +383,9 @@ function EditProject() {
         return false;
       }
     }
-    const ifContain = memberList.some(obj => obj.personnel_id === person.personnel_id);
+    const ifContain = memberList.some(
+      (obj) => obj.personnel_id === person.personnel_id
+    );
     if (ifContain) {
       return false;
     }
@@ -450,8 +496,8 @@ function EditProject() {
       setProjectName(data.projectName);
       setProjectType(data.projectType);
       setProjectDes(data.projectDescription);
-      setProjectStart(data.startDate);
-      setProjectEnd(data.endDate);
+      setProjectStart(formatDateInit(data.startDate));
+      setProjectEnd(formatDateInit(data.endDate));
       setProjectBudget(data.budget);
       setProjectStatus(data.projectStatus);
       setProjectSkills(data.skillsRequired);
@@ -535,6 +581,22 @@ function EditProject() {
               padding: "30px",
             }}
           >
+            <Typography
+              variant="h5"
+              style={{
+                fontWeight: "bold",
+              }}
+            >
+              Edit Project
+            </Typography>
+            <Button
+              variant="contained"
+              color="error"
+              style={{ marginTop: "10px", marginLeft: "auto" }}
+              onClick={handleOpenDialogPro}
+            >
+              Delete
+            </Button>
             <Tabs
               value={value}
               onChange={handleChange}
@@ -554,7 +616,7 @@ function EditProject() {
                       fontWeight: "bold",
                     }}
                   >
-                    Edit Project Information
+                    Information
                   </Typography>
                 </Box>
 
@@ -691,7 +753,7 @@ function EditProject() {
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
-                      value={formatDate(formData.startDate)}
+                      value={formData.startDate}
                       error={!formValidation.startDate}
                       helperText={
                         !formValidation.startDate &&
@@ -700,7 +762,7 @@ function EditProject() {
                       onChange={(event) =>
                         setFormData({
                           ...formData,
-                          startDate: formatDate(event.target.value),
+                          startDate: event.target.value,
                         })
                       }
                       InputProps={{
@@ -724,7 +786,7 @@ function EditProject() {
                       type="date"
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
-                      value={formatDate(formData.endDate)}
+                      value={formData.endDate}
                       error={!formValidation.endDate}
                       helperText={
                         !formValidation.endDate &&
@@ -733,7 +795,7 @@ function EditProject() {
                       onChange={(event) =>
                         setFormData({
                           ...formData,
-                          endDate: formatDate(event.target.value),
+                          endDate: event.target.value,
                         })
                       }
                       InputProps={{
@@ -832,6 +894,14 @@ function EditProject() {
                     marginTop: "10px",
                   }}
                 >
+                  <Button
+                  variant="outlined"
+                    color="error"
+                    style={{ marginTop: "10px" }}
+                    onClick={handleback}
+                  >
+                    Back
+                  </Button>
                   <Button
                     variant="contained"
                     color="success"
@@ -1051,12 +1121,21 @@ function EditProject() {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
+                    marginTop: "10px",
                   }}
                 >
                   <Button
                     variant="contained"
+                    color="warning"
+                    style={{ marginTop: "10px" }}
+                    onClick={handleback}
+                  >
+                    Back
+                  </Button>
+                  <Button
+                    variant="contained"
                     color="success"
-                    style={{ marginLeft: "auto" }}
+                    style={{ marginTop: "10px", marginLeft: "auto" }}
                     onClick={handleOpenDialog}
                   >
                     Save Change
@@ -1108,16 +1187,24 @@ function EditProject() {
                               secondary={p.position}
                             />
                           </ListItemButton>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
                             <Autocomplete
                               freeSolo
                               options={roleOptions}
                               sx={{ width: 300 }}
                               value={p.role}
-                              onChange={(event, newValue) => { handleRoleChange(newValue, i) }}
+                              onChange={(event, newValue) => {
+                                handleRoleChange(newValue, i);
+                              }}
                               renderInput={(params) => (
                                 // eslint-disable-next-line no-restricted-globals
-                                <TextField {...params} label="Role" onChange={(event) => handleRoleChange(event.target.value, i)} />
+                                <TextField
+                                  {...params}
+                                  label="Role"
+                                  onChange={(event) =>
+                                    handleRoleChange(event.target.value, i)
+                                  }
+                                />
                               )}
                             />
                           </Box>
@@ -1397,22 +1484,22 @@ function EditProject() {
                       />
                     </Box>
                     <Box>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      style={{ marginTop: "10px", marginLeft: "auto" }}
-                      onClick={handleOpenDialog}
-                    >
-                      Save Change
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="success"
+                        style={{ marginTop: "10px", marginLeft: "auto" }}
+                        onClick={handleOpenDialog}
+                      >
+                        Save Change
+                      </Button>
                     </Box>
                   </div>
                   <PersonnelInfoDialog
-                      hideEdit
-                      personnel={selectedPersonnel}
-                      open={openPersonnelInfoDialog}
-                      setOpen={setOpenPersonnelInfoDialog}
-                    />
+                    hideEdit
+                    personnel={selectedPersonnel}
+                    open={openPersonnelInfoDialog}
+                    setOpen={setOpenPersonnelInfoDialog}
+                  />
                 </div>
               </div>
             )}
@@ -1431,7 +1518,28 @@ function EditProject() {
               </Button>
             </DialogActions>
           </Dialog>
+
+          <Dialog open={openDialogPro} onClose={handleCloseDialogPro}>
+            <DialogTitle>Confirm Delete</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete project ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialogPro}>Cancel</Button>
+              <Button onClick={handleDeleteProject} color="success">
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color="inherit" size={100} />
+        </Backdrop>
       </Grid>
     </div>
   );

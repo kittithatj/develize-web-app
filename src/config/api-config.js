@@ -1,14 +1,18 @@
 export const Api = {
-    url: 'http://localhost:8080',
+    // url: 'http://localhost:8080',
     //url: '*Online URL*',
+    url:'https://develize-api.azurewebsites.net',
     skill_get: '/skill/get-list',
     skill_delete: '/skill/delete/',// + id
     skill_create: '/skill/create',
 
-    user_get:'user/get-list',
+    user_get:'/user/get-list',
     user_login: '/user/login',
     user_register: '/user/register',
+    user_approve: '/user/approve',
+    user_edit: '/user/edit',
     user_refresh_token: '/user/refresh-token',
+    user_delete: '/user/delete/',// + id
 
     personnel_get: '/personnel/get-list',
     personnel_create: '/personnel/create',

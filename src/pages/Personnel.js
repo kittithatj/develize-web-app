@@ -42,6 +42,7 @@ function Personnel() {
   const [searchForm, setSearchForm] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [personnelPermission, setPersonnelPermission] = useState(false);
   const itemsPerPage = 8;
 
   const fetchPersonnelData = () => {
@@ -116,6 +117,14 @@ function Personnel() {
   useEffect(() => {
     fetchPersonnelData();
     fetchLookUpData();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (
+      user.role === "Administrator" ||
+      user.role === "Personnel Manager" ||
+      user.role === "Resource Manager"
+    ) {
+      setPersonnelPermission(true);
+    }
   }, []);
 
   const fullname = (p) => {
@@ -215,11 +224,13 @@ function Personnel() {
               >
                 Personnel Management
               </Typography>
-              <Link to={"create/"}>
-                <Button variant="contained" startIcon={<AddIcon />}>
-                  Create Personnel
-                </Button>
-              </Link>
+              {personnelPermission && (
+                <Link to={"create/"}>
+                  <Button variant="contained" startIcon={<AddIcon />}>
+                    Create Personnel
+                  </Button>
+                </Link>
+              )}
             </Box>
 
             <div>
@@ -409,7 +420,7 @@ function Personnel() {
                                     sx={{ display: "flex", width: "40%" }}
                                   >
                                     {person.skills.length > 0 && (
-                                      <AvatarGroup max={5}>
+                                      <AvatarGroup max={7}>
                                         {person.skills.map((skill) => {
                                           return (
                                             <Tooltip
@@ -428,7 +439,8 @@ function Personnel() {
                                       </AvatarGroup>
                                     )}
                                   </Box>
-                                  <Link to={"edit/" + person.personnel_id}>
+                                  {personnelPermission ? (
+                                    <Link to={"edit/" + person.personnel_id}>
                                     <IconButton
                                       sx={{ margin: 1, bgcolor: "white" }}
                                       edge="end"
@@ -438,6 +450,9 @@ function Personnel() {
                                       <DriveFileRenameOutlineIcon />
                                     </IconButton>
                                   </Link>
+                                  ) : (
+                                    <div style={{ width: "75px" }} />
+                                  )}
                                   <Link to={"assess/" + person.personnel_id}>
                                     <IconButton
                                       sx={{ margin: 1, bgcolor: "white" }}
@@ -446,9 +461,7 @@ function Personnel() {
                                       size="large"
                                     >
                                       {!person.hasAssessed && (
-                                        <div
-                                          className="notification-dot"
-                                        />
+                                        <div className="notification-dot" />
                                       )}
                                       <AssignmentIcon />
                                     </IconButton>
@@ -475,10 +488,11 @@ function Personnel() {
                     </div>
                   ) : (
                     <Box
-                    sx={{
-                      my: 5,
-                      width: "60vw",
-                    }}>
+                      sx={{
+                        my: 5,
+                        width: "60vw",
+                      }}
+                    >
                       <Typography
                         className="flex-center"
                         color="gray"
@@ -513,6 +527,7 @@ function Personnel() {
         personnel={selectedPersonnel}
         open={openDialog}
         setOpen={setOpenDialog}
+        hideEdit={!personnelPermission}
       />
     </div>
   );

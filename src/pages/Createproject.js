@@ -21,6 +21,8 @@ import {
   DialogContentText,
   DialogTitle,
   Autocomplete,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -65,6 +67,7 @@ function CreateProject() {
     setOpenDialog(false);
   };
   const handleConfirm = () => {
+    setLoading(true);
     //console.log("formData:", formData);
     const skillReq = skillSelect.map((skill) => skill.skill_id);
 
@@ -87,6 +90,7 @@ function CreateProject() {
 
     ProjectAPI.createProject(dataToSend)
       .then(() => {
+        setLoading(false);
         openSnackbar({
           status: "success",
           message: "Create Project Successfully",
@@ -94,6 +98,7 @@ function CreateProject() {
         navigate("../Project");
       })
       .catch(() => {
+        setLoading(false);
         openSnackbar({
           status: "error",
           message: "Create Project Failed",
@@ -153,11 +158,9 @@ function CreateProject() {
   };
 
   const fetchSkillData = () => {
-    setLoading(true);
     skillApi.getAllSKills().then((data) => {
       setSkillList(data);
       setDisplayedSkills(data);
-      setLoading(false);
       console.log("Skill SP", data);
     });
   };
@@ -417,7 +420,6 @@ function CreateProject() {
     projectDescription: true,
     startDate: true,
     endDate: true,
-    budget: true,
     projectStatus: true,
   });
 
@@ -425,10 +427,8 @@ function CreateProject() {
     const isFormValid =
       formData.projectName &&
       formData.projectType &&
-      formData.projectDescription &&
       formData.startDate &&
       formData.endDate &&
-      formData.budget &&
       formData.projectStatus;
 
     if (isFormValid) {
@@ -436,20 +436,16 @@ function CreateProject() {
       setFormValidation({
         projectName: true,
         projectType: true,
-        projectDescription: true,
         startDate: true,
         endDate: true,
-        budget: true,
         projectStatus: true,
       });
     } else {
       setFormValidation({
         projectName: !!formData.projectName,
         projectType: !!formData.projectType,
-        projectDescription: !!formData.projectDescription,
         startDate: !!formData.startDate,
         endDate: !!formData.endDate,
-        budget: !!formData.budget,
         projectStatus: !!formData.projectStatus,
       });
     }
@@ -706,10 +702,6 @@ function CreateProject() {
                       sx={{ mt: 1, mb: 2, width: "100%" }}
                       variant="outlined"
                       value={formData.budget}
-                      error={!formValidation.budget}
-                      helperText={
-                        !formValidation.budget && "Budget is required"
-                      }
                       onChange={(event) =>
                         setFormData({
                           ...formData,
@@ -1289,14 +1281,6 @@ function CreateProject() {
                               Skills
                             </Typography>
                           </Box>
-                          <Box sx={{ width: "40%" }}>
-                            <Typography
-                              component="div"
-                              sx={{ fontWeight: "600" }}
-                            >
-                              Skills
-                            </Typography>
-                          </Box>
                           <ListItemText sx={{ width: "100px" }} />
                         </ListItem>
 
@@ -1355,7 +1339,7 @@ function CreateProject() {
                                       sx={{ display: "flex", width: "40%" }}
                                     >
                                       {p.skills.length > 0 && (
-                                        <AvatarGroup max={5}>
+                                        <AvatarGroup max={7}>
                                           {p.skills.map((skill) => {
                                             return (
                                               <Tooltip
@@ -1497,6 +1481,12 @@ function CreateProject() {
           </Paper>
         </Grid>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" size={100} />
+      </Backdrop>
     </div>
   );
 }
