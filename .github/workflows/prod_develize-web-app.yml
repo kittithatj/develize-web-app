@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'develize-web-app'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D1CD82E7394C40D9BF868FAD3DFAB3B9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_BD6A9C96405B441BBCDAD5E87CE6C40C }}
           package: .
