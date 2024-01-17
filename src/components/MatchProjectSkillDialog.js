@@ -14,7 +14,6 @@ import {
   Typography,
   Checkbox,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { ProjectAPI } from "../api/project-api";

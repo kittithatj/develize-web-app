@@ -137,11 +137,6 @@ export default function UserManage() {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    // const editedRow = rows.find((row) => row.id === id);
-    // if (editedRow.isNew) {
-    //   setRows(rows.filter((row) => row.id !== id));
-    // }
   };
 
   //data for table

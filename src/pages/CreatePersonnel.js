@@ -21,24 +21,17 @@ import {
   Autocomplete,
 } from "@mui/material";
 
-import PersonIcon from "@mui/icons-material/Person";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import AddIcCallIcon from "@mui/icons-material/AddIcCall";
-import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
-import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import { PersonnelAPI } from "../api/personnel-api";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import { skillApi } from "../api/skill-api";
-import SkillFroupAvatar from "../components/SkillGroupAvatar";
 import InputBase from "@mui/material/InputBase";
 import Paper from "@mui/material/Paper";
 import SearchIcon from "@mui/icons-material/Search";
 import { skillTypeList } from "../config/skill-type-list";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import ListItem from "@mui/material/ListItem";
-import List from "@mui/material/List";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 import CheckIcon from "@mui/icons-material/Check";
