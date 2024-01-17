@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/develize-web-app/login/static/css/main.0254f88e.css",
-    "main.js": "/develize-web-app/login/static/js/main.4a6e7d4f.js",
-    "static/media/SecurityandCybersecuritySystem.png": "/develize-web-app/login/static/media/SecurityandCybersecuritySystem.cef0717f8a4d7c93cc3a.png",
-    "static/media/DatabaseManagementandSystem.png": "/develize-web-app/login/static/media/DatabaseManagementandSystem.8083641c82b1f1888025.png",
-    "static/media/CloudBasedDevelopment.png": "/develize-web-app/login/static/media/CloudBasedDevelopment.ae8c88981e9948ccd670.png",
-    "static/media/AIandMachineLearningDevelopment.png": "/develize-web-app/login/static/media/AIandMachineLearningDevelopment.1f866e1a463a8706a108.png",
-    "static/media/GameDevelopment.png": "/develize-web-app/login/static/media/GameDevelopment.0c073d02369b5e3cf2a6.png",
-    "static/media/DevOpsandCICD.png": "/develize-web-app/login/static/media/DevOpsandCICD.3958c0c51d599908f178.png",
-    "static/media/EmbeddedSystemDevelopment.png": "/develize-web-app/login/static/media/EmbeddedSystemDevelopment.5a54a8ae1bd5d4c622e5.png",
-    "static/media/ArtificialRealityandVirtualRealityDevelopment.png": "/develize-web-app/login/static/media/ArtificialRealityandVirtualRealityDevelopment.04f2eb20fd7e98e694ed.png",
-    "static/media/MobileAppDevelopment.png": "/develize-web-app/login/static/media/MobileAppDevelopment.5f05991662b484f56192.png",
-    "static/media/DesktopApplicationDevelopment.png": "/develize-web-app/login/static/media/DesktopApplicationDevelopment.12818b4a761c7c2430a4.png",
-    "static/media/WebDevelopment.png": "/develize-web-app/login/static/media/WebDevelopment.31282695c769e785f5d0.png",
-    "static/media/develize_logo.png": "/develize-web-app/login/static/media/develize_logo.f5b004c015926777c1a8.png",
-    "index.html": "/develize-web-app/login/index.html",
-    "main.0254f88e.css.map": "/develize-web-app/login/static/css/main.0254f88e.css.map",
-    "main.4a6e7d4f.js.map": "/develize-web-app/login/static/js/main.4a6e7d4f.js.map"
+    "main.css": "/develize-web-app/static/css/main.0254f88e.css",
+    "main.js": "/develize-web-app/static/js/main.3412a163.js",
+    "static/media/SecurityandCybersecuritySystem.png": "/develize-web-app/static/media/SecurityandCybersecuritySystem.cef0717f8a4d7c93cc3a.png",
+    "static/media/DatabaseManagementandSystem.png": "/develize-web-app/static/media/DatabaseManagementandSystem.8083641c82b1f1888025.png",
+    "static/media/CloudBasedDevelopment.png": "/develize-web-app/static/media/CloudBasedDevelopment.ae8c88981e9948ccd670.png",
+    "static/media/AIandMachineLearningDevelopment.png": "/develize-web-app/static/media/AIandMachineLearningDevelopment.1f866e1a463a8706a108.png",
+    "static/media/GameDevelopment.png": "/develize-web-app/static/media/GameDevelopment.0c073d02369b5e3cf2a6.png",
+    "static/media/DevOpsandCICD.png": "/develize-web-app/static/media/DevOpsandCICD.3958c0c51d599908f178.png",
+    "static/media/EmbeddedSystemDevelopment.png": "/develize-web-app/static/media/EmbeddedSystemDevelopment.5a54a8ae1bd5d4c622e5.png",
+    "static/media/ArtificialRealityandVirtualRealityDevelopment.png": "/develize-web-app/static/media/ArtificialRealityandVirtualRealityDevelopment.04f2eb20fd7e98e694ed.png",
+    "static/media/MobileAppDevelopment.png": "/develize-web-app/static/media/MobileAppDevelopment.5f05991662b484f56192.png",
+    "static/media/DesktopApplicationDevelopment.png": "/develize-web-app/static/media/DesktopApplicationDevelopment.12818b4a761c7c2430a4.png",
+    "static/media/WebDevelopment.png": "/develize-web-app/static/media/WebDevelopment.31282695c769e785f5d0.png",
+    "static/media/develize_logo.png": "/develize-web-app/static/media/develize_logo.f5b004c015926777c1a8.png",
+    "index.html": "/develize-web-app/index.html",
+    "main.0254f88e.css.map": "/develize-web-app/static/css/main.0254f88e.css.map",
+    "main.3412a163.js.map": "/develize-web-app/static/js/main.3412a163.js.map"
   },
   "entrypoints": [
     "static/css/main.0254f88e.css",
-    "static/js/main.4a6e7d4f.js"
+    "static/js/main.3412a163.js"
   ]
 }
