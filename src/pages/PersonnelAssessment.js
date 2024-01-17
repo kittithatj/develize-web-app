@@ -14,14 +14,12 @@ import {
   DialogTitle,
   Paper,
   Rating,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 import { PersonnelAPI } from "../api/personnel-api";
-import HelpIcon from "@mui/icons-material/Help";
 import { stringToColor } from "../components/SkillGroupAvatar";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PersonnelInfoDialog from "../components/PersonnelInfoDialog";

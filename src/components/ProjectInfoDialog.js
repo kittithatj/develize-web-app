@@ -57,7 +57,6 @@ function ProjectInfoDialog(props) {
   const [loadingPerson, setLoadingPersonel] = useState(true);
   const [dataPersonnel, setDataPersonnel] = useState([]);
   const [skillSelect, setSkillSelect] = useState([]);
-  const [personnel, setPersonnel] = React.useState({});
   const [projectSkills, setProjectSkills] = useState([]);
   const [memberList, setMemberList] = useState([]);
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);

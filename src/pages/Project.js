@@ -30,7 +30,6 @@ import DevOpsandCICD from "../components/image/DevOpsandCICD.png";
 import CloudBasedDevelopment from "../components/image/CloudBasedDevelopment.png";
 import SecurityandCybersecuritySystem from "../components/image/SecurityandCybersecuritySystem.png";
 import ArtificialRealityandVirtualRealityDevelopment from "../components/image/ArtificialRealityandVirtualRealityDevelopment.png";
-import PersonnelInfoDialog from "../components/PersonnelInfoDialog";
 import ProjectInfoDialog from "../components/ProjectInfoDialog";
 
 function Project() {

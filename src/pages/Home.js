@@ -9,15 +9,10 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import WidgetsIcon from "@mui/icons-material/Widgets";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // if (localStorage.getItem("token") == null) {
-    //   navigate("/login");
-    // }
     const user = JSON.parse(localStorage.getItem("user"));
     setUser(user);
     setMenuState((prev) => {
