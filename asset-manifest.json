@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/develize-web-app/static/css/main.0254f88e.css",
-    "main.js": "/develize-web-app/static/js/main.ca244754.js",
+    "main.js": "/develize-web-app/static/js/main.9774af81.js",
     "static/media/SecurityandCybersecuritySystem.png": "/develize-web-app/static/media/SecurityandCybersecuritySystem.cef0717f8a4d7c93cc3a.png",
     "static/media/DatabaseManagementandSystem.png": "/develize-web-app/static/media/DatabaseManagementandSystem.8083641c82b1f1888025.png",
     "static/media/CloudBasedDevelopment.png": "/develize-web-app/static/media/CloudBasedDevelopment.ae8c88981e9948ccd670.png",
@@ -16,10 +16,10 @@
     "static/media/develize_logo.png": "/develize-web-app/static/media/develize_logo.f5b004c015926777c1a8.png",
     "index.html": "/develize-web-app/index.html",
     "main.0254f88e.css.map": "/develize-web-app/static/css/main.0254f88e.css.map",
-    "main.ca244754.js.map": "/develize-web-app/static/js/main.ca244754.js.map"
+    "main.9774af81.js.map": "/develize-web-app/static/js/main.9774af81.js.map"
   },
   "entrypoints": [
     "static/css/main.0254f88e.css",
-    "static/js/main.ca244754.js"
+    "static/js/main.9774af81.js"
   ]
 }
