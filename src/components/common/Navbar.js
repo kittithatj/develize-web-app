@@ -78,16 +78,17 @@ function Navbar(props) {
           </div>
           {Object.keys(props.user).length === 0 && (
             <div className="upper right">
+              <Link to={"/login"}>
               <Button
                 sx={{ mr: 2 }}
                 color="primary"
                 variant="contained"
                 className="login-btn"
-                href="/login"
               >
                 {" "}
                 Sign in
               </Button>
+              </Link>
             </div>
           )}
           {Object.keys(props.user).length !== 0 && (

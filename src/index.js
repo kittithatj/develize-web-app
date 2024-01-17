@@ -5,6 +5,7 @@ import {
   createBrowserRouter,
   RouterProvider,
   Outlet,
+  createHashRouter,
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Personnel from "./pages/Personnel";
@@ -15,47 +16,48 @@ import "./App.css";
 import Login from "./pages/Login";
 import PersonnelEdit from "./pages/PersonnelEdit";
 import PersonnelInfo from "./pages/PersonnelInfo";
-import Register from "./pages/Register"
+import Register from "./pages/Register";
 import { interceptor } from "./interceptor";
 import PersonnelAssessment from "./pages/PersonnelAssessment";
 import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
 import CreateProject from "./pages/CreateProject";
-import ProjectEdit from "./pages/ProjectEdit"
+import ProjectEdit from "./pages/ProjectEdit";
 import RegisterSuccess from "./pages/RegisterSuccess";
 import UserManage from "./pages/UserManage";
 
 const AppLayout = () => {
-
   //--------SnackBar---------
   const [isOpenSnackbar, setIsOpenSnackbar] = React.useState(false);
   const [snackbar, setSnackbar] = useState({
-    status: '',
-    message: ''
+    status: "",
+    message: "",
   });
 
   const openSnackbar = (snackbar) => {
     setSnackbar({
       status: snackbar.status,
-      message: snackbar.message
-    })
+      message: snackbar.message,
+    });
     setIsOpenSnackbar(true);
   };
 
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setIsOpenSnackbar(false);
   };
 
-  const htmlSnackBar = <SnackbarComponent
-    autoHideDuration={5000}
-    open={isOpenSnackbar}
-    handleClose={handleCloseSnackbar}
-    severity={snackbar.status}
-    message={snackbar.message}
-  />
+  const htmlSnackBar = (
+    <SnackbarComponent
+      autoHideDuration={5000}
+      open={isOpenSnackbar}
+      handleClose={handleCloseSnackbar}
+      severity={snackbar.status}
+      message={snackbar.message}
+    />
+  );
 
   //--------SnackBar---------
 
@@ -64,27 +66,29 @@ const AppLayout = () => {
   const [user, setUser] = useState({});
 
   const getUserIfTokenExist = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      return user
+      return user;
     } else {
-      return []
+      return [];
     }
-  }
+  };
 
   useEffect(() => {
-    localStorage?.getItem('user') && setUser(JSON.parse(localStorage.getItem('user')));
-  }, [])
+    localStorage?.getItem("user") &&
+      setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
 
-  return <>
-    <Navbar user={getUserIfTokenExist()} setUser={setUser} />
-    <Outlet context={[user, setUser, openSnackbar]} >
-    </Outlet>
-    {htmlSnackBar}
-  </>
+  return (
+    <>
+      <Navbar user={getUserIfTokenExist()} setUser={setUser} />
+      <Outlet context={[user, setUser, openSnackbar]}></Outlet>
+      {htmlSnackBar}
+    </>
+  );
 };
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     element: <AppLayout />,
     children: [
@@ -155,5 +159,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <React.StrictMode>
+    <RouterProvider router={router} />
+  </React.StrictMode>
 );
