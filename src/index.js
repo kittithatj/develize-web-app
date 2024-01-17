@@ -21,7 +21,6 @@ import PersonnelAssessment from "./pages/PersonnelAssessment";
 import CreatePersonnel from "./pages/CreatePersonnel";
 import SnackbarComponent from "./components/SnackbarComponent";
 import CreateProject from "./pages/CreateProject";
-import ProjectDetail from "./pages/ProjectDetail";
 import ProjectEdit from "./pages/ProjectEdit"
 import RegisterSuccess from "./pages/RegisterSuccess";
 import UserManage from "./pages/UserManage";
@@ -142,11 +141,6 @@ const router = createBrowserRouter([
       {
         path: "project/createproject",
         element: <CreateProject />,
-      },
-      ,
-      {
-        path: "project/projectdetail/:id",
-        element: <ProjectDetail />,
       },
       {
         path: "project/edit/:id",
