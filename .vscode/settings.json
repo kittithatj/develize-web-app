@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/4b8309a8-e10b-4e87-9148-5ba8e80c40cd/resourceGroups/develize-web-app-group/providers/Microsoft.Web/sites/develize-web-app",
+    "appService.deploySubpath": "."
+}
